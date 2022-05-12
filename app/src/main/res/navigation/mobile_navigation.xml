@@ -6,51 +6,51 @@
 
     <fragment
             android:id="@+id/home_dest"
-            android:name="com.goldenowl.ecommerce.HomeFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.HomeFragment"
             android:label="@string/home"
-            tools:layout="@layout/home_fragment">
+            tools:layout="@layout/fragment_home">
 
 
 
     </fragment>
     <fragment
             android:id="@+id/shop_dest"
-            android:name="com.goldenowl.ecommerce.ShopFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.ShopFragment"
             android:label="@string/shop"
-            tools:layout="@layout/shop_fragment">
+            tools:layout="@layout/fragment_shop">
 
 
 
     </fragment>
     <fragment
             android:id="@+id/bag_dest"
-            android:name="com.goldenowl.ecommerce.BagFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.BagFragment"
             android:label="@string/bag"
-            tools:layout="@layout/bag_fragment">
+            tools:layout="@layout/fragment_bag">
 
         <action android:id="@+id/next_action" app:destination="@id/checkout_dest"/>
     </fragment>
     <fragment
             android:id="@+id/favorites_dest"
-            android:name="com.goldenowl.ecommerce.FavoritesFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.FavoritesFragment"
             android:label="@string/favorites"
-            tools:layout="@layout/favorites_fragment">
+            tools:layout="@layout/fragment_favorites">
 
     </fragment>
 
     <fragment
             android:id="@+id/profile_dest"
-            android:name="com.goldenowl.ecommerce.ProfileFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.ProfileFragment"
             android:label="@string/profile"
-            tools:layout="@layout/profile_fragment">
+            tools:layout="@layout/fragment_profile">
 
     </fragment>
 
     <fragment
             android:id="@+id/checkout_dest"
-            android:name="com.goldenowl.ecommerce.CheckoutFragment"
+            android:name="com.goldenowl.ecommerce.ui.home.CheckoutFragment"
             android:label="@string/checkout"
-            tools:layout="@layout/checkout_fragment">
+            tools:layout="@layout/fragment_checkout">
 
     </fragment>
 

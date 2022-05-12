@@ -1,17 +1,15 @@
-package com.goldenowl.ecommerce
+package com.goldenowl.ecommerce.ui.home
 
-import android.os.Build.VERSION_CODES.N
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
+import com.goldenowl.ecommerce.R
 
 class BagFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view : View = inflater.inflate(R.layout.bag_fragment, container, false);
+        val view : View = inflater.inflate(R.layout.fragment_bag, container, false);
         return view;
     }
 

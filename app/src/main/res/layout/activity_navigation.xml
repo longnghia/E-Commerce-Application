@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        android:background="@color/grey_light"
+        tools:context=".ui.home.MainActivity">
+<!--        android:fitsSystemWindows="true"-->
 
-        <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/grey_shadow"
-                app:titleTextColor="@color/black_light"
 
-                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--                android:id="@+id/toolbar"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/grey_shadow"-->
+<!--                app:titleTextColor="@color/black_light"-->
+
+<!--                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"/>-->
 
 
     <!--    <com.google.android.material.appbar.AppBarLayout-->
@@ -115,12 +119,44 @@
 
     <!--    </com.google.android.material.appbar.AppBarLayout>-->
 
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tall_toolbar_height">
+
+        <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsing_toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleGravity="top"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+
+            <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/pexels_photo"
+                    android:scaleType="centerCrop"
+                    android:fitsSystemWindows="true"
+                    android:contentDescription="@string/content_description_media" />
+
+            <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin"/>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
     <fragment
             android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             app:defaultNavHost="true"
             app:navGraph="@navigation/mobile_navigation"/>
 
@@ -130,5 +166,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_navbar"
             app:labelVisibilityMode="labeled"
-            app:menu="@menu/bottom_nav_menu"/>
-</LinearLayout>
+            app:menu="@menu/bottom_nav_menu"
+
+            android:layout_gravity="bottom"
+
+    />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

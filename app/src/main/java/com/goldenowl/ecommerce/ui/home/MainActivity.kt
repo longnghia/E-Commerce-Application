@@ -14,29 +14,25 @@
  * limitations under the License.
  */
 
-package com.goldenowl.ecommerce
+package com.goldenowl.ecommerce.ui.home
 
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.*
 import com.goldenowl.ecommerce.R
-import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG: String = "MainActivity"
+
 
     private fun setupActionBar(navController: NavController, appBarConfiguration: AppBarConfiguration) {
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -45,12 +41,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: create")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.navigation_activity)
+        setContentView(R.layout.activity_navigation)
+
+//        statusbar
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        );
 
 //        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
@@ -60,6 +61,8 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest),
         )
+
+        setupToolBarLayout(toolbar, navController, appBarConfiguration)
 
         setupActionBar(navController, appBarConfiguration)
 
@@ -74,6 +77,15 @@ class MainActivity : AppCompatActivity() {
 
             Log.d("NavigationActivity", "Navigated to $dest")
         }
+    }
+
+    private fun setupToolBarLayout(
+        toolbar: Toolbar,
+        navController: NavController,
+        appBarConfiguration: AppBarConfiguration
+    ) {
+        val toolbarLayout = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar_layout)
+        toolbarLayout.setupWithNavController(toolbar, navController, appBarConfiguration)
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

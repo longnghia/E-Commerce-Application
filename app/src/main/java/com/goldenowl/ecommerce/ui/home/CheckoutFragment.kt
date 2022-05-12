@@ -1,19 +1,15 @@
-package com.goldenowl.ecommerce
+package com.goldenowl.ecommerce.ui.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import androidx.core.view.marginEnd
 import androidx.fragment.app.Fragment
-import org.w3c.dom.Text
+import com.goldenowl.ecommerce.R
 
-class ShopFragment : Fragment() {
+class CheckoutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view : View = inflater.inflate(R.layout.shop_fragment, container, false);
-
+        val view : View = inflater.inflate(R.layout.fragment_checkout, container, false);
         return view;
     }
 }

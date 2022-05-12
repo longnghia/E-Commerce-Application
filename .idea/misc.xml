@@ -12,12 +12,16 @@
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/drawable/ic_shop.xml" value="0.10677083333333333" />
         <entry key="app/src/main/res/layout-w960dp/navigation_activity.xml" value="0.15" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="app/src/main/res/layout/bag_fragment.xml" value="0.2536443148688047" />
         <entry key="app/src/main/res/layout/checkout_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/favorites_fragment.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.21770833333333334" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.2972972972972973" />
-        <entry key="app/src/main/res/layout/navigation_activity.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/login_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/login_signup_activity.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/navigation_activity.xml" value="0.24615384615384617" />
         <entry key="app/src/main/res/layout/navigation_activity2.xml" value="0.103125" />
         <entry key="app/src/main/res/layout/navigation_activity_3.xml" value="0.103125" />
         <entry key="app/src/main/res/layout/profile.xml" value="0.35625" />
@@ -25,6 +29,7 @@
         <entry key="app/src/main/res/layout/shop_fragment.xml" value="0.21875" />
         <entry key="app/src/main/res/layout/shop_fragment2.xml" value="0.1" />
         <entry key="app/src/main/res/layout/shope_fragment.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/signup_fragment.xml" value="0.67" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.23229166666666667" />
       </map>
     </option>

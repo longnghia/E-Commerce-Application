@@ -10,15 +10,28 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.ECommerce">
         <activity
-                android:name=".MainActivity"
+                android:name=".SplashActivity"
+                android:exported="true"
+                android:theme="@style/Theme.ECommerce.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+                android:name=".ui.home.MainActivity"
                 android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-<!--            <nav-graph android:value="@navigation/mobile_navigation" />-->
+            <!-- <nav-graph android:value="@navigation/mobile_navigation" /> -->
         </activity>
+        <activity
+                android:name=".ui.auth.LoginSignupActivity"
+                android:exported="true"/>
     </application>
 
 </manifest>

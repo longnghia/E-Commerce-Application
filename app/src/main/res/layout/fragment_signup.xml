@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+                                                   android:layout_height="match_parent"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="Signup Fragment"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              android:padding="10dp"
+    />
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+              android:text="@string/already_has_account"
+              app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="64dp"
+              android:id="@+id/textView"
+              app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginLeft="16dp"
+    />
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="@string/login"
+            android:id="@+id/btn_login"
+            app:layout_constraintTop_toTopOf="parent" android:layout_marginTop="64dp"
+            app:layout_constraintStart_toEndOf="@+id/textView" android:layout_marginStart="16dp"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

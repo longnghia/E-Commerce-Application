@@ -1,21 +1,18 @@
-package com.goldenowl.ecommerce
+package com.goldenowl.ecommerce.ui.home
 
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.goldenowl.ecommerce.R
 
 class HomeFragment : Fragment() {
     val TAG: String = "HomeFragment"
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d(TAG, "onCreateView: " + TAG)
-        val view: View = inflater.inflate(R.layout.home_fragment, container, false);
+        val view: View = inflater.inflate(R.layout.fragment_home, container, false);
 
 
         return view;

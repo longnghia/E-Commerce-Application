@@ -14,4 +14,8 @@
     <color name="red_dark">#DB3022</color>
     <color name="black_light">#222222</color>
 
+
+    <color name="login_bg">#E5E5E5</color>
+    <color name="login_card_bg">#EBFEF2</color>
+
 </resources>

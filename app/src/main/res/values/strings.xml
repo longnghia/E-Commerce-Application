@@ -7,8 +7,15 @@
     <string name="shop">Shop</string>
     <string name="checkout">Checkout</string>
     <string name="payment">Payment</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
 
 
     <string name="content_description_media">content_description_media</string>
+    <string name="logout">Log out</string>
+    <string name="already_has_account">Already has account?</string>
+    <string name="input_name">Input name</string>
+    <string name="input_password">Password</string>
+    <string name="input_email">Email</string>
 
 </resources>

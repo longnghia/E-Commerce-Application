@@ -13,4 +13,9 @@
               android:textAlignment="center"
               android:text="@string/profile"
     />
+
+    <Button android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:id="@+id/auth_btn"
+            android:text="@string/logout"
+    />
 </LinearLayout>
