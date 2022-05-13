@@ -5,6 +5,7 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_dark</item>
         <item name="colorPrimaryVariant">@color/grey_light</item>
+<!--        <item name="colorAccent">@color/red_dark</item>-->
         <item name="colorOnPrimary">@color/black_light</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>

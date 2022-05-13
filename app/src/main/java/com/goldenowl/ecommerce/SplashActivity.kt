@@ -1,6 +1,7 @@
 package com.goldenowl.ecommerce
 
 import android.content.Intent
+import android.net.sip.SipErrorCode.TIME_OUT
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -10,11 +11,12 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.goldenowl.ecommerce.models.data.SessionManager
+import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 
 class SplashActivity : AppCompatActivity() {
 
-    private val TAG="SplashActivity"
+    private val TAG = "SplashActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +38,16 @@ class SplashActivity : AppCompatActivity() {
     private fun setLaunchScreenTimeOut() {
         Looper.myLooper()?.let {
             Handler(it).postDelayed({
-                startPreferredActivity()
+                startActivity()
             }, TIME_OUT)
         }
     }
 
-    private fun startPreferredActivity() {
+    private fun startActivity() {
+
         val sessionManager = SessionManager(this)
         if (sessionManager.isLoggedIn()) {
-            val userData :HashMap<String, String?>  =  sessionManager.getUserDataFromSession()
+            val userData: HashMap<String, String?> = sessionManager.getUserDataFromSession()
             Log.d(TAG, "startPreferredActivity: logged in as ${userData.get("userName")}")
             launchHome(this)
             finish()
@@ -53,7 +56,10 @@ class SplashActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        finish()
+    }
+
+    private fun checkFirstLaunch() {
+
     }
 
     companion object {

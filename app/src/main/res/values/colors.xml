@@ -18,4 +18,10 @@
     <color name="login_bg">#E5E5E5</color>
     <color name="login_card_bg">#EBFEF2</color>
 
+
+    <color name="colorAccent">#DB3022</color>
+
+    <color name="indicator_default">#E9E6E6</color>
+    <color name="indicator_selected">#DB3022</color>
+
 </resources>

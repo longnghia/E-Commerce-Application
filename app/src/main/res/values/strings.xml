@@ -17,5 +17,8 @@
     <string name="input_name">Input name</string>
     <string name="input_password">Password</string>
     <string name="input_email">Email</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
 
 </resources>

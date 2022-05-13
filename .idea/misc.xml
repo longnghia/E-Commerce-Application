@@ -9,15 +9,26 @@
       <map>
         <entry key="app/src/main/res/drawable/abc.xml" value="0.23385416666666667" />
         <entry key="app/src/main/res/drawable/bg_navbar.xml" value="0.33" />
+        <entry key="app/src/main/res/drawable/ic_bag.xml" value="0.19739583333333333" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/drawable/ic_shop.xml" value="0.10677083333333333" />
+        <entry key="app/src/main/res/drawable/rounded_button.xml" value="0.3723958333333333" />
+        <entry key="app/src/main/res/drawable/selector_tab.xml" value="0.3723958333333333" />
+        <entry key="app/src/main/res/drawable/tab_indicator_default.xml" value="0.3723958333333333" />
+        <entry key="app/src/main/res/drawable/tab_indicator_selected.xml" value="0.5" />
+        <entry key="app/src/main/res/drawable/tab_indicator_selected2.xml" value="0.3723958333333333" />
+        <entry key="app/src/main/res/drawable/tab_selector.xml" value="0.2109375" />
         <entry key="app/src/main/res/layout-w960dp/navigation_activity.xml" value="0.15" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_tutorial.xml" value="0.1" />
         <entry key="app/src/main/res/layout/bag_fragment.xml" value="0.2536443148688047" />
         <entry key="app/src/main/res/layout/checkout_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/favorites_fragment.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.1125" />
+        <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.1125" />
+        <entry key="app/src/main/res/layout/fragment_tutorial.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.2972972972972973" />
         <entry key="app/src/main/res/layout/login_fragment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/login_signup_activity.xml" value="0.1" />

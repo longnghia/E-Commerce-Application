@@ -32,6 +32,10 @@ class ProfileFragment : Fragment() {
             context?.startActivity(loginIntent)
             activity?.finish()
         }
+
+        val sessionManager =  SessionManager(requireActivity())
+       val userName =  sessionManager.getUserDataFromSession().get("userName")
+        binding.tvName.setText(userName)
     }
 
     private fun logOut() {
