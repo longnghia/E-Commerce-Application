@@ -6,19 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.databinding.FragmentBagBinding
+import com.goldenowl.ecommerce.databinding.FragmentTutorialBinding
 
 class BagFragment : Fragment() {
+    private  lateinit var binding: FragmentBagBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view : View = inflater.inflate(R.layout.fragment_bag, container, false);
-        return view;
+        binding = FragmentBagBinding.inflate(inflater, container, false)
+        setViews()
+        return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        view.findViewById<Button>(R.id.bag_checkout_btn).setOnClickListener(
-//            Navigation.createNavigateOnClickListener(R.id.next_action)
-//        )
-
+    private fun setViews() {
     }
+
 }

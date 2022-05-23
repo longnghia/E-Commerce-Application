@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
     id 'kotlin-android'
 }
 
@@ -17,7 +18,7 @@ android {
     }
 
     buildFeatures {
-        dataBinding true
+//        dataBinding true
         viewBinding true
     }
 
@@ -50,9 +51,27 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
 
-    // splash
-        implementation 'androidx.core:core-splashscreen:1.0.0-beta02'
-
 //    viewpager
 //    implementation 'androidx.viewpager2:viewpager2:1.0.0-beta02'
+
+    // circle image
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    //firebase
+    implementation platform('com.google.firebase:firebase-bom:30.0.0')
+//    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-database-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+    implementation 'com.google.firebase:firebase-storage-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
+
+    // Firebase UI
+    implementation 'com.firebaseui:firebase-ui-auth:8.0.0'
+    implementation 'com.firebaseui:firebase-ui-database:8.0.0'
+
+    //facebook
+    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+
+    // google
+    implementation 'com.google.android.gms:play-services-auth:20.2.0'
 }

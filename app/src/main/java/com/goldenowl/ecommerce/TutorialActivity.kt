@@ -1,9 +1,9 @@
 package com.goldenowl.ecommerce
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.goldenowl.ecommerce.databinding.ActivityTutorialBinding
 import com.goldenowl.ecommerce.models.data.SettingsManager
@@ -21,7 +21,6 @@ class TutorialActivity : AppCompatActivity() {
         binding = ActivityTutorialBinding.inflate(layoutInflater)
 
         setViews()
-        setFirstLaunch(true)
         setContentView(binding.root)
     }
 
@@ -72,7 +71,9 @@ class TutorialActivity : AppCompatActivity() {
     }
 
     private fun skipTutorial() {
-        Log.d(TAG, "skipTutorial: skiped")
+        setFirstLaunch(false)
+
+        Log.d(TAG, "skipTutorial: skipped")
         launchHome(this)
         finish()
     }

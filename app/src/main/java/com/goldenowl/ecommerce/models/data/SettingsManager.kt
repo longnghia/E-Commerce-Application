@@ -5,25 +5,29 @@ import android.content.SharedPreferences
 
 class SettingsManager(context: Context) {
 
-	var settingsSession: SharedPreferences =
-		context.getSharedPreferences("settings", Context.MODE_PRIVATE)
-	var editor: SharedPreferences.Editor = settingsSession.edit()
+    var settingManager: SharedPreferences =
+        context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+    var editor: SharedPreferences.Editor = settingManager.edit()
 
-	fun setFirstLaunch(isFirstLaunch: Boolean){
-		editor.putBoolean(KEY_FIRST_LAUNCH, isFirstLaunch)
-		editor.commit()
-	}
-	fun setDarkTheme(darkTheme: Boolean){
-		editor.putBoolean(KEY_DARK_MODE, darkTheme)
-		editor.commit()
-	}
+    fun setFirstLaunch(isFirstLaunch: Boolean) {
+        editor.putBoolean(KEY_FIRST_LAUNCH, isFirstLaunch)
+        editor.commit()
+    }
 
-	fun getFirstLaunch() = settingsSession.getBoolean(KEY_FIRST_LAUNCH, true)
-	fun getDarkMode() = settingsSession.getBoolean(KEY_DARK_MODE, false)
+    fun setDarkTheme(darkTheme: Boolean) {
+        editor.putBoolean(KEY_DARK_MODE, darkTheme)
+        editor.commit()
+    }
+
+    fun getFirstLaunch() = settingManager.getBoolean(KEY_FIRST_LAUNCH, true)
+    fun getDarkMode() = settingManager.getBoolean(KEY_DARK_MODE, false)
 
 
-	companion object {
-		private const val KEY_FIRST_LAUNCH = "firstLaunch"
-		private const val KEY_DARK_MODE = "darkMode"
-	}
+    companion object {
+        const val KEY_FIRST_LAUNCH = "firstLaunch"
+        const val KEY_DARK_MODE = "darkMode"
+        const val KEY_NOTIFICATION_SALE = "notification_sales"
+        const val KEY_NOTIFICATION_ARRIVES = "notification_arrives"
+        const val KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE = "notification_delivery_stt_change"
+    }
 }

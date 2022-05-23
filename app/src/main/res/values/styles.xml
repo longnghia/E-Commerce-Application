@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <!--    Bottom Navigation Bar-->
+    <style name="BottomNavigationStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemIconSize">28dp</item>
+    </style>
+
+    <!--    Top App bar-->
+    <!--    <style name="AppBarStyle" parent="Widget.MaterialComponents.AppBarLayout.Primary">-->
+    <!--        <item name="collap"-->
+    <!--    </style>-->
+
+    <style name="TextAppearance.MyApp.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline5">
+        <item name="android:textColor"></item>
+    </style>
+
+    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black_light</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+
+    <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@color/red_dark</item>
+        <item name="alpha">0.08</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+</resources>

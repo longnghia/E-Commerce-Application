@@ -13,7 +13,7 @@ class SessionManager(context: Context) {
 	fun createLoginSession(
 		id: String,
 		name: String,
-		email: String,
+		email: String
 	) {
 		editor.putBoolean(IS_LOGIN, true)
 		editor.putString(KEY_ID, id)
@@ -42,10 +42,12 @@ class SessionManager(context: Context) {
 	}
 
 	companion object {
-		private const val IS_LOGIN = "isLoggedIn"
-		private const val KEY_NAME = "userName"
-		private const val KEY_MOBILE = "userMobile"
-		private const val KEY_EMAIL = "userEmail"
-		private const val KEY_ID = "userId"
+		 const val IS_LOGIN = "isLoggedIn"
+		 const val KEY_NAME = "userName"
+		 const val KEY_MOBILE = "userMobile"
+		 const val KEY_EMAIL = "userEmail"
+		 const val KEY_ID = "userId"
+		 const val KEY_DOB = "userDoB"
+		 const val KEY_FULL_NAME = "userFullName"
 	}
 }

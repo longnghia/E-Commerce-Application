@@ -9,7 +9,11 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/app/E-Commerce.zip
 /captures
 .externalNativeBuild
 .cxx
 local.properties
+keytool_signing
+keytool_hash
+/app/google-services.json

@@ -17,8 +17,10 @@
 package com.goldenowl.ecommerce.ui.home
 
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -30,35 +32,37 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.databinding.ActivityMainBinding
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG: String = "MainActivity"
 
-
-    private fun setupActionBar(navController: NavController, appBarConfiguration: AppBarConfiguration) {
-        setupActionBarWithNavController(navController, appBarConfiguration)
-    }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: create")
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_navigation)
+        setWindow()
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
 //        statusbar
 //        window.setFlags(
 //            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
 //            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
 //        );
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
 
+//        window.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//        )
+//        window.setStatusBarColor(Color.TRANSPARENT);
 
-//        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
@@ -69,10 +73,16 @@ class MainActivity : AppCompatActivity() {
             setOf(R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest),
         )
 
-        setupToolBarLayout(toolbar, navController, appBarConfiguration)
+//use this if all fragment got common toolbar
+        /* val toolbar = binding.appBarLayout?.toolbar
+         val toolbarLayout = binding.appBarLayout?.collapsingToolbarLayout
 
-        setupActionBar(navController, appBarConfiguration)
-
+         if (toolbar != null && toolbarLayout!= null) {
+             setupToolBarLayout(toolbar, toolbarLayout, navController, appBarConfiguration)
+         }
+         setSupportActionBar(toolbar)
+         setupActionBar(navController, appBarConfiguration)
+ */
         setupBottomNavMenu(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -81,26 +91,75 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Resources.NotFoundException) {
                 destination.id.toString()
             }
-
             Log.d("NavigationActivity", "Navigated to $dest")
+
+            when (destination.id) {
+                R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest -> showNavBar(true)
+                else -> showNavBar(false)
+            }
         }
+
+//        callFirestore()
+
+        setContentView(binding.root)
+
+    }
+
+    private fun setWindow() {
+        window.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            statusBarColor = Color.TRANSPARENT
+        }
+    }
+
+    private fun showNavBar(b: Boolean) {
+        binding.bottomNavView?.visibility = if (b) View.VISIBLE else View.GONE
+    }
+
+    private fun callFirestore() {
+        Log.d(TAG, "callFirestore: firestore")
+        val db = Firebase.firestore
+
+        val user = hashMapOf(
+            "first" to "Ada",
+            "last" to "Lovelace",
+            "born" to 1815
+        )
+
+// Add a new document with a generated ID
+        db.collection("users")
+            .add(user)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
     }
 
     private fun setupToolBarLayout(
         toolbar: Toolbar,
+        toolbarLayout: CollapsingToolbarLayout,
         navController: NavController,
         appBarConfiguration: AppBarConfiguration
     ) {
-        val toolbarLayout = findViewById<CollapsingToolbarLayout>(R.id.collapsing_toolbar_layout)
-        toolbarLayout.setupWithNavController(toolbar, navController, appBarConfiguration)
+        toolbarLayout?.setupWithNavController(toolbar, navController, appBarConfiguration)
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        val bottomNav = binding.bottomNavView
         bottomNav?.setupWithNavController(navController)
+    }
+
+    private fun setupActionBar(navController: NavController, appBarConfiguration: AppBarConfiguration) {
+        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
+
+
 }
