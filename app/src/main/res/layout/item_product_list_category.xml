@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view"
+    android:layout_width="match_parent"
+    android:layout_height="122dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="26dp"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_text"
+        app:cardCornerRadius="10dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/layout_loading"
+                    layout="@layout/layout_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:id="@+id/product_img"
+                    android:layout_width="104dp"
+                    android:layout_height="104dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pexels_photo" />
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/product_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="11dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Evening Dress"
+                    android:textColor="@color/text_title_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+
+                <TextView
+                    android:id="@+id/product_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Evening Dress"
+                    android:textColor="@color/grey_text"
+                    android:textSize="11sp" />
+
+
+                <LinearLayout
+                    android:id="@+id/layout_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <RatingBar
+                        android:id="@+id/product_rating_bar"
+                        style="@style/Widget.AppCompat.RatingBar.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:progressTint="@color/gold"
+                        android:rating="4.25"
+                        android:secondaryProgressTint="#FFFFFF" />
+
+                    <TextView
+                        android:id="@+id/tv_rate_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="(10)"
+                        android:textAppearance="@style/TextAppearance.MyApp.TextSubTitle"
+
+                        />
+                    />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/product_current_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:text="15$"
+                    android:textColor="@color/text_title_color"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <ImageView
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/bg_rounded_item"
+        android:elevation="2dp"
+        android:padding="12dp"
+
+        android:src="@drawable/ic_favorites_bold"
+
+        app:layout_constraintBottom_toBottomOf="@id/card_view"
+        app:layout_constraintEnd_toEndOf="@id/card_view" />
+</androidx.constraintlayout.widget.ConstraintLayout>

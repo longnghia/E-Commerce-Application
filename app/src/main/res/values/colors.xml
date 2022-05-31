@@ -7,9 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
 
 
-    <color name="grey_background">#F9F9F9</color>
     <color name="grey_shadow">#C7C7C7</color>
     <color name="grey_text">#9B9B9B</color>
 
@@ -18,15 +18,19 @@
     <color name="red_error">#F01F0E</color>
     <color name="black_light">#222222</color>
     <color name="green_success">#2AA952</color>
+    <color name="gold">#FFBA49</color>
 
 
-    <color name="login_bg">#E5E5E5</color>
+    <color name="grey_white">#E5E5E5</color>
+    <color name="background_color">#F9F9F9</color>
     <color name="login_card_bg">#EBFEF2</color>
 
-
     <color name="colorAccent">#DB3022</color>
-
     <color name="indicator_default">#E9E6E6</color>
     <color name="indicator_selected">#DB3022</color>
+
+    <color name="text_title_color">#222222</color>
+    <color name="text_subtitle_color">#9B9B9B</color>
+    <color name="loading_background_color">#22222222</color>
 
 </resources>

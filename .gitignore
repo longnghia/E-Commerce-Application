@@ -9,6 +9,7 @@
 /.idea/assetWizardSettings.xml
 .DS_Store
 /build
+/release
 /app/E-Commerce.zip
 /captures
 .externalNativeBuild

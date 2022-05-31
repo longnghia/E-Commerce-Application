@@ -1,221 +1,179 @@
 package com.goldenowl.ecommerce.ui.auth
 
-import android.content.Intent
-import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.TutorialActivity
 import com.goldenowl.ecommerce.databinding.FragmentSignupBinding
-import com.goldenowl.ecommerce.launchHome
-import com.goldenowl.ecommerce.models.data.SessionManager
-import com.goldenowl.ecommerce.models.data.SettingsManager
-import com.goldenowl.ecommerce.viewmodels.AuthViewModel
+import com.goldenowl.ecommerce.utils.FieldValidators
+import com.goldenowl.ecommerce.utils.LoginStatus
+import com.goldenowl.ecommerce.utils.SignupStatus
+import com.goldenowl.ecommerce.utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 
-class SignupFragment : Fragment() {
-
+class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     private val TAG = "SignupFragment"
-    private lateinit var binding: FragmentSignupBinding
-
-    private lateinit var auth: FirebaseAuth
-
-    private val viewModel: AuthViewModel by activityViewModels()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-//        return super.onCreateView(inflater, container, savedInstanceState)
-
-        binding = FragmentSignupBinding.inflate(layoutInflater)
 
 
-
-        setupAuth()
-        checkAuth()
-
-        setViews()
-        observeViews()
-        setupListeners()
-
-
-        return binding.root
+    override fun setAppBar() {
+        binding.topAppBar.toolbar.title = getString(R.string.signup)
     }
 
+    override fun setObservers() {
 
-
-    private fun checkAuth() {
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-            Log.d(TAG, "checkAuth: user logged in ${currentUser.email}, ${currentUser.uid}")
+        textInputViewModel.errorEmail.observe(viewLifecycleOwner) { errorEmail ->
+            validEmail(errorEmail)
+        }
+        textInputViewModel.errorPassword.observe(viewLifecycleOwner) { errorPassword ->
+            validPassword(errorPassword)
         }
 
-    }
+        textInputViewModel.signUpFormValid.observe(viewLifecycleOwner) { signUpValid ->
+            Log.d(TAG, "setObservers: logInValid=$signUpValid ")
+            binding.btnSignup.isEnabled = signUpValid
+        }
 
-    private fun setupAuth() {
-        auth = Firebase.auth
+        viewModel.signUpStatus.observe(viewLifecycleOwner) {
+            handelSignUp(it)
+        }
 
-    }
-
-
-
-    private fun signUpWithMail() {
-        with(binding) {
-            viewModel.signUpWithEmail(auth, edtEmail.text.toString(), edtPassword.text.toString())
+        viewModel.logInStatus.observe(viewLifecycleOwner) {
+            handleLogin(it)
+        }
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
+            hasError(it)
         }
     }
 
-    private fun signUpSuccess() {
-        val sessionManager = SessionManager(requireActivity())
-        sessionManager.createLoginSession(
-            "123",
-            binding.edtEmail.text.toString(),
-            binding.edtPassword.text.toString()
-        )
-
-            launchHome(requireActivity())
-    }
-
-    private fun signUpFailure() {
-        Log.e(TAG, "signUpFailure: fail to sign up")
-    }
-
-    private fun signUpWithFacebook() {
-        Log.d(TAG, "signUpFacebook: sign up facebook")
-    }
-
-    private fun signUpWithGoogle() {
-        Log.d(TAG, "signUpGoogle: sign up google")
-//        signInRequest = BeginSignInRequest.builder()
-//            .setGoogleIdTokenRequestOptions(
-//                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-//                    .setSupported(true)
-//                    // Your server's client ID, not your Android client ID.
-//                    .setServerClientId(getString(R.string.your_web_client_id))
-//                    // Only show accounts previously used to sign in.
-//                    .setFilterByAuthorizedAccounts(true)
-//                    .build())
-//            .build()
-    }
-
-
-
-    private fun observeViews() {
-        with(binding) {
-
-            viewModel.errorEmail.observe(viewLifecycleOwner) { errorEmail ->
-                if (errorEmail != null) {
-                    inputLayoutEmail.error = errorEmail
-                } else {
-                    inputLayoutEmail.isErrorEnabled = false
-                    inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
-                    Log.d(TAG, "observeViews: email valid")
-                }
+    private fun handleLogin(it: LoginStatus?) {
+        Log.d(TAG, "validSignup: $it")
+        when (it) {
+            LoginStatus.LOADING -> {
+                setLoading(true)
+                binding.btnSignup.isEnabled = false
             }
-
-            viewModel.errorPassword.observe(viewLifecycleOwner) { errorPassword ->
-                if (errorPassword != null) {
-                    inputLayoutPassword.error = errorPassword
-                    inputLayoutPassword.errorIconDrawable = null
-                } else {
-                    inputLayoutPassword.isErrorEnabled = false
-                    Log.d(TAG, "observeViews: password valid")
-                }
+            LoginStatus.SUCCESS -> {
+                setLoading(false)
+                launchHome(requireContext())
+                activity?.finish()
             }
-
-            viewModel.signUpValid.observe(viewLifecycleOwner) { signUpValid ->
-                Log.d(TAG, "observeViews: logInValid=$signUpValid ")
-                btnSignup.isEnabled = signUpValid
-            }
-
-            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-                if (user != null) {
-                    Log.d(TAG, "onCreateView: viewmodel.currentuser changed: $user ${user.email} $user.uid")
-                    signUpSuccess()
-                } else {
-                    Log.d(TAG, "onCreateView:  viewmodel.currentuser  null")
-                }
+            LoginStatus.FAIL -> {
+                setLoading(false)
+                binding.btnSignup.isEnabled = true
             }
         }
-
     }
 
-    private fun setupListeners() {
+    private fun hasError(it: String?) {
+        if (it != null) {
+            if (it.isNotEmpty()) {
+                binding.inputLayoutEmail.error = it
+                Log.d(TAG, "hasError: $it")
+            }
+        }
+    }
+
+    private fun handelSignUp(signUpStatus: SignupStatus) {
+        Log.d(TAG, "validSignup: $signUpStatus")
+        when (signUpStatus) {
+            SignupStatus.LOADING -> {
+                setLoading(true)
+                binding.btnSignup.isEnabled = false
+            }
+            SignupStatus.SUCCESS -> {
+                setLoading(false)
+                launchHome(requireContext())
+                activity?.finish()
+            }
+            SignupStatus.FAIL -> {
+                setLoading(false)
+                binding.btnSignup.isEnabled = true
+            }
+        }
+    }
+
+    private fun validPassword(errorPassword: String?) {
         with(binding) {
-            edtEmail.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            if (errorPassword != null) {
+                inputLayoutPassword.error = errorPassword
+                inputLayoutPassword.errorIconDrawable = null
+            } else {
+                inputLayoutPassword.isErrorEnabled = false
+                Log.d(TAG, "setObservers: password valid")
+            }
+        }
+    }
+
+    private fun validEmail(errorEmail: String?) {
+        with(binding) {
+            if (errorEmail != null) {
+                inputLayoutEmail.error = errorEmail
+            } else {
+                inputLayoutEmail.isErrorEnabled = false
+                inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
+                Log.d(TAG, "setObservers: email valid")
+            }
+        }
+    }
+
+    override fun setupListeners() {
+        with(binding) {
+            edtEmail.addTextChangedListener(object : FieldValidators.TextChange {
+                override fun onTextChanged(s: CharSequence?) {
+                    textInputViewModel.checkEmail(edtEmail.text.toString())
+                    textInputViewModel.setSignUpFormValid()
                 }
 
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    viewModel.checkEmail(edtEmail.text.toString())
-                    viewModel.setSignUpValid()
-                }
+            })
 
-                override fun afterTextChanged(s: Editable?) {
+            edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
+                override fun onTextChanged(s: CharSequence?) {
+                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.setSignUpFormValid()
                 }
             })
 
-            edtPassword.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    viewModel.checkPassword(edtPassword.text.toString())
-                    viewModel.setSignUpValid()
-                }
-
-                override fun afterTextChanged(s: Editable?) {
-                }
-            })
-
-            edtName.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    viewModel.checkName(edtName.text.toString())
-                    viewModel.setSignUpValid()
-                }
-
-                override fun afterTextChanged(s: Editable?) {
+            edtName.addTextChangedListener(object : FieldValidators.TextChange {
+                override fun onTextChanged(s: CharSequence?) {
+                    textInputViewModel.checkName(edtName.text.toString())
+                    textInputViewModel.setSignUpFormValid()
                 }
             })
 
         }
     }
 
-    private fun setViews() {
+    override fun setViews() {
         with(binding) {
             btnSignup.setOnClickListener {
                 Log.d(TAG, "setViews: begin sign up")
-                signUpWithMail()
+                viewModel.signUpWithEmail(
+                    edtEmail.text.toString(),
+                    edtPassword.text.toString(),
+                    edtName.text.toString()
+                )
             }
 
             layoutAlreadyHasAcc.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.login_dest)
             )
-
-            ivFacebook.setOnClickListener { signUpWithFacebook() }
-            ivGoogle.setOnClickListener { signUpWithGoogle() }
+            ivFacebook.setOnClickListener { viewModel.logInWithFacebook(this@SignupFragment) }
+            ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@SignupFragment) }
         }
 
+    }
+
+    private fun setLoading(isShow: Boolean) {
+        if (isShow) {
+            binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+            binding.layoutLoading.circularLoader.showAnimationBehavior
+        } else {
+            binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
+        }
+    }
+
+    override fun getViewBinding(): FragmentSignupBinding {
+        return FragmentSignupBinding.inflate(layoutInflater)
     }
 }

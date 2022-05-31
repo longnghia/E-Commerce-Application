@@ -12,30 +12,64 @@
     <!--        <item name="collap"-->
     <!--    </style>-->
 
-    <style name="TextAppearance.MyApp.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="android:textColor">@color/white</item>
+    <style name="TextAppearance.MyApp.CollapsingToolbar.Expanded" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/text_title_color</item>
+        <item name="android:textSize">34sp</item>
     </style>
 
     <style name="TextAppearance.MyApp.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline5">
-        <item name="android:textColor"></item>
+        <item name="android:textColor">@color/text_title_color</item>
+        <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">
+<!--    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">-->
+<!--        <item name="android:textStyle">bold</item>-->
+<!--        <item name="android:textColor">@color/black_light</item>-->
+<!--        <item name="android:textSize">16dp</item>-->
+<!--    </style>   -->
+    <style name="TextAppearance.MyApp.TextTitle" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/black_light</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textColor">@color/text_title_color</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.BottomSheetText" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/text_title_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:gravity">center_vertical</item>
+
+    </style>
+
+
+    <style name="TextAppearance.MyApp.TextSubTitle" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/text_subtitle_color</item>
+        <item name="android:textSize">11sp</item>
     </style>
 
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="backgroundTint">@color/red_dark</item>
-        <item name="alpha">0.08</item>
+        <item name="backgroundTint">@color/background_color</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
-
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="RoundedButtonShape">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/black_light</item>
+    </style>
+
+    <style name="roundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
     </style>
 </resources>

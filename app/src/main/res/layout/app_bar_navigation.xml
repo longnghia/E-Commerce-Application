@@ -2,7 +2,7 @@
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  xmlns:tools="http://schemas.android.com/tools"
-                                                 android:background="@color/grey_background"
+                                                 android:background="@color/background_color"
                                                  android:id="@+id/app_bar_layout"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="wrap_content"

@@ -1,0 +1,219 @@
+package com.goldenowl.ecommerce.ui.global.home
+
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.goldenowl.ecommerce.MyApplication
+import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
+import com.goldenowl.ecommerce.databinding.ModalBottomSheetSortProductBinding
+import com.goldenowl.ecommerce.models.data.Product
+import com.goldenowl.ecommerce.viewmodels.ProductViewModel
+import com.goldenowl.ecommerce.viewmodels.ProductViewModelFactory
+import com.goldenowl.ecommerce.viewmodels.SortType
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
+class CategoryFragment : Fragment() {
+    private lateinit var binding: FragmentCategoryBinding
+    private lateinit var products: List<Product>
+    private val map = mapOf(
+        SortType.POPULAR to R.string.sort_by_popular,
+        SortType.NEWEST to R.string.sort_by_newest,
+        SortType.PRICE_INCREASE to R.string.sort_by_price_low_2_high,
+        SortType.PRICE_DESCREASE to R.string.sort_by_price_high_2_low,
+        SortType.REVIEW to R.string.sort_by_customer_review
+    )
+    private lateinit var adapterList : CategoryProductListAdapter
+
+    private val viewModel: ProductViewModel by activityViewModels {
+        ProductViewModelFactory((requireActivity().application as MyApplication).productsRepository)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentCategoryBinding.inflate(layoutInflater)
+
+        init()
+        setViews()
+        setObservers()
+
+        return binding.root
+    }
+
+    private fun setObservers() {
+        viewModel.testText.observe(viewLifecycleOwner) {
+            binding.topAppBar.toolbar.title = it
+        }
+        
+        viewModel.filterProducts.observe(viewLifecycleOwner) {
+            products = it
+            Log.d(TAG, "setObservers: filterProducts changed: $products")
+            reLoadAdapter()
+        }
+
+        viewModel.sortType.observe(viewLifecycleOwner) {
+            binding.topAppBar.tvSort.text = requireActivity().getString(map[it]!!)
+        }
+    }
+
+    private fun reLoadAdapter() {
+        adapterList.setData(products)
+        binding.rcvCategoryGrid.adapter?.notifyDataSetChanged()
+    }
+
+    private fun init() {
+        products = arguments?.get("products") as List<Product>
+        Log.d(TAG, "onCreateView: received products: $products")
+
+    }
+
+    private fun setViews() {
+        setAppBar()
+
+        adapterList = CategoryProductListAdapter()
+        adapterList.setData(products)
+        binding.rcvCategory.adapter = adapterList
+        val linearLayoutManager = LinearLayoutManager(context)
+        binding.rcvCategory.layoutManager = linearLayoutManager
+
+
+//        val adapterGrid =
+        binding.rcvCategoryGrid.adapter = HomeProductListAdapter(products, true)
+        val gridLayoutManager = GridLayoutManager(context, 2)
+        binding.rcvCategoryGrid.layoutManager = gridLayoutManager
+
+        binding.topAppBar.ivViewType.setOnClickListener {
+            toggleGridView()
+        }
+
+        binding.topAppBar.layoutSort.setOnClickListener {
+            toggleBottomSheet()
+        }
+    }
+
+    private fun toggleBottomSheet() {
+        val modalBottomSheet = ModalBottomSheet()
+        modalBottomSheet.show(parentFragmentManager, ModalBottomSheet.TAG)
+    }
+
+    private fun toggleGridView() {
+        if (binding.rcvCategory.visibility == View.VISIBLE) {
+            binding.rcvCategory.visibility = View.GONE
+            binding.rcvCategoryGrid.visibility = View.VISIBLE
+        } else {
+            binding.rcvCategory.visibility = View.VISIBLE
+            binding.rcvCategoryGrid.visibility = View.GONE
+        }
+    }
+
+    private fun setAppBar() {
+        binding.topAppBar.toolbar.title = "Category"
+        binding.topAppBar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+
+        val listCategory = binding.topAppBar.listCategory
+        listCategory.adapter = AppBarCategoryListAdapter(getListCategory(), object: AppBarCategoryListAdapter.IClickListener{
+            override fun onClick(position: Int) {
+                Log.d(TAG, "onClick: $position ")
+            }
+
+        })
+        listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+
+    }
+
+    private fun getListCategory(): List<String> {
+        return viewModel.categoryList.toList()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.drawable.ic_search -> {
+                onSearchClick()
+            }
+        }
+        return false
+    }
+
+    private fun onSearchClick() {
+        Log.d(TAG, "onSearchClick: clicked")
+    }
+
+    companion object {
+        const val TAG = "CategoryFragment"
+    }
+}
+
+class ModalBottomSheet : BottomSheetDialogFragment() {
+    private val viewModel: ProductViewModel by activityViewModels {
+        ProductViewModelFactory((requireActivity().application as MyApplication).productsRepository)
+    }
+    private lateinit var binding: ModalBottomSheetSortProductBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View =
+        ModalBottomSheetSortProductBinding.inflate(layoutInflater, container, false).apply {
+            binding = this
+        }.root
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val map = mapOf<SortType, View>(
+            SortType.POPULAR to binding.sortByPopular,
+            SortType.NEWEST to binding.sortByNewest,
+            SortType.PRICE_INCREASE to binding.sortByPriceInsc,
+            SortType.PRICE_DESCREASE to binding.sortByPriceDesc,
+            SortType.REVIEW to binding.sortByReview
+        )
+
+        for (pair in map) {
+            val (type, view) = pair
+            view.setOnClickListener {
+                viewModel.setSortBy(type)
+                viewModel.sortBy(type)
+                dismiss()
+            }
+        }
+
+        viewModel.sortType.observe(viewLifecycleOwner) {
+            for (pair in map) {
+                val (type, view) = pair
+                if (type == it) {
+                    setViewBackground(view, R.color.red_dark)
+                } else {
+                    view.setBackgroundColor(0)
+                }
+
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                map[it]?.setBackgroundColor(resources.getColor(R.color.red_dark, activity?.theme))
+            } else {
+                map[it]?.setBackgroundColor(resources.getColor(R.color.red_dark))
+            }
+        }
+    }
+
+    private fun setViewBackground(v: View, c: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            v.setBackgroundColor(resources.getColor(c, activity?.theme))
+        } else {
+            v.setBackgroundColor(resources.getColor(c))
+        }
+    }
+
+    companion object {
+        const val TAG = "ModalBottomSheet"
+    }
+}

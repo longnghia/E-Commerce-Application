@@ -7,6 +7,12 @@
         <provider android:authorities="com.facebook.orca.provider.PlatformProvider" /> <!-- allows sharing to Messenger app -->
     </queries>
 
+    <uses-permission
+        android:name="android.permission.AUTHENTICATE_ACCOUNTS"
+        android:maxSdkVersion="22" />
+    <uses-permission
+        android:name="android.permission.GET_ACCOUNTS"
+        android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
@@ -22,10 +28,10 @@
 
 
         <activity
-            android:name=".TutorialActivity"
+            android:name=".ui.tutorial.TutorialActivity"
             android:exported="true"/>
         <activity
-            android:name=".SplashActivity"
+            android:name=".ui.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.ECommerce.NoActionBar">
             <intent-filter>
@@ -35,14 +41,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.home.MainActivity"
+            android:name=".ui.global.MainActivity"
             android:exported="true">
-            <!--            <intent-filter>-->
-            <!--                <action android:name="android.intent.action.MAIN"/>-->
-
-            <!--                <category android:name="android.intent.category.LAUNCHER"/>-->
-            <!--            </intent-filter>-->
-            <!-- <nav-graph android:value="@navigation/mobile_navigation" /> -->
         </activity>
         <activity
             android:name=".ui.auth.LoginSignupActivity"
@@ -62,6 +62,17 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             tools:replace="android:theme" />
+
+        <service
+            android:name=".models.auth.AuthenticatorService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
     </application>
 
 </manifest>

@@ -1,289 +1,365 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                     android:layout_width="match_parent"
-                                                     android:layout_height="match_parent"
-                                                     android:background="@color/grey_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
 
->
+    >
 
     <include
-        layout="@layout/app_bar_collapsible"
-        android:id="@+id/top_app_bar"/>
+        android:id="@+id/top_app_bar"
+        layout="@layout/app_bar_collapsible" />
 
 
-    <androidx.core.widget.NestedScrollView android:layout_width="match_parent"
-                                           android:layout_height="match_parent"
-                                           app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                                           android:layout_marginTop="24dp"
-                                           android:visibility="visible"
-    >
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-        >
-            <RelativeLayout android:id="@+id/layout_user_info"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="14dp"
-            >
-                <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/user_icon" android:layout_width="69dp"
-                                                              android:layout_height="69dp"
-                                                              android:src="@drawable/ic_user"
-                                                              android:layout_centerVertical="true"
-                />
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
 
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                              android:layout_marginStart="16dp"
-                              android:layout_centerVertical="true"
-                              android:orientation="vertical"
-                              android:layout_toRightOf="@id/user_icon"
-                >
-                    <TextView android:id="@+id/tv_name" android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/guest_name"
-                              android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
-                              android:textColor="@color/black_light"
-                              android:textSize="18dp"/>
-                    <TextView android:id="@+id/tv_email" android:layout_width="wrap_content"
-                              android:layout_height="wrap_content"
-                              android:text="@string/guest_email"
-                              android:textColorLink="@color/red_dark"
-                              android:textColor="@color/grey_text"
-                              android:textSize="14dp"/>
+            >
+
+            <RelativeLayout
+                android:id="@+id/layout_user_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_icon"
+                    android:layout_width="69dp"
+                    android:layout_height="69dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_user" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
+                    android:layout_toRightOf="@id/user_icon"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/guest_name"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+                        android:textColor="@color/black_light"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/tv_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/guest_email"
+                        android:textColor="@color/grey_text"
+                        android:textColorLink="@color/red_dark"
+                        android:textSize="14dp" />
                 </LinearLayout>
 
             </RelativeLayout>
 
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:id="@+id/layout_user_actions"
-                          android:layout_marginTop="50dp"
-                          android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/layout_user_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:orientation="vertical">
 
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp"
-                             android:orientation="horizontal"
-                >
-                    <LinearLayout android:id="@+id/action_orders" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/my_order"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:id="@+id/tv_action_orders" android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/no_orders"
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:orientation="horizontal">
 
-                        />
-                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/action_orders"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/my_order"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-                </FrameLayout>
-                <include
-                    layout="@layout/item_divider"
-                />
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp" android:layout_marginTop="18dp"
+                        <TextView
+                            android:id="@+id/tv_action_orders"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_orders"
 
-                             android:orientation="horizontal"
-                >
-                    <LinearLayout android:id="@+id/action_address" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/shipping_address"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:id="@+id/tv_action_address" android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/no_address"
-
-                        />
-                    </LinearLayout>
-
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
-
-                </FrameLayout>
-                <include
-                    layout="@layout/item_divider"
-                />
-
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp"
-                             android:layout_marginTop="18dp"
-                             android:orientation="horizontal"
-                >
-                    <LinearLayout android:id="@+id/action_payment" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/payment_method"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:id="@+id/tv_action_payment" android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/payment_visa"
-
-                        />
-                    </LinearLayout>
-
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
-
-                </FrameLayout>
-                <include
-                    layout="@layout/item_divider"
-                />
-
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp"
-                             android:orientation="horizontal"
-                             android:layout_marginTop="18dp"
-
-                >
-                    <LinearLayout android:id="@+id/action_promocode" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/promocode"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:id="@+id/tv_action_promocode" android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/have_promocode"
-
-                        />
-                    </LinearLayout>
-
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
-
-                </FrameLayout>
-                <include
-                    layout="@layout/item_divider"
-                />
-
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp"
-                             android:layout_marginTop="18dp"
-
-                             android:orientation="horizontal"
-                >
-                    <LinearLayout android:id="@+id/action_review" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/my_review"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:id="@+id/tv_action_review" android:layout_width="wrap_content"
-                                  android:layout_height="wrap_content"
-                                  android:text="@string/no_review"
-                        />
-                    </LinearLayout>
-
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
-
-                </FrameLayout>
-                <include
-                    layout="@layout/item_divider"
-                />
-                <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                             android:layout_marginStart="15dp"
-                             android:layout_marginEnd="15dp" android:layout_marginTop="18dp"
-
-                             android:orientation="horizontal"
-                >
-
-                    <LinearLayout android:id="@+id/action_settings" android:layout_width="match_parent"
-                                  android:layout_height="wrap_content"
-                                  android:orientation="vertical"
-                    >
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/settings"
-                                  android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                        />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                  android:text="@string/setting_notification"
-                        />
-                    </LinearLayout>
-
-                    <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                               android:layout_gravity="center|end"
-                               android:src="@drawable/ic_right"
-                    />
-
-                </FrameLayout>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                              android:id="@+id/layout_guess_actions"
-                              android:layout_marginTop="50dp"
-                              android:orientation="vertical">
-
-                    <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                                 android:layout_marginStart="15dp"
-                                 android:layout_marginEnd="15dp" android:layout_marginTop="18dp"
-
-                                 android:orientation="horizontal"
-                    >
-                        <LinearLayout android:id="@+id/action_policy" android:layout_width="match_parent"
-                                      android:layout_height="wrap_content"
-                                      android:orientation="vertical"
-                        >
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                      android:text="@string/policy"
-                                      android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                             />
-                            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                      android:id="@+id/tv_action_policy"
-                                      android:text="@string/policy_and_term"
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="15dp"
+
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/action_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/shipping_address"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                        <TextView
+                            android:id="@+id/tv_action_address"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_address"
+
                             />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="15dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/action_payment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/payment_method"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                        <TextView
+                            android:id="@+id/tv_action_payment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/payment_visa"
+
+                            />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="15dp"
+                    android:orientation="horizontal"
+
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/action_promocode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/promocode"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                        <TextView
+                            android:id="@+id/tv_action_promocode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/have_promocode"
+
+                            />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="15dp"
+
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/action_review"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/my_review"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                        <TextView
+                            android:id="@+id/tv_action_review"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_review" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <include layout="@layout/layout_divider" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginEnd="15dp"
+
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/action_settings"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/settings"
+                            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/setting_notification" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_guess_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="50dp"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="18dp"
+                        android:layout_marginEnd="15dp"
+
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/action_policy"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/policy"
+                                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+
+                            <TextView
+                                android:id="@+id/tv_action_policy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/policy_and_term" />
                         </LinearLayout>
 
-                        <ImageView android:layout_width="wrap_content" android:layout_height="match_parent"
-                                   android:layout_gravity="center|end"
-                                   android:src="@drawable/ic_right"
-                        />
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center|end"
+                            android:src="@drawable/ic_right" />
 
                     </FrameLayout>
                 </LinearLayout>
 
 
-                <Button android:id="@+id/btn_log_out" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/logout"
-                        android:layout_marginTop="54dp"
-                        android:layout_marginBottom="27dp"
-                />
+                <Button
+                    android:id="@+id/btn_log_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="54dp"
+                    android:layout_marginBottom="27dp"
+                    android:text="@string/logout" />
             </LinearLayout>
 
         </LinearLayout>
