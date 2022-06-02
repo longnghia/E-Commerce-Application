@@ -15,11 +15,11 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.ui.tutorial.TutorialActivity
-import com.goldenowl.ecommerce.utils.launchHome
+import com.goldenowl.ecommerce.utils.Utils.launchHome
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class SplashActivity : AppCompatActivity() {
+class LaunchActivity : AppCompatActivity() {
 
     private val TAG = "SplashActivity"
     private lateinit var userManager: UserManager

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Product
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Utils.getColor
 import com.goldenowl.ecommerce.viewmodels.ProductViewModel
 import com.goldenowl.ecommerce.viewmodels.ProductViewModelFactory
 
@@ -36,6 +38,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun setObservers() {
+        viewModel.dataReady.observe(viewLifecycleOwner) {
+            if (it == BaseLoadingStatus.LOADING) {
+                binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+            } else {
+                binding.layoutLoading.loadingFrameLayout.visibility = View.INVISIBLE
+            }
+        }
         viewModel.productsList.observe(viewLifecycleOwner) {
             Log.d(TAG, "setObservers: list changed: $it")
             if (it.isNotEmpty()) {
@@ -44,7 +53,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        viewModel.testText.observe(viewLifecycleOwner){
+        viewModel.testText.observe(viewLifecycleOwner) {
             Log.d(TAG, "setObservers: $it")
         }
     }
@@ -52,11 +61,15 @@ class HomeFragment : Fragment() {
     private fun setAdapters(listProducts: List<Product>?) {
         if (listProducts != null) {
             Log.d(TAG, "setAdapters: setting adapter")
-            salesListAdapter = HomeProductListAdapter(products, false)
+            salesListAdapter = HomeProductListAdapter(false).apply {
+                setData(products)
+            }
             binding.rcvSales.adapter = salesListAdapter
             binding.rcvSales.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-            newsListAdapter = HomeProductListAdapter(products, false)
+            newsListAdapter = HomeProductListAdapter(false).apply {
+                setData(products)
+            }
             binding.rcvNew.adapter = newsListAdapter
             binding.rcvNew.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
@@ -80,7 +93,7 @@ class HomeFragment : Fragment() {
                 R.id.action_view_all,
                 bundleOf("products" to products)
             )
-            viewModel.testText.value ="Hello from 123"
+            viewModel.testText.value = "Hello from 123"
         }
 
         binding.tvViewAllNew.setOnClickListener {
@@ -94,6 +107,11 @@ class HomeFragment : Fragment() {
 
 
     private fun setAppBar() {
-        binding.topAppBar.toolbar.title = getString(R.string.home)
+        binding.topAppBar.collapsingToolbarLayout.apply {
+            title = getString(R.string.home)
+            setCollapsedTitleTextColor(getColor(context, R.color.white) ?: 0xFFFFFF)
+            setExpandedTitleColor(getColor(context, R.color.white) ?: 0xFFFFFF)
+        }
     }
+
 }

@@ -29,6 +29,10 @@
         tools:layout="@layout/fragment_shop">
 
 
+        <action
+            android:id="@+id/action_view_all"
+
+            app:destination="@id/category_dest" />
     </fragment>
     <fragment
         android:id="@+id/bag_dest"

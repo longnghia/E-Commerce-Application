@@ -16,18 +16,26 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_title_color</item>
         <item name="android:textSize">34sp</item>
+        <!--        <item name="titleMarginStart">20dp</item>-->
+        <item name="expandedTitleMarginStart">@dimen/expanded_title_margin_start</item>
+        <item name="titleTextStyle">@style/TextAppearance.MyApp.TextTitle.CollapsingToolbar</item>
     </style>
 
     <style name="TextAppearance.MyApp.CollapsingToolbar.Collapsed" parent="TextAppearance.MaterialComponents.Headline5">
         <item name="android:textColor">@color/text_title_color</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
-<!--    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">-->
-<!--        <item name="android:textStyle">bold</item>-->
-<!--        <item name="android:textColor">@color/black_light</item>-->
-<!--        <item name="android:textSize">16dp</item>-->
-<!--    </style>   -->
+    <style name="TextAppearance.MyApp.TextTitle.CollapsingToolbar" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textStyle">italic</item>
+        <item name="fontFamily">@font/metropolis_regular</item>
+<!--        <item name="android:fontFamily">sans-serif-smallcaps</item>-->
+    </style>
+    <!--    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">-->
+    <!--        <item name="android:textStyle">bold</item>-->
+    <!--        <item name="android:textColor">@color/black_light</item>-->
+    <!--        <item name="android:textSize">16dp</item>-->
+    <!--    </style>   -->
     <style name="TextAppearance.MyApp.TextTitle" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_title_color</item>

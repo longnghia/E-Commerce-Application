@@ -14,13 +14,16 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ItemProductListHomeBinding
 import com.goldenowl.ecommerce.models.data.Product
 import kotlinx.android.synthetic.main.item_product_list_home.view.*
 
 
-class HomeProductListAdapter(private val productList: List<Product>, private val isGrid: Boolean) :
+class HomeProductListAdapter(private val isGrid: Boolean) :
     RecyclerView.Adapter<HomeProductListAdapter.ProductViewHolder>() {
+    private var productList: List<Product> = listOf<Product>()
+
     class ProductViewHolder(private val binding: ItemProductListHomeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             binding.productName.text = product.title
@@ -31,6 +34,7 @@ class HomeProductListAdapter(private val productList: List<Product>, private val
                         .with(binding.productImg.context)
                         .load(it)
                         .listener(glideListener(binding.layoutLoading.loadingFrameLayout))
+                        .placeholder(R.drawable.img_broken)
                         .into(binding.productImg)
                 }
             }
@@ -60,10 +64,9 @@ class HomeProductListAdapter(private val productList: List<Product>, private val
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        Log.d("onBindViewHolder", "onBindViewHolder")
         val product = productList[position]
         holder.bind(product)
-        if(isGrid){
+        if (isGrid) {
             val displaymetrics = DisplayMetrics()
             (holder.itemView.context as Activity).windowManager.defaultDisplay.getMetrics(displaymetrics)
 
@@ -73,10 +76,14 @@ class HomeProductListAdapter(private val productList: List<Product>, private val
     }
 
     override fun getItemCount() = productList.size
+    fun setData(products: List<Product>) {
+        this.productList = products
+        notifyDataSetChanged()
+    }
 
     companion object {
         fun glideListener(loadingLayout: View): RequestListener<Drawable> {
-            return object: RequestListener<Drawable> {
+            return object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -84,6 +91,7 @@ class HomeProductListAdapter(private val productList: List<Product>, private val
                     isFirstResource: Boolean
                 ): Boolean {
                     Log.w("Glide", "onLoadFailed: ", e)
+                    loadingLayout.visibility = View.GONE
                     return false
                 }
 

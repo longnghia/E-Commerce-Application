@@ -2,11 +2,11 @@ package com.goldenowl.ecommerce.utils
 
 import com.goldenowl.ecommerce.R
 
-enum class BaseStatus {
+enum class BaseLoadingStatus {
     NONE,
     LOADING,
     SUCCESS,
-    FAIL
+    FAILURE
 }
 
 enum class LoginStatus {

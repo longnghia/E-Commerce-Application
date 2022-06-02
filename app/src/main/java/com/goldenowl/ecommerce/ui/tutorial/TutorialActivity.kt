@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.goldenowl.ecommerce.databinding.ActivityTutorialBinding
 import com.goldenowl.ecommerce.models.data.SettingsManager
-import com.goldenowl.ecommerce.utils.launchHome
+import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.tabs.TabLayoutMediator
 
 class TutorialActivity : AppCompatActivity() {

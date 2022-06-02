@@ -7,11 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.repo.ProductsRepository
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import kotlinx.coroutines.launch
 
 class ProductViewModel(private val productsRepository: ProductsRepository) : ViewModel() {
 
-    lateinit var categoryList: Set<String>
+    var categoryList: Set<String> = setOf()
 
     var mProductsList: List<Product> = ArrayList()
     val productsList: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
@@ -20,9 +21,12 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
     val sortType: MutableLiveData<SortType> = MutableLiveData<SortType>()
         .apply { value = SortType.PRICE_INCREASE }
 
-    val currentCategory: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = 0 }
+    val currentCategory: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = -1 }
 
     val filterProducts: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
+    val dataReady: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
+        value = BaseLoadingStatus.LOADING
+    }
 
     init {
         viewModelScope.launch {
@@ -50,18 +54,20 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
             Log.d(TAG, "getAllProducts: using data in mProductList:\n $mProductsList")
         }
         setCategoryList(mProductsList)
-        filterProducts.value = filterByCategory(0)
+        setFilterProducts(-1)
+        dataReady.value = BaseLoadingStatus.SUCCESS
     }
 
-    private fun filterByCategory(index: Int): List<Product>? {
-        if (index < 0)
-            return mProductsList
+    fun setFilterProducts(index: Int) {
+        if (index < 0){
+            filterProducts.value = mProductsList.toList()
+            return
+        }
 
         val filteredList = mProductsList.filter {
             it.categoryName == categoryList.elementAt(index)
         }
         filterProducts.value = filteredList
-        return filteredList
     }
 
     fun setSortBy(type: SortType) {
@@ -70,14 +76,26 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
 
     fun sortBy(type: SortType) {
         Log.d(TAG, "sortBy: $type")
-        var resultList = when (type) {
-            SortType.REVIEW -> mProductsList.sortedBy { it.reviewStars }
-            SortType.PRICE_DESCREASE -> mProductsList.sortedByDescending { it.getDiscountPrice() }
-            SortType.PRICE_INCREASE -> mProductsList.sortedBy { it.getDiscountPrice() }
-            SortType.POPULAR -> mProductsList.sortedByDescending { it.isPopular }
-            SortType.NEWEST -> mProductsList.sortedByDescending { it.createdDate }
+        val currentFilterList = filterProducts.value
+        if (currentFilterList != null) {
+            var resultList = when (type) {
+                SortType.REVIEW -> currentFilterList.sortedByDescending { it.reviewStars }
+                SortType.PRICE_DECREASE -> currentFilterList.sortedByDescending { it.getDiscountPrice() }
+                SortType.PRICE_INCREASE -> currentFilterList.sortedBy { it.getDiscountPrice() }
+                SortType.POPULAR -> currentFilterList.sortedByDescending { it.isPopular }
+                SortType.NEWEST -> currentFilterList.sortedByDescending { it.createdDate }
+            }
+            filterProducts.value = resultList
         }
-        filterProducts.value = resultList
+    }
+
+    fun searchProducts(query: String) {
+        if (query.isEmpty())
+            filterProducts.value = mProductsList.toList()
+        var currentFilterList = mProductsList.filter {
+            it.title.indexOf(query, ignoreCase = true) >= 0 || it.brandName.indexOf(query, ignoreCase = true) >= 0
+        }
+        filterProducts.value = currentFilterList
     }
 
 
@@ -87,7 +105,7 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
 }
 
 enum class SortType {
-    POPULAR, NEWEST, REVIEW, PRICE_INCREASE, PRICE_DESCREASE
+    POPULAR, NEWEST, REVIEW, PRICE_INCREASE, PRICE_DECREASE
 }
 
 class ProductViewModelFactory(private val productsRepository: ProductsRepository) : ViewModelProvider.Factory {

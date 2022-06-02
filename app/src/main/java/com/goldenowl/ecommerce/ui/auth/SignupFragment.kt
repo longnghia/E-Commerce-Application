@@ -8,7 +8,7 @@ import com.goldenowl.ecommerce.databinding.FragmentSignupBinding
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.utils.LoginStatus
 import com.goldenowl.ecommerce.utils.SignupStatus
-import com.goldenowl.ecommerce.utils.launchHome
+import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
 

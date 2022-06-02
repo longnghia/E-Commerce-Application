@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.ui.global.profile
+package com.goldenowl.ecommerce.ui.global
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,18 +14,25 @@ abstract class BaseFragment<VBinding:ViewBinding> : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = setViewBinding()
+        binding = getViewBinding()
         init()
     }
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        setViews()
-        setUpListener()
-        setObservers()
+
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setViews()
+        setAppbar()
+
+        setUpListener()
+        setObservers()
     }
 
     open fun setUpListener() {
@@ -34,12 +41,13 @@ abstract class BaseFragment<VBinding:ViewBinding> : Fragment() {
 
     /*
     * set binding variable */
-    abstract fun setViewBinding(): VBinding
+    abstract fun getViewBinding(): VBinding
 
     /*
     * set text, set title ...
     * */
     abstract fun  setViews()
+    abstract fun  setAppbar()
 
     /*
     * set viewModel.property.observe

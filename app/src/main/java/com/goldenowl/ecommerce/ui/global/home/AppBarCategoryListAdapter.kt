@@ -1,32 +1,51 @@
 package com.goldenowl.ecommerce.ui.global.home
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.goldenowl.ecommerce.databinding.ItemCategoryListBinding
+import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.databinding.ItemAppBarCategoryListBinding
 
-class AppBarCategoryListAdapter(private val listCategory: List<String>, private val callback: IClickListener) :
+class AppBarCategoryListAdapter(private val listCategory: List<String>, private val startPos: Int,  private val callback: IClickListener) :
     RecyclerView.Adapter<AppBarCategoryListAdapter.CategoryViewHolder>() {
 
+    private var checkedPosition = startPos
 
     interface IClickListener {
         fun onClick(position: Int)
     }
 
-
-    inner class CategoryViewHolder(val binding: ItemCategoryListBinding) :
+    inner class CategoryViewHolder(val binding: ItemAppBarCategoryListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        @SuppressLint("RestrictedApi")
         fun bind(category: String, position: Int, iClickListener: IClickListener) {
             binding.btnCategory.text = category
             binding.btnCategory.setOnClickListener {
                 iClickListener.onClick(position)
+                Log.d("CategoryViewHolder", "bind: clicked $position")
+                checkedPosition = position
+                notifyDataSetChanged()
+
+                // toggle turn off
+            }
+
+            if (position == checkedPosition) {
+                binding.btnCategory.apply {
+                    supportBackgroundTintList = this.resources.getColorStateList(R.color.red_dark)
+                }
+            } else {
+                binding.btnCategory.apply {
+                    supportBackgroundTintList = this.resources.getColorStateList(R.color.black_light)
+                }
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
-        val binding = ItemCategoryListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemAppBarCategoryListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CategoryViewHolder(binding)
     }
 

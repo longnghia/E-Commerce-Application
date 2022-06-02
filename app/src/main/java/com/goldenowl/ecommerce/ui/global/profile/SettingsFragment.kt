@@ -15,8 +15,9 @@ import com.goldenowl.ecommerce.databinding.FragmentSettingsBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEEMAIL
 import com.goldenowl.ecommerce.models.data.SettingsManager
+import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.utils.FieldValidators
-import com.goldenowl.ecommerce.utils.getDateTime
+import com.goldenowl.ecommerce.utils.Utils.getDateTime
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.goldenowl.ecommerce.viewmodels.TextInputViewModel
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -29,7 +30,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private val textInputViewModel: TextInputViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
 
-    override fun setViewBinding(): FragmentSettingsBinding {
+    override fun getViewBinding(): FragmentSettingsBinding {
         return FragmentSettingsBinding.inflate(layoutInflater)
     }
 
@@ -74,7 +75,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         restoreViews(settingsManager)
 
         with(binding) {
-            topAppBar.toolbar.title = getString(R.string.settings)
 
             tvChangePassword.setOnClickListener {
                 openBottomSheet()
@@ -220,6 +220,10 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 }
             })
         }
+    }
+
+    override fun setAppbar() {
+        binding.topAppBar.collapsingToolbarLayout.title = getString(R.string.settings)
     }
 }
 

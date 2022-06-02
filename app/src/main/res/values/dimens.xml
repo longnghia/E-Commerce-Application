@@ -2,4 +2,6 @@
 <resources>
     <dimen name="tall_toolbar_height">128dp</dimen>
     <dimen name="icon_width">56dp</dimen>
+    <dimen name="height_collapsing_tool_bar">140dp</dimen>
+    <dimen name="expanded_title_margin_start">15dp</dimen>
 </resources>

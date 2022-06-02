@@ -17,7 +17,7 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEEMAIL
 import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEFACEBOOK
 import com.goldenowl.ecommerce.models.data.User
-import com.goldenowl.ecommerce.utils.BaseStatus
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.ChangePasswordStatus
 import com.goldenowl.ecommerce.utils.LoginStatus
 import com.goldenowl.ecommerce.utils.PasswordUtils.md5
@@ -51,7 +51,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var signUpStatus: MutableLiveData<SignupStatus> = MutableLiveData<SignupStatus>()
     var logInStatus: MutableLiveData<LoginStatus> = MutableLiveData<LoginStatus>()
     var changePasswordStatus: MutableLiveData<ChangePasswordStatus> = MutableLiveData<ChangePasswordStatus>()
-    var forgotPasswordStatus: MutableLiveData<BaseStatus> = MutableLiveData<BaseStatus>()
+    var forgotPasswordStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
 
     var errorMessage: MutableLiveData<String> = MutableLiveData<String>()
 
@@ -99,7 +99,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         signUpStatus.value = SignupStatus.NONE
         logInStatus.value = LoginStatus.NONE
         changePasswordStatus.value = ChangePasswordStatus.NONE
-        forgotPasswordStatus.value = BaseStatus.NONE
+        forgotPasswordStatus.value = BaseLoadingStatus.NONE
         mGoogleSignInClient = GoogleSignIn.getClient(application, gso)
     }
 
@@ -291,13 +291,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun forgotPassword(email: String) {
         Log.d(TAG, "forgotPassword clicked")
-        forgotPasswordStatus.value = BaseStatus.LOADING
+        forgotPasswordStatus.value = BaseLoadingStatus.LOADING
 
         firebaseAuth.sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Log.d(TAG, "Email sent.")
-                    forgotPasswordStatus.value = BaseStatus.SUCCESS
+                    forgotPasswordStatus.value = BaseLoadingStatus.SUCCESS
                     val msg =
                         getApplication<MyApplication>().getString(R.string.email_rs_password_sent) + " " + email
                     showToastErr(msg)
@@ -305,7 +305,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     Log.e(TAG, "forgotPassword: error:", task.exception)
                     val msg = task.exception?.message
                     showToastErr(msg)
-                    forgotPasswordStatus.value = BaseStatus.FAIL
+                    forgotPasswordStatus.value = BaseLoadingStatus.FAILURE
                 }
             }
 

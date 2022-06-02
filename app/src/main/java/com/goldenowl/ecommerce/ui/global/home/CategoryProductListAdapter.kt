@@ -13,8 +13,9 @@ class CategoryProductListAdapter() :
     RecyclerView.Adapter<CategoryProductListAdapter.ProductViewHolder>() {
 
     private var productList = listOf<Product>()
+
     fun setData(product: List<Product>){
-        Log.d("CategoryProductListAdapter", "setData: set new data")
+        Log.d("CategoryListAdapter", "setData: set new data")
         productList = product
         notifyDataSetChanged()
     }

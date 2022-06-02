@@ -6,10 +6,10 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
-import com.goldenowl.ecommerce.utils.BaseStatus
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.utils.LoginStatus
-import com.goldenowl.ecommerce.utils.launchHome
+import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
 
@@ -52,16 +52,16 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
     }
 
-    private fun handleForgotPassword(forgotPasswordStatus: BaseStatus?) {
+    private fun handleForgotPassword(forgotPasswordStatus: BaseLoadingStatus?) {
         when (forgotPasswordStatus) {
-            BaseStatus.LOADING -> {
+            BaseLoadingStatus.LOADING -> {
                 setLoading(true)
             }
-            BaseStatus.SUCCESS -> {
+            BaseLoadingStatus.SUCCESS -> {
                 setLoading(false)
                 binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
             }
-            BaseStatus.FAIL -> {
+            BaseLoadingStatus.FAILURE -> {
                 setLoading(false)
 
             }

@@ -20,6 +20,7 @@ import com.goldenowl.ecommerce.databinding.FragmentProfileBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEFACEBOOK
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
+import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -39,7 +40,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         auth = Firebase.auth
     }
 
-    override fun setViewBinding(): FragmentProfileBinding {
+    override fun getViewBinding(): FragmentProfileBinding {
         return FragmentProfileBinding.inflate(layoutInflater)
     }
 
@@ -57,9 +58,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 context?.startActivity(loginIntent)
                 activity?.finish()
             }
-
-
-            topAppBar.toolbar.title = getString(R.string.my_profile)
 
             actionSettings.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.next_action, null)
@@ -159,6 +157,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
         }
         userManager.logOut()
+    }
+
+    override fun setAppbar() {
+        binding.topAppBar.collapsingToolbarLayout.title = getString(R.string.profile)
     }
 
 }

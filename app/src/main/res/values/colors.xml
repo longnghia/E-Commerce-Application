@@ -31,6 +31,6 @@
 
     <color name="text_title_color">#222222</color>
     <color name="text_subtitle_color">#9B9B9B</color>
-    <color name="loading_background_color">#22222222</color>
+    <color name="loading_background_color">#1A000000</color>
 
 </resources>

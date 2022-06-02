@@ -16,7 +16,6 @@
 
 package com.goldenowl.ecommerce.ui.global
 
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -27,15 +26,25 @@ import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.*
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ActivityMainBinding
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
+/*todo
+* change password
+* forgot password
+* save info, settings to firestore
+* change avatar
+*
+* bottom sheet not show again
+* bottom sheet check hash vs old password
+*
+* bottomsheet shadow
+* searchview close on submit
+* */
 
 
 class MainActivity : AppCompatActivity() {
@@ -62,16 +71,22 @@ class MainActivity : AppCompatActivity() {
 
         setupBottomNavMenu(navController)
 
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            val dest: String = try {
-                resources.getResourceName(destination.id)
-            } catch (e: Resources.NotFoundException) {
-                destination.id.toString()
-            }
-            Log.d("NavigationActivity", "Navigated to $dest")
+        navController.addOnDestinationChangedListener { controller, destination, _ ->
+
+//            val dest: String = try {
+//                resources.getResourceName(destination.id)
+//            } catch (e: Resources.NotFoundException) {
+//                destination.id.toString()
+//            }
+            Log.d(
+                "NavigationActivity",
+                "Navigated to=${destination.label} , from= ${navController.previousBackStackEntry?.destination?.label}"
+            )
 
             when (destination.id) {
-                R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest -> showNavBar(true)
+                R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest, R.id.category_dest -> {
+                    showNavBar(true)
+                }
                 else -> showNavBar(false)
             }
         }
@@ -126,8 +141,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = binding.bottomNavView
-        bottomNav?.setupWithNavController(navController)
+        binding.bottomNavView?.apply {
+            setupWithNavController(navController)
+            setOnItemSelectedListener { item ->
+                NavigationUI.onNavDestinationSelected(item, navController)
+                navController.popBackStack(item.itemId, inclusive = false)
+                true
+            }
+        }
+
     }
 
     private fun setupActionBar(navController: NavController, appBarConfiguration: AppBarConfiguration) {
@@ -141,12 +163,3 @@ class MainActivity : AppCompatActivity() {
 
 }
 
-/*todo
-* change password
-* forgot password
-* save info, settings to firestore
-* change avatar
-*
-* bottom sheet not show again
-* bottom sheet check hash vs old password
-* */
