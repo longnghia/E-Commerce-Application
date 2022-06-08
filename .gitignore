@@ -1,6 +1,5 @@
 *.iml
 .gradle
-/local.properties
 /.idea/caches
 /.idea/libraries
 /.idea/modules.xml
@@ -17,5 +16,4 @@
 local.properties
 keytool_signing
 keytool_hash
-/app/google-services.json
 log.txt
