@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">E-Commerce</string>
+    <string name="app_name">ECommerce Shopping App</string>
     <string name="home">Home</string>
     <string name="bag">Bag</string>
     <string name="favorites">Favorites</string>
@@ -90,7 +90,7 @@
     <string name="new_products">New</string>
     <string name="never_seen_before">You\'ve never seen it before!</string>
     <string name="category">Categories</string>
-    <string name="email_rs_password_sent">Email reset password sent to</string>
+    <string name="email_rs_password_sent">Email reset password sent to %s</string>
     <string name="email_rs_password_failed">Failed to send reset password email!</string>
     <string name="filters">Filters</string>
     <string name="item_category">Item Category</string>
@@ -105,5 +105,10 @@
     <string name="view_all_items">VIEW ALL ITEMS</string>
     <string name="choose_category">Choose category</string>
     <string name="search_hint">Search products</string>
+    <string name="select_size">Select size</string>
+    <string name="size_info">Size info</string>
+    <string name="add_to_favorite">ADD TO FAVORITES</string>
+    <string name="no_image_picker">No image picker found</string>
+    <string name="apply_change">Apply changes</string>
 
 </resources>

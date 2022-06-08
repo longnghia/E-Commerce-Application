@@ -124,7 +124,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="32dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/bg_rounded_button"
+                    android:background="@drawable/bg_rounded_button_red"
                     android:elevation="5dp"
                     android:text="@string/login"
                     android:textColor="@color/white" />

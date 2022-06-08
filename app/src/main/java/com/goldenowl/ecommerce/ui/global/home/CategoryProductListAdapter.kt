@@ -5,23 +5,32 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ItemProductListCategoryBinding
 import com.goldenowl.ecommerce.models.data.Product
+import com.goldenowl.ecommerce.models.data.UserOrder
 import kotlinx.android.synthetic.main.item_product_list_home.view.*
 
-class CategoryProductListAdapter() :
+class CategoryProductListAdapter(private val listenner: IClickListener) :
     RecyclerView.Adapter<CategoryProductListAdapter.ProductViewHolder>() {
 
-    private var productList = listOf<Product>()
+    interface IClickListener {
+        fun onClickFavorite(product: Product)
+    }
 
-    fun setData(product: List<Product>){
+    private var productList = listOf<Product>()
+    private var favoriteList = listOf<String>()
+
+    fun setData(product: List<Product>, favoriteList: List<UserOrder.Favorite>) {
         Log.d("CategoryListAdapter", "setData: set new data")
-        productList = product
+        this@CategoryProductListAdapter.productList = product
+        this@CategoryProductListAdapter.favoriteList = favoriteList.map { it.productId }
         notifyDataSetChanged()
     }
-    class ProductViewHolder(private val binding: ItemProductListCategoryBinding) :
+
+    inner class ProductViewHolder(private val binding: ItemProductListCategoryBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(product: Product) {
+        fun bind(product: Product, listener: IClickListener) {
             binding.productName.text = product.title
             binding.productBrand.text = product.brandName
             product.getImage().let {
@@ -42,7 +51,12 @@ class CategoryProductListAdapter() :
                 }
             }
             binding.tvRateCount.text = product.numberReviews.toString()
-
+            binding.ivFavorite.setOnClickListener {
+                listener.onClickFavorite(product)
+            }
+            if (favoriteList.indexOf(product.id) >= 0) {
+                binding.ivFavorite.setBackgroundResource(R.drawable.ic_favorites_selected)
+            }
         }
     }
 
@@ -54,7 +68,7 @@ class CategoryProductListAdapter() :
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = productList[position]
-        holder.bind(product)
+        holder.bind(product, listenner)
     }
 
     override fun getItemCount() = productList.size

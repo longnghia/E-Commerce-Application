@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
 
-abstract class BaseFragment<VBinding:ViewBinding> : Fragment() {
+abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
 
     protected lateinit var binding: VBinding
 
@@ -20,9 +20,6 @@ abstract class BaseFragment<VBinding:ViewBinding> : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-
-
-
         return binding.root
     }
 
@@ -46,12 +43,14 @@ abstract class BaseFragment<VBinding:ViewBinding> : Fragment() {
     /*
     * set text, set title ...
     * */
-    abstract fun  setViews()
-    abstract fun  setAppbar()
+    abstract fun setViews()
+    abstract fun setAppbar()
 
     /*
     * set viewModel.property.observe
     * */
     abstract fun setObservers()
-    open fun init(){}
+    open fun init() {
+        setHasOptionsMenu(true)
+    }
 }

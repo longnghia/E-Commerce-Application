@@ -5,9 +5,8 @@ import android.view.View
 import androidx.navigation.Navigation
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentSignupBinding
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
-import com.goldenowl.ecommerce.utils.LoginStatus
-import com.goldenowl.ecommerce.utils.SignupStatus
 import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
@@ -46,19 +45,19 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
     }
 
-    private fun handleLogin(it: LoginStatus?) {
+    private fun handleLogin(it: BaseLoadingStatus?) {
         Log.d(TAG, "validSignup: $it")
         when (it) {
-            LoginStatus.LOADING -> {
+            BaseLoadingStatus.LOADING -> {
                 setLoading(true)
                 binding.btnSignup.isEnabled = false
             }
-            LoginStatus.SUCCESS -> {
+            BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
                 launchHome(requireContext())
                 activity?.finish()
             }
-            LoginStatus.FAIL -> {
+            BaseLoadingStatus.FAILED -> {
                 setLoading(false)
                 binding.btnSignup.isEnabled = true
             }
@@ -74,19 +73,19 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
     }
 
-    private fun handelSignUp(signUpStatus: SignupStatus) {
+    private fun handelSignUp(signUpStatus: BaseLoadingStatus) {
         Log.d(TAG, "validSignup: $signUpStatus")
         when (signUpStatus) {
-            SignupStatus.LOADING -> {
+            BaseLoadingStatus.LOADING -> {
                 setLoading(true)
                 binding.btnSignup.isEnabled = false
             }
-            SignupStatus.SUCCESS -> {
+            BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
                 launchHome(requireContext())
                 activity?.finish()
             }
-            SignupStatus.FAIL -> {
+            BaseLoadingStatus.FAILED -> {
                 setLoading(false)
                 binding.btnSignup.isEnabled = true
             }

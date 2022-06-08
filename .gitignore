@@ -18,3 +18,4 @@ local.properties
 keytool_signing
 keytool_hash
 /app/google-services.json
+log.txt

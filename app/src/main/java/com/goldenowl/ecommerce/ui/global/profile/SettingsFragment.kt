@@ -2,14 +2,17 @@ package com.goldenowl.ecommerce.ui.global.profile
 
 import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
-import android.provider.MediaStore
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentSettingsBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
@@ -25,6 +28,8 @@ import com.google.android.material.textfield.TextInputLayout
 
 class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     val TAG = "SettingsFragment"
+
+
     private lateinit var userManager: UserManager
     private lateinit var imageActivityResultLauncher: ActivityResultLauncher<Intent>
     private val textInputViewModel: TextInputViewModel by activityViewModels()
@@ -38,18 +43,28 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         super.init()
         userManager = UserManager.getInstance(requireContext())
 
-        imageActivityResultLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val data: Intent? = result.data
-                    if (data != null) {
-                        Log.d(TAG, "init: ${data.data}")
-                        val file: Uri? = data.data
-                        authViewModel.updateAvatar(file)
+        val callback = ActivityResultCallback<ActivityResult> { result ->
+            if (result == null)
+                return@ActivityResultCallback
+            if (result.resultCode != Activity.RESULT_OK)
+                return@ActivityResultCallback
+            val data: Intent = result.data ?: return@ActivityResultCallback
 
-                    }
+            Log.d(TAG, "imageActivityResultLauncher: ${data.data}")
+            val file: Uri? = data.data
+            file.let {
+                if (it != null) {
+                    Glide.with(this@SettingsFragment).load(it)
+                        .apply(ProfileFragment.options)
+                        .into(binding.ivUserAvatar)
                 }
             }
+            authViewModel.updateAvatar(file)
+        }
+
+
+        imageActivityResultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult(), callback)
     }
 
 
@@ -57,8 +72,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         binding.layoutUserPassword.visibility =
             if (userManager.logType == TYPEEMAIL) View.VISIBLE else View.GONE
-        val settingsManager = SettingsManager(requireContext()).settingManager
-        val settingsEditor = settingsManager.edit()
+        val settingsManager = SettingsManager(requireContext())
 
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
@@ -69,7 +83,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             val date = getDateTime(time)
             Log.d(TAG, "setViews: time=$date")
             binding.edtDob.setText(date)
-            userManager.dob = date
         }
 
         restoreViews(settingsManager)
@@ -80,81 +93,62 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 openBottomSheet()
             }
 
-            ivUserAvatar.setOnClickListener {
-                changeAvatar()
+            userManager.avatar.let {
+                if (!it.isNullOrBlank()) {
+                    Glide.with(this@SettingsFragment).load(it)
+                        .apply(ProfileFragment.options)
+                        .into(binding.ivUserAvatar)
+                }
             }
 
-            swSale.setOnCheckedChangeListener { _, isChecked ->
-                run {
-                    settingsEditor.putBoolean(SettingsManager.KEY_NOTIFICATION_SALE, isChecked)
-                    settingsEditor.commit()
-                }
-            }
-            swDeliStatus.setOnCheckedChangeListener { _, isChecked ->
-                run {
-                    settingsEditor.putBoolean(
-                        SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE,
-                        isChecked
-                    )
-                    settingsEditor.commit()
-                }
-            }
-            swNewArrivals.setOnCheckedChangeListener { _, isChecked ->
-                run {
-                    settingsEditor.putBoolean(
-                        SettingsManager.KEY_NOTIFICATION_ARRIVES,
-                        isChecked
-                    )
-                    settingsEditor.commit()
-                }
+            ivUserAvatar.setOnClickListener {
+                changeAvatar()
             }
 
             edtDob.setOnClickListener {
                 datePicker.show(parentFragmentManager, "tag");
             }
-
-            edtName.setOnFocusChangeListener { v, hasFocus ->
-                if (!hasFocus && textInputViewModel.errorName.value == null)
-                    userManager.name = edtName.text.toString()
-            }
         }
     }
 
     private fun restoreViews(
-        settingsManager: SharedPreferences,
+        settingsManager: SettingsManager,
     ) {
-        val fullName: String? = userManager.name
-        val dob: String? = userManager.dob
+        val fullName: String = userManager.name
+        val dob: String = userManager.dob
 
+        val userSettings: Map<String, Boolean> = settingsManager.getUserSettings()
         with(binding) {
             edtName.setText(fullName)
             edtDob.setText(dob)
 
-            swSale.isChecked =
-                settingsManager.getBoolean(SettingsManager.KEY_NOTIFICATION_SALE, true)
-            swDeliStatus.isChecked = settingsManager.getBoolean(
-                SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE,
-                false
-            )
-            swNewArrivals.isChecked =
-                settingsManager.getBoolean(SettingsManager.KEY_NOTIFICATION_ARRIVES, false)
-
+            swSale.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_SALE]!!
+            swDeliStatus.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE]!!
+            swNewArrivals.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_ARRIVES]!!
         }
     }
 
     private fun changeAvatar() {
         Log.d(TAG, "changeAvatar: start")
-        val openGalleryIntent =
-            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        imageActivityResultLauncher.launch(openGalleryIntent)
+//        val openGalleryIntent =
+//            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        imageActivityResultLauncher.launch(intent)
+        // todo check picker
+//        if (requireActivity().packageManager.resolveActivity(intent, 0) != null)
+//        else {
+//            Toast.makeText(activity, getString(R.string.no_image_picker), Toast.LENGTH_SHORT).show()
+//        }
     }
 
     private fun openBottomSheet() {
-        val modalBottomSheet = ModalBottomSheet(userManager)
-
-        modalBottomSheet.show(
-            requireActivity().supportFragmentManager,
-            ModalBottomSheet.TAG
+        Log.d(TAG, "openBottomSheet: open change password")
+        val bottomSheetChangePassword = BottomSheetChangePassword(userManager)
+        bottomSheetChangePassword.enterTransition = View.GONE
+        bottomSheetChangePassword.show(
+            parentFragmentManager,
+            BottomSheetChangePassword.TAG
         )
     }
 
@@ -168,7 +162,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             errorDoB.observe(viewLifecycleOwner) { errorDoB ->
                 validDoB(errorDoB)
             }
-
         }
 
     }
@@ -201,7 +194,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     override fun setUpListener() {
         super.setUpListener()
-
         with(binding) {
             edtName.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
@@ -224,6 +216,47 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
     override fun setAppbar() {
         binding.topAppBar.collapsingToolbarLayout.title = getString(R.string.settings)
+        binding.topAppBar.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
+        binding.topAppBar.toolbar.setOnMenuItemClickListener {
+            onMenuClick(it)
+        }
+    }
+
+    private fun onMenuClick(item: MenuItem): Boolean {
+        Log.d(TAG, "onOptionsItemSelected:  $item")
+        return if (item.itemId == R.id.ic_check) {
+            Log.d(TAG, "onOptionsItemSelected: ic_check clicked")
+
+            if (binding.edtName.text.toString().isEmpty()) {
+                textInputViewModel.errorName.value = "Required field"
+                return false
+            }
+            if (binding.edtDob.text.toString().isEmpty()) {
+                textInputViewModel.errorDoB.value = "Required field"
+                return false
+            }
+            if (textInputViewModel.errorName.value.isNullOrEmpty()
+                && textInputViewModel.errorDoB.value.isNullOrEmpty()
+            ) {
+                val settings = mapOf(
+                    SettingsManager.KEY_NOTIFICATION_SALE to binding.swSale.isChecked,
+                    SettingsManager.KEY_NOTIFICATION_ARRIVES to binding.swNewArrivals.isChecked,
+                    SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE to binding.swDeliStatus.isChecked,
+                )
+                authViewModel.saveUserSettings(
+                    binding.edtName.text.toString(),
+                    binding.edtDob.text.toString(),
+                    settings
+                )
+                findNavController().navigateUp()
+            } else {
+                Log.d(TAG, "onOptionsItemSelected: input error")
+            }
+            false
+        } else
+            super.onOptionsItemSelected(item)
     }
 }
 

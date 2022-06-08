@@ -39,11 +39,15 @@ import com.google.firebase.ktx.Firebase
 * save info, settings to firestore
 * change avatar
 *
-* bottom sheet not show again
 * bottom sheet check hash vs old password
 *
 * bottomsheet shadow
 * searchview close on submit
+*
+* category toggle show all -show by
+* homepage viewpager
+*
+* guest: hide add to favorite
 * */
 
 
@@ -160,6 +164,8 @@ class MainActivity : AppCompatActivity() {
         return findNavController(R.id.nav_host_fragment).navigateUp(appBarConfiguration)
     }
 
-
+    fun setBottomNavBarEnabled(enabled: Boolean) {
+        binding.bottomNavView?.isEnabled = enabled
+    }
 }
 

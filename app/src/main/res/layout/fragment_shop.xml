@@ -43,15 +43,6 @@
                 android:textColor="@color/grey_text"
                 android:textSize="16sp" />
 
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/rcv_list_category"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-
-<!--                android:layout_marginTop="32dp"-->
-<!--                android:paddingStart="24dp"-->
-<!--                android:paddingEnd="24dp" />-->
-
             <ListView
                 android:id="@+id/list_category"
                 android:layout_width="match_parent"

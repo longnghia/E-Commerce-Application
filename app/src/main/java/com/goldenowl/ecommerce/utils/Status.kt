@@ -5,30 +5,32 @@ import com.goldenowl.ecommerce.R
 enum class BaseLoadingStatus {
     NONE,
     LOADING,
-    SUCCESS,
-    FAILURE
+    DONE,
+    SUCCEEDED,
+    FAILED,
+
 }
 
-enum class LoginStatus {
-    NONE,
-    LOADING,
-    SUCCESS,
-    FAIL,
-}
-
-enum class SignupStatus {
-    NONE,
-    LOADING,
-    SUCCESS,
-    FAIL
-}
-
-enum class ChangePasswordStatus {
-    NONE,
-    LOADING,
-    SUCCESS,
-    FAIL
-}
+//enum class BaseLoadingStatus {
+//    NONE,
+//    LOADING,
+//    SUCCESS,
+//    FAIL,
+//}
+//
+//enum class BaseLoadingStatus {
+//    NONE,
+//    LOADING,
+//    SUCCESS,
+//    FAIL
+//}
+//
+//enum class BaseLoadingStatus {
+//    NONE,
+//    LOADING,
+//    SUCCESS,
+//    FAIL
+//}
 
 val authErrors = mapOf<String, Int>(
     "ERROR_INVALID_CUSTOM_TOKEN" to R.string.error_login_custom_token,

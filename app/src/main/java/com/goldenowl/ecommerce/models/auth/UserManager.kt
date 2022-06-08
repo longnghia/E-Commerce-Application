@@ -11,7 +11,7 @@ import com.goldenowl.ecommerce.models.data.User
 class UserManager(context: Context) {
     private val accountManager: AccountManager = AccountManager.get(context)
 
-    var dob: String?
+    var dob: String
         get() {
             return accountManager.getUserData(getAccount(), DOB) ?: ""
         }
@@ -48,12 +48,12 @@ class UserManager(context: Context) {
             accountManager.setUserData(getAccount(), AVATAR, value)
         }
 
-    var access_token: String
+    var hash: String
         get() {
-            return accountManager.getUserData(getAccount(), ACCESS_TOKEN) ?: ""
+            return accountManager.getUserData(getAccount(), HASH_PASSWORD) ?: ""
         }
         set(value) {
-            accountManager.setUserData(getAccount(), ACCESS_TOKEN, value)
+            accountManager.setUserData(getAccount(), HASH_PASSWORD, value)
         }
 
     var id: String
@@ -76,7 +76,7 @@ class UserManager(context: Context) {
         val data = Bundle()
             .apply {
                 this.putString(ID, id)
-                this.putString(ACCESS_TOKEN, access_token)
+                this.putString(HASH_PASSWORD, access_token)
                 this.putString(EMAIL, email)
                 this.putString(NAME, name)
                 this.putString(LOGTYPE, logType)
@@ -120,14 +120,19 @@ class UserManager(context: Context) {
     }
 
     fun getUser(): User {
-        return User(id, name, email, dob, access_token, avatar, logType)
+        return User(id, name, email, dob, hash, avatar, logType)
     }
 
+    override fun toString(): String {
+        return if (isLoggedIn())
+            "UserManager(email='$email', avatar='$avatar', id='$id')"
+        else "NULL"
+    }
 
     companion object {
         const val AUTH_TOKEN_TYPE = "com.goldenowl.ecommerce"
         const val ACCOUNT_TYPE = "com.goldenowl.ecommerce"
-        const val ACCESS_TOKEN = "access_token"
+        const val HASH_PASSWORD = "access_token"
         const val EMAIL = "email"
         const val ID = "id"
         const val NAME = "name"

@@ -52,21 +52,28 @@ data class Product @JvmOverloads constructor(
         }
         return null
     }
+
+    fun getListSize(): List<Size> {
+        if (this.colors.isNullOrEmpty())
+            return emptyList()
+        return colors[0].sizes
+    }
+
+    data class Color @JvmOverloads constructor(
+        var color: String = "",
+        var sizes: List<Size> = ArrayList()
+    )
+
+    data class Size @JvmOverloads constructor(
+        var price: Int = 0,
+        var quantity: Int = 0,
+        var size: String = ""
+    )
+
+
+    data class Tag @JvmOverloads constructor(
+        var id: String = "",
+        var name: String = ""
+    )
 }
 
-data class Color @JvmOverloads constructor(
-    var color: String = "",
-    var sizes: List<Size> = ArrayList()
-)
-
-data class Size @JvmOverloads constructor(
-    var price: Int = 0,
-    var quantity: Int = 0,
-    var size: String = ""
-)
-
-
-data class Tag @JvmOverloads constructor(
-    var id: String = "",
-    var name: String = ""
-)

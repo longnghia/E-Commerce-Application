@@ -17,14 +17,23 @@ import com.bumptech.glide.request.target.Target
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ItemProductListHomeBinding
 import com.goldenowl.ecommerce.models.data.Product
+import com.goldenowl.ecommerce.models.data.UserOrder
 import kotlinx.android.synthetic.main.item_product_list_home.view.*
 
 
 class HomeProductListAdapter(private val isGrid: Boolean) :
     RecyclerView.Adapter<HomeProductListAdapter.ProductViewHolder>() {
     private var productList: List<Product> = listOf<Product>()
+    private var favoriteList = listOf<String>()
 
-    class ProductViewHolder(private val binding: ItemProductListHomeBinding) : RecyclerView.ViewHolder(binding.root) {
+    fun setData(product: List<Product>, favoriteList: List<UserOrder.Favorite>) {
+        Log.d("HomeProductListAdapter", "setData: set new data")
+        this.productList = product
+        this.favoriteList = favoriteList.map { it.productId }
+        notifyDataSetChanged()
+    }
+
+  inner  class ProductViewHolder(private val binding: ItemProductListHomeBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             binding.productName.text = product.title
             binding.productBrand.text = product.brandName
@@ -34,8 +43,9 @@ class HomeProductListAdapter(private val isGrid: Boolean) :
                         .with(binding.productImg.context)
                         .load(it)
                         .listener(glideListener(binding.layoutLoading.loadingFrameLayout))
-                        .placeholder(R.drawable.img_broken)
+                        .error(R.drawable.img_broken)
                         .into(binding.productImg)
+//                        .placeholder(R.drawable.img_broken)
                 }
             }
             binding.layoutRating.product_rating_bar.rating = product.reviewStars.toFloat()
@@ -55,6 +65,9 @@ class HomeProductListAdapter(private val isGrid: Boolean) :
                 }
             }
             binding.tvRateCount.text = product.numberReviews.toString()
+            if (favoriteList.indexOf(product.id) >= 0) {
+                binding.ivFavorite.setBackgroundResource(R.drawable.ic_favorites_selected)
+            }
         }
     }
 
@@ -76,10 +89,6 @@ class HomeProductListAdapter(private val isGrid: Boolean) :
     }
 
     override fun getItemCount() = productList.size
-    fun setData(products: List<Product>) {
-        this.productList = products
-        notifyDataSetChanged()
-    }
 
     companion object {
         fun glideListener(loadingLayout: View): RequestListener<Drawable> {
@@ -90,7 +99,7 @@ class HomeProductListAdapter(private val isGrid: Boolean) :
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    Log.w("Glide", "onLoadFailed: ", e)
+                    Log.w("Glide", "onLoadFailed: ${e?.message}")
                     loadingLayout.visibility = View.GONE
                     return false
                 }

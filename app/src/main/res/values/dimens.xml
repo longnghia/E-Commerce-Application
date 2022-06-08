@@ -4,4 +4,6 @@
     <dimen name="icon_width">56dp</dimen>
     <dimen name="height_collapsing_tool_bar">140dp</dimen>
     <dimen name="expanded_title_margin_start">15dp</dimen>
+    <dimen name="width_radio_btn_size">100dp</dimen>
+    <dimen name="height_radio_btn_size">40dp</dimen>
 </resources>

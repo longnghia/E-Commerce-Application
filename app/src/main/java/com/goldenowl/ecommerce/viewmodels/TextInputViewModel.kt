@@ -58,7 +58,7 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun checkOldPassword(password: String, oldPassword: String) {
-        val error = if ( md5(password) == oldPassword) null else "Wrong password"
+        val error = if ( md5(password) == oldPassword) "" else "Wrong password"
         errorOldPassword.value = error
         Log.d(TAG, "checkOldPassword: $oldPassword, ${md5(password)} $password ")
     }
@@ -69,12 +69,11 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun checkRePassword(password: String, rePassword: String) {
-        val error = if (password == rePassword) null else "Password mismatch"
+        val error = if (password == rePassword) "" else "Password mismatch"
         errorRePassword.value = error
     }
 
     companion object {
         const val TAG = "TextInputViewModel"
     }
-
 }

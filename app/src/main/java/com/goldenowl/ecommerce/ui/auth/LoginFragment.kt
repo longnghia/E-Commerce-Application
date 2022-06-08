@@ -8,7 +8,6 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
-import com.goldenowl.ecommerce.utils.LoginStatus
 import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
@@ -57,14 +56,10 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
             }
-            BaseLoadingStatus.SUCCESS -> {
+            else -> {
                 setLoading(false)
-                binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
             }
-            BaseLoadingStatus.FAILURE -> {
-                setLoading(false)
 
-            }
         }
     }
 
@@ -88,20 +83,20 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
         }
     }
 
-    private fun validLogin(logInStatus: LoginStatus) {
+    private fun validLogin(logInStatus: BaseLoadingStatus) {
         when (logInStatus) {
-            LoginStatus.LOADING -> {
+            BaseLoadingStatus.LOADING -> {
                 setLoading(true)
                 binding.btnLogin.isEnabled = false
                 // todo loading icon
             }
-            LoginStatus.SUCCESS -> {
+            BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
 
                 launchHome(requireContext())
                 activity?.finish()
             }
-            LoginStatus.FAIL -> {
+            BaseLoadingStatus.FAILED -> {
                 setLoading(false)
             }
         }

@@ -49,7 +49,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         viewModel.facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
-        viewModel.googleCallbackManager.onActivityResult(requestCode, resultCode, data)
+        viewModel.callbackManager().onActivityResult(requestCode, resultCode, data)
     }
 
 }

@@ -125,7 +125,7 @@
         android:background="@drawable/bg_rounded_item"
         android:elevation="2dp"
         android:padding="12dp"
-
+        android:id="@+id/iv_favorite"
         android:src="@drawable/ic_favorites_bold"
 
         app:layout_constraintBottom_toBottomOf="@id/card_view"

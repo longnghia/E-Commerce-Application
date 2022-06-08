@@ -10,13 +10,13 @@ import androidx.fragment.app.activityViewModels
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetChangePasswordBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
-import com.goldenowl.ecommerce.utils.ChangePasswordStatus
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.goldenowl.ecommerce.viewmodels.TextInputViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class ModalBottomSheet(private val userManager : UserManager) : BottomSheetDialogFragment() {
+class BottomSheetChangePassword(private val userManager : UserManager) : BottomSheetDialogFragment() {
     private lateinit var binding: ModalBottomSheetChangePasswordBinding
     private val textInputViewModel: TextInputViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
@@ -27,7 +27,6 @@ class ModalBottomSheet(private val userManager : UserManager) : BottomSheetDialo
         savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreateView: creating view")
         binding = ModalBottomSheetChangePasswordBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -57,19 +56,38 @@ class ModalBottomSheet(private val userManager : UserManager) : BottomSheetDialo
             changePasswordValid.observe(viewLifecycleOwner) { changePasswordValid ->
                 binding.btnSavePassword.isEnabled = changePasswordValid
             }
+
         }
         authViewModel.changePasswordStatus.observe(viewLifecycleOwner) { changePasswordStatus ->
             onChangePassword(changePasswordStatus)
         }
-
+        authViewModel.forgotPasswordStatus.observe(viewLifecycleOwner){
+            onForgotPassword(it)
+        }
     }
 
-    private fun onChangePassword(changePasswordStatus: ChangePasswordStatus) {
+    private fun onForgotPassword(forgotPwStatus: BaseLoadingStatus?) {
+        when (forgotPwStatus) {
+            BaseLoadingStatus.LOADING -> {
+                binding.layoutLoading.loadingFrameLayout.visibility  =View.VISIBLE
+            }
+
+            BaseLoadingStatus.SUCCEEDED -> {
+                Toast.makeText(activity, getString(R.string.email_rs_password_sent, userManager.email), Toast.LENGTH_SHORT).show()
+                this@BottomSheetChangePassword.dismiss()
+            }
+            else -> binding.layoutLoading.loadingFrameLayout.visibility  =View.INVISIBLE
+        }
+    }
+
+    private fun onChangePassword(changePasswordStatus: BaseLoadingStatus) {
         when (changePasswordStatus) {
-            ChangePasswordStatus.LOADING -> {} //todo
-            ChangePasswordStatus.SUCCESS -> {
+            BaseLoadingStatus.LOADING -> {
+                binding.layoutLoading.loadingFrameLayout.visibility  =View.VISIBLE
+            }
+            BaseLoadingStatus.SUCCEEDED -> {
                 Toast.makeText(activity, getText(R.string.change_password_success), Toast.LENGTH_SHORT).show()
-                this@ModalBottomSheet.dismiss()
+                this@BottomSheetChangePassword.dismiss()
             }
         }
     }
@@ -115,21 +133,21 @@ class ModalBottomSheet(private val userManager : UserManager) : BottomSheetDialo
         with(binding) {
             edtOldPassword.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    textInputViewModel.checkOldPassword(edtOldPassword.getText().toString(), userManager.access_token)
+                    textInputViewModel.checkOldPassword(edtOldPassword.text.toString(), userManager.hash)
                     textInputViewModel.setChangePasswordValid()
                 }
             }
             edtNewPassword.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    textInputViewModel.checkPassword(edtNewPassword.getText().toString())
+                    textInputViewModel.checkPassword(edtNewPassword.text.toString())
                     textInputViewModel.setChangePasswordValid()
                 }
             }
             edtRepeatPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
                     textInputViewModel.checkRePassword(
-                        edtNewPassword.getText().toString(),
-                        edtRepeatPassword.getText().toString()
+                        edtNewPassword.text.toString(),
+                        edtRepeatPassword.text.toString()
                     )
                     textInputViewModel.setChangePasswordValid()
                 }

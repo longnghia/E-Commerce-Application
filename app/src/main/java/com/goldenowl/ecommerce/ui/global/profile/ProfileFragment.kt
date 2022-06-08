@@ -3,6 +3,7 @@ package com.goldenowl.ecommerce.ui.global.profile
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -12,13 +13,13 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
-import com.goldenowl.ecommerce.R
+import com.bumptech.glide.request.RequestOptions
 import com.goldenowl.ecommerce.databinding.FragmentProfileBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
-import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEFACEBOOK
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
@@ -54,13 +55,13 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 //                    TYPEEMAIL -> viewModel.logOutFacebook()
 //                }
                 val loginIntent = Intent(activity, MainActivity::class.java)
-                logOut(userManager.logType)
+                logOut()
                 context?.startActivity(loginIntent)
                 activity?.finish()
             }
 
             actionSettings.setOnClickListener(
-                Navigation.createNavigateOnClickListener(R.id.next_action, null)
+                Navigation.createNavigateOnClickListener(com.goldenowl.ecommerce.R.id.next_action, null)
             )
         }
     }
@@ -86,19 +87,27 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 //            }
 //        }
 
+        viewModel.toastMessage.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setUpUserUI() {
         with(binding) {
             val userName = userManager.name
-            Log.d(TAG, "setViews: logged in as $userName")
             tvName.text = userName
             val userEmail = userManager.email
             tvEmail.text = userEmail
-
-            if (userManager.avatar != null && userManager.avatar.isNotEmpty())
-                Glide.with(this@ProfileFragment).load(this).into(userIcon)
-
+            Log.d(TAG, "setUpUserUI: $userManager")
+            userManager.avatar.let {
+                val uri = Uri.parse(it)
+                if (!it.isNullOrBlank()) {
+                    Log.d(TAG, "setUpUserUI: sett avatar ${uri.path}")
+                    Glide.with(this@ProfileFragment)
+                        .load(uri)
+                        .apply(options).into(userIcon)
+                }
+            }
             layoutUserActions.visibility = View.VISIBLE
             layoutGuessActions.visibility = View.GONE
         }
@@ -141,26 +150,18 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
 
-    private fun logOut(type: String) {
-        Log.d(TAG, "logOut: login type = $type")
-        when (type) {
-            TYPEFACEBOOK -> {
-                viewModel.logOutFacebook()
-            }
-            else -> {
-                if (auth.currentUser != null)
-                    auth.signOut()
-                else {
-                    Log.d(TAG, "logOut: current user: ${auth.currentUser}")
-                }
-
-            }
-        }
-        userManager.logOut()
+    private fun logOut() {
+        viewModel.logOut()
     }
 
     override fun setAppbar() {
-        binding.topAppBar.collapsingToolbarLayout.title = getString(R.string.profile)
+        binding.topAppBar.collapsingToolbarLayout.title = getString(com.goldenowl.ecommerce.R.string.profile)
     }
 
+    companion object {
+        var options: RequestOptions = RequestOptions()
+            .centerCrop()
+            .error(com.goldenowl.ecommerce.R.drawable.img_broken)
+
+    }
 }

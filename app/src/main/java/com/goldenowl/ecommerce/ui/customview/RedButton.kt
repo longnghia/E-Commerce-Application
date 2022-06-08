@@ -34,7 +34,7 @@ class RedButton @JvmOverloads constructor(
     }
 
     override fun setBackgroundResource(resid: Int) {
-        super.setBackgroundResource(R.drawable.bg_rounded_button)
+        super.setBackgroundResource(R.drawable.bg_rounded_button_red)
     }
 
     override fun setBackgroundColor(color: Int) {

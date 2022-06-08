@@ -11,15 +11,16 @@ class TextValidation {
             return Patterns.EMAIL_ADDRESS.matcher(email).matches()
         }
 
-        fun validateName(name: String): String? {
+        // todo NO special characters
+        fun validateName(name: String): String {
             if (name.isEmpty()) {
                 return "Required Field!"
             } else {
-                return null
+                return ""
             }
         }
 
-        fun validatePassword(password: String): String? {
+        fun validatePassword(password: String): String {
             if (password.isEmpty()) {
                 return "Required Field!"
             } else if (password.length < 6) {
@@ -39,7 +40,7 @@ class TextValidation {
 //            edtPassword.requestFocus()
 //            return false
             } else {
-                return null
+                return ""
 //            inputLayoutPassword.isErrorEnabled = false
             }
         }
@@ -48,26 +49,26 @@ class TextValidation {
          * 1) field must not be empty
          * 2) text should matches email address format
          */
-        fun validateEmail(email: String): String? {
-            if (email.isEmpty()) {
-                return "Required Field!"
+        fun validateEmail(email: String): String {
+            return if (email.isEmpty()) {
+                "Required Field!"
 
             } else if (!isValidEmail(email)) {
-                return "Invalid Email!"
+                "Invalid Email!"
             } else {
-                return null
+                ""
             }
         }
 
-        fun validateDoB(dob: String): String? {
+        fun validateDoB(dob: String): String {
             if (dob.isEmpty()) {
                 return "Required Field!"
             }
-            return null
+            return ""
         }
 
-        fun validateRePassword(password: String, rePassword: String): String? {
-            return if (password == rePassword) null else "Password mismatch"
+        fun validateRePassword(password: String, rePassword: String): String {
+            return if (password == rePassword) "" else "Password mismatch"
         }
     }
 }

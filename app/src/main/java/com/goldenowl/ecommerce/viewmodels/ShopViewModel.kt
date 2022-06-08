@@ -6,24 +6,35 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.goldenowl.ecommerce.models.data.Product
+import com.goldenowl.ecommerce.models.data.UserOrder
+import com.goldenowl.ecommerce.models.repo.AuthRepository
 import com.goldenowl.ecommerce.models.repo.ProductsRepository
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ProductViewModel(private val productsRepository: ProductsRepository) : ViewModel() {
+class ShopViewModel(private val productsRepository: ProductsRepository, private val authRepository: AuthRepository) :
+    ViewModel() {
+
+    var mProductsList: List<Product> = ArrayList()
+
+
+    private val userId: String? = if (authRepository.isUserLoggedIn()) authRepository.getUserId() else null
 
     var categoryList: Set<String> = setOf()
 
-    var mProductsList: List<Product> = ArrayList()
     val productsList: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
-
-    val testText: MutableLiveData<String> = MutableLiveData<String>()
     val sortType: MutableLiveData<SortType> = MutableLiveData<SortType>()
         .apply { value = SortType.PRICE_INCREASE }
 
     val currentCategory: MutableLiveData<Int> = MutableLiveData<Int>().apply { value = -1 }
 
     val filterProducts: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
+    val filterFavoriteProducts: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
+
+    val favoriteList: MutableLiveData<List<UserOrder.Favorite>> = MutableLiveData<List<UserOrder.Favorite>>()
+    val bagList: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
+
     val dataReady: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
         value = BaseLoadingStatus.LOADING
     }
@@ -31,7 +42,16 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
     init {
         viewModelScope.launch {
             getAllProducts()
+            getFavoriteList()
         }
+    }
+
+    private suspend fun getFavoriteList(): List<UserOrder.Favorite> {
+        val favoriteList = productsRepository.getFavoriteList(userId)
+        Log.d(TAG, "getFavoriteList: $favoriteList")
+        val favoriteProducts = favoriteList.map { it.productId }
+        filterFavoriteProducts.value = mProductsList.toMutableList().filter { favoriteProducts.indexOf(it.id) >= 0 }
+        return favoriteList
     }
 
     private fun setCategoryList(list: List<Product>) {
@@ -45,29 +65,34 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
         this.categoryList = categoryList
     }
 
-    suspend fun getAllProducts() {
+    private suspend fun getAllProducts() {
+
         Log.d(TAG, "getAllProducts: start")
         if (mProductsList.isEmpty()) {
             mProductsList = productsRepository.getAllProducts()
+            Log.d(TAG, "getAllProducts: done = $mProductsList")
+//            productsRepository.syncLocalDataSource(mProductsList) // todo
             productsList.value = mProductsList.toList()
         } else {
             Log.d(TAG, "getAllProducts: using data in mProductList:\n $mProductsList")
         }
         setCategoryList(mProductsList)
-        setFilterProducts(-1)
-        dataReady.value = BaseLoadingStatus.SUCCESS
+        filterProducts.value = getFilterProducts(-1, mProductsList)
+        filterFavoriteProducts.value = getFilterProducts(-1, mProductsList)
+        dataReady.value = BaseLoadingStatus.SUCCEEDED
     }
 
-    fun setFilterProducts(index: Int) {
-        if (index < 0){
-            filterProducts.value = mProductsList.toList()
-            return
+    private fun getFilterProducts(index: Int, fromList: List<Product>): List<Product> {
+        Log.d(TAG, "getFilterProducts: position $index")
+        var filteredProducts = fromList.toList()
+        if (index < 0) {
+            return filteredProducts
         }
 
-        val filteredList = mProductsList.filter {
+        filteredProducts = filteredProducts.filter {
             it.categoryName == categoryList.elementAt(index)
         }
-        filterProducts.value = filteredList
+        return filteredProducts
     }
 
     fun setSortBy(type: SortType) {
@@ -98,6 +123,38 @@ class ProductViewModel(private val productsRepository: ProductsRepository) : Vie
         filterProducts.value = currentFilterList
     }
 
+    fun addToFavorite(favorite: UserOrder.Favorite) {
+        Log.d(TAG, "addToFavorite: userId = $userId")
+        viewModelScope.launch(Dispatchers.IO) {
+            if (userId != null) {
+                productsRepository.addToFavorite(favorite, userId)
+            }
+        }
+        favoriteList.value?.toMutableList().let {
+            if (it != null) {
+                it.add(favorite)
+                Log.d(TAG, "addToFavorite: favorite change")
+                favoriteList.value = it
+            } else {
+                Log.d(TAG, "addToFavorite: favorite list NULL")
+            }
+        }
+    }
+
+    fun createUserOrderTable() {
+        viewModelScope.launch {
+            if (authRepository.isUserLoggedIn()) {
+                productsRepository.createUserOrderTable(userId!!)
+            } else {
+                Log.d(TAG, "createUserOrderTable: USER NOT LOG GIN")
+            }
+        }
+    }
+
+    fun setFilterProducts(it: Int?) {
+        filterProducts.value = getFilterProducts(it ?: -1, mProductsList)
+    }
+
 
     companion object {
         val TAG = "ProductViewModel"
@@ -108,11 +165,14 @@ enum class SortType {
     POPULAR, NEWEST, REVIEW, PRICE_INCREASE, PRICE_DECREASE
 }
 
-class ProductViewModelFactory(private val productsRepository: ProductsRepository) : ViewModelProvider.Factory {
+class ProductViewModelFactory(
+    private val productsRepository: ProductsRepository,
+    private val authRepository: AuthRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ProductViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(ShopViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ProductViewModel(productsRepository) as T
+            return ShopViewModel(productsRepository, authRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
