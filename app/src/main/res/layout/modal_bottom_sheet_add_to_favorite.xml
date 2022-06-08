@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_modal_pinner" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/select_size"
+        android:textColor="@color/text_title_color"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        >
+
+        <RadioButton
+            android:id="@+id/radio_size_XS"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/radio_button_size"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="XS" />
+
+        <RadioButton
+            android:id="@+id/radio_size_S"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/radio_button_size"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="S" />
+
+        <RadioButton
+            android:id="@+id/radio_size_M"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/radio_button_size"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="M" />
+
+        <RadioButton
+            android:id="@+id/radio_size_L"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/radio_button_size"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="L" />
+
+        <RadioButton
+            android:id="@+id/radio_size_XL"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@drawable/radio_button_size"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="XL" />
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <include layout="@layout/layout_divider" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/size_info" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:src="@drawable/ic_right" />
+        </FrameLayout>
+
+        <include layout="@layout/layout_divider" />
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add_to_favorites"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="48dp"
+        android:text="@string/add_to_favorite"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
+</LinearLayout>

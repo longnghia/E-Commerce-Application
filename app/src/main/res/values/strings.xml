@@ -1,0 +1,114 @@
+<resources>
+    <string name="app_name">ECommerce Shopping App</string>
+    <string name="home">Home</string>
+    <string name="bag">Bag</string>
+    <string name="favorites">Favorites</string>
+    <string name="profile">Profile</string>
+    <string name="my_profile">My profile</string>
+    <string name="shop">Shop</string>
+    <string name="checkout">Checkout</string>
+    <string name="payment">Payment</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
+
+
+    <string name="content_description_media">content_description_media</string>
+    <string name="logout">Log out</string>
+    <string name="already_has_account">Already has account?</string>
+    <string name="input_name">Name</string>
+    <string name="input_password">Password</string>
+    <string name="input_email">Email</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="login_with">Or login with social account</string>
+
+    <!--    facebook-->
+    <string name="facebook_app_id">786339678998565</string>
+    <string name="fb_login_protocol_scheme">fb786339678998565</string>
+    <string name="facebook_client_token">a4317660d0b5f2ab1950f53ba2867272</string>
+
+    <string name="hello">Hello</string>
+    <string name="guest_email">Sign in to shop more easily and enjoy many promotions  Sign in to shop more easily and enjoy many promotions  </string>
+    <string name="guest_name">Hello</string>
+    <string name="signup_with">Or sign up with social account</string>
+    <string name="web_client_id">174656673319-f7j14kp1o55oulok6smdnqaosdvdjqd2.apps.googleusercontent.com</string>
+    <string name="my_order">My orders</string>
+    <string name="no_orders">No orders</string>
+    <string name="shipping_address">Shipping addresses</string>
+    <string name="no_address">No address</string>
+    <string name="payment_method">Payment methods</string>
+    <string name="payment_visa">Visa **34</string>
+    <string name="promocode">Promocodes</string>
+    <string name="have_promocode">You have special promocodes</string>
+    <string name="my_review">My reviews</string>
+    <string name="no_review">No reviews</string>
+    <string name="settings">Settings</string>
+    <string name="setting_notification">Notifications, password</string>
+    <string name="policy">Policy</string>
+    <string name="policy_and_term"><![CDATA[Policy & Term of service]]></string>
+    <string name="personal_info">Personal Information</string>
+    <string name="change_password">Change</string>
+    <string name="notification">Notifications</string>
+    <string name="sale">Sales</string>
+    <string name="new_arrivals">New arrivals</string>
+    <string name="deli_status_changes">Delivery status changes</string>
+    <string name="full_name">Full name</string>
+    <string name="dob">Date of Birth</string>
+    <string name="password_change">Password Change</string>
+    <string name="old_password">Old Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="new_password">New Password</string>
+    <string name="repeat_new_password">Repeat New Password</string>
+    <string name="save_password">SAVE PASSWORD</string>
+    <string name="change_password_success">Change password successfully!</string>
+    <string name="FirebaseAuthUserCollisionException">The email address is already in use by another account</string>
+    <string name="FirebaseAuthWeakPasswordException">The password is weak!</string>
+    <string name="FirebaseAuthInvalidCredentialsException">Invalid email!</string>
+
+
+    <!--auth error-->
+    <string name="error_login_custom_token">The custom token format is incorrect. Please check the documentation.</string>
+    <string name="error_login_custom_token_mismatch">The custom token corresponds to a different audience.</string>
+    <string name="error_login_credential_malformed_or_expired">The supplied auth credential is malformed or has expired.</string>
+    <string name="error_login_invalid_email">The email address is badly formatted.</string>
+    <string name="error_login_wrong_password">The password is invalid or the user does not have a password.</string>
+    <string name="error_login_user_mismatch">The supplied credentials do not correspond to the previously signed in user.</string>
+    <string name="error_login_requires_recent_login">This operation is sensitive and requires recent authentication. Log in again before retrying this request.</string>
+    <string name="error_login_accounts_exits_with_different_credential">An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.</string>
+    <string name="error_login_email_already_in_use">The email address is already in use by another account.</string>
+    <string name="error_login_credential_already_in_use">This credential is already associated with a different user account.</string>
+    <string name="error_login_user_disabled">The user account has been disabled by an administrator.</string>
+    <string name="error_login_user_not_found">There is no user record corresponding to this identifier. The user may have been deleted.</string>
+    <string name="error_login_operation_not_allowed">This operation is not allowed. You must enable this service in the console.</string>
+    <string name="error_login_password_is_weak">The given password is invalid.</string>
+    <string name="error_login_user_token_expired">The user\'s credential is no longer valid. The user must sign in again</string>
+    <string name="error_login_invalid_user_token">The user\'s credential is no longer valid. The user must sign in again.</string>
+    <string name="error_login_default_error">Something wrong!</string>
+    <string name="view_all">View all</string>
+    <string name="new_products">New</string>
+    <string name="never_seen_before">You\'ve never seen it before!</string>
+    <string name="category">Categories</string>
+    <string name="email_rs_password_sent">Email reset password sent to %s</string>
+    <string name="email_rs_password_failed">Failed to send reset password email!</string>
+    <string name="filters">Filters</string>
+    <string name="item_category">Item Category</string>
+    <string name="search">Search</string>
+    <string name="sort_by">Sort by</string>
+    <string name="sort_by_popular">Popular</string>
+    <string name="sort_by_newest">Newest</string>
+    <string name="sort_by_customer_review">Customer review</string>
+    <string name="sort_by_price_low_2_high">Price: lowest to high</string>
+    <string name="sort_by_price_high_2_low">Price: highest to low</string>
+    <string name="search_placeholder_text">Search product</string>
+    <string name="view_all_items">VIEW ALL ITEMS</string>
+    <string name="choose_category">Choose category</string>
+    <string name="search_hint">Search products</string>
+    <string name="select_size">Select size</string>
+    <string name="size_info">Size info</string>
+    <string name="add_to_favorite">ADD TO FAVORITES</string>
+    <string name="no_image_picker">No image picker found</string>
+    <string name="apply_change">Apply changes</string>
+
+</resources>

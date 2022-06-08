@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/ic_search"
+        android:icon="@drawable/ic_search"
+        android:title="@string/search"
+        android:iconTint="@color/black"
+        
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <!--        app:showAsAction="ifRoom|collapseActionView"-->
+
+    <!--    <item-->
+    <!--        android:icon="@drawable/ic_favorite"-->
+    <!--        android:title="@string/favorite"-->
+    <!--        app:showAsAction="ifRoom" />-->
+
+    <!--    <item-->
+    <!--        android:icon="@drawable/ic_bookmark"-->
+    <!--        android:title="@string/bookmark"-->
+    <!--        app:showAsAction="ifRoom" />-->
+</menu>

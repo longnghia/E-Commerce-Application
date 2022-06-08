@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/layout_modal_pinner" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/sort_by"
+        android:textColor="@color/text_title_color"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sort_by_popular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/sort_by_popular"
+        android:textColor="@color/text_title_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/sort_by_newest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/sort_by_newest"
+        android:textColor="@color/text_title_color"
+        android:textSize="16sp"
+
+        />
+
+    <TextView
+        android:id="@+id/sort_by_review"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/sort_by_customer_review"
+        android:textColor="@color/text_title_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/sort_by_price_insc"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/sort_by_price_low_2_high"
+        android:textColor="@color/text_title_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/sort_by_price_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:text="@string/sort_by_price_high_2_low"
+        android:textColor="@color/text_title_color"
+        android:textSize="16sp" />
+
+</LinearLayout>

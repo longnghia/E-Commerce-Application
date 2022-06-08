@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color">
+
+
+    <include
+        android:id="@+id/top_app_bar"
+        layout="@layout/app_bar_collapsible_nav"
+        />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:background="@color/background_color"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <!--start here-->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_view_all"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:backgroundTint="@color/red_dark"
+                android:contentDescription="@string/view_all_items"
+                android:text="@string/view_all_items"
+                android:textColor="@color/white"
+                app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
+
+            <TextView
+                android:id="@+id/tv_choose_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/choose_category"
+                android:textColor="@color/grey_text"
+                android:textSize="16sp" />
+
+            <ListView
+                android:id="@+id/list_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"/>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
