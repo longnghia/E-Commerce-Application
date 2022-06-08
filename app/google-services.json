@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "174656673319",
+    "project_id": "e-commerce-android-application",
+    "storage_bucket": "e-commerce-android-application.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174656673319:android:23f81df8e8d7885646e002",
+        "android_client_info": {
+          "package_name": "com.goldenowl.ecommerce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174656673319-urnfcl74rahqsoiu8h1enetb5dnl6f58.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.goldenowl.ecommerce",
+            "certificate_hash": "cac97f80da938402d72808e817a12870fe5be87a"
+          }
+        },
+        {
+          "client_id": "174656673319-f7j14kp1o55oulok6smdnqaosdvdjqd2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVB0zIEMYcVOzSEtro9ATAXsWzVKFpZHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174656673319-f7j14kp1o55oulok6smdnqaosdvdjqd2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
