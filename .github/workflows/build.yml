@@ -24,12 +24,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      - name: Android Build
-        uses: vgaidarji/android-github-actions-build@v1.0.1
+      
+      - uses: actions/setup-java@v3
         with:
-          args: "./gradlew assembleRelease"
-          
+          distribution: temurin
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Execute Gradle build
+        run: ./gradlew assembleRelease
+    
       - run: git log  --pretty=oneline | tail -n 10 >> log.txt
 
       - name: upload artifact to Firebase App Distribution
