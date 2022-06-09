@@ -8,6 +8,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
@@ -22,11 +23,11 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
     override fun setObservers() {
         with(textInputViewModel) {
-            errorEmail.observe(viewLifecycleOwner) { errorEmail ->
+            errorLoginEmail.observe(viewLifecycleOwner) { errorEmail ->
                 handleErrorEmail(errorEmail)
             }
 
-            errorPassword.observe(viewLifecycleOwner) { errorPassword ->
+            errorLoginPassword.observe(viewLifecycleOwner) { errorPassword ->
                 handlePassword(errorPassword)
             }
 
@@ -46,6 +47,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             forgotPasswordStatus.observe((viewLifecycleOwner)) { forgotPasswordStatus ->
                 handleForgotPassword(forgotPasswordStatus)
             }
+
         }
 
 
@@ -56,6 +58,10 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
             }
+            BaseLoadingStatus.SUCCEEDED->{
+                Toast.makeText(activity, getString(R.string.email_rs_password_sent, binding.edtEmail.text.toString()), Toast.LENGTH_SHORT).show()
+                setLoading(false)
+            }
             else -> {
                 setLoading(false)
             }
@@ -64,10 +70,10 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
     }
 
     private fun setLoading(isShow: Boolean) {
-        if (isShow){
+        if (isShow) {
             binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             binding.layoutLoading.circularLoader.showAnimationBehavior
-        }else{
+        } else {
             binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
         }
     }
@@ -92,7 +98,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
             BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
-
                 launchHome(requireContext())
                 activity?.finish()
             }
@@ -131,13 +136,13 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
         with(binding) {
             edtEmail.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkEmail(edtEmail.text.toString())
+                    textInputViewModel.checkEmail(edtEmail.text.toString(), 0)
                     textInputViewModel.setLoginFormValid()
                 }
             })
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 0)
                     textInputViewModel.setLoginFormValid()
                 }
             })
@@ -153,14 +158,17 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
     override fun setViews() {
         with(binding) {
             btnLogin.setOnClickListener {
-                viewModel.logInWithEmail(binding.edtEmail.text.toString(), binding.edtPassword.text.toString())
+                viewModel.logInWithEmail(binding.edtEmail.text.toString().trim(), binding.edtPassword.text.toString().trim())
             }
 
             layoutForgotPassword.setOnClickListener {
-                if (inputLayoutEmail.endIconMode == TextInputLayout.END_ICON_CUSTOM){
+                hideKeyboard()
+                if (inputLayoutEmail.endIconMode != TextInputLayout.END_ICON_CUSTOM &&
+                    binding.edtEmail.text.toString().isNotBlank()
+                ) {
                     Log.d(TAG, "setViews: email valid")
-                    viewModel.forgotPassword(binding.edtEmail.text.toString())
-                }else{
+                    viewModel.forgotPassword(binding.edtEmail.text.toString().trim())
+                } else {
                     Toast.makeText(context, "Please input your email first!", Toast.LENGTH_SHORT).show()
                     edtEmail.requestFocus()
                 }

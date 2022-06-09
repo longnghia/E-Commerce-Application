@@ -26,9 +26,6 @@ data class Product @JvmOverloads constructor(
     override fun toString(): String {
         return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getOriginPrice()} , image=${getImage()}, isPopular=${isPopular}, date=$createdDate)"
     }
-//    override fun toString(): String {
-//        return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getPrice()} , image=${getImage()}, color=$colors, isPopular=${isPopular})"
-//    }
 
     fun getOriginPrice(): Int {
         if (this.colors.isNotEmpty())

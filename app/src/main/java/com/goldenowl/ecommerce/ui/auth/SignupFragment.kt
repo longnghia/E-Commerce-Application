@@ -21,10 +21,10 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
     override fun setObservers() {
 
-        textInputViewModel.errorEmail.observe(viewLifecycleOwner) { errorEmail ->
+        textInputViewModel.errorSignUpEmail.observe(viewLifecycleOwner) { errorEmail ->
             validEmail(errorEmail)
         }
-        textInputViewModel.errorPassword.observe(viewLifecycleOwner) { errorPassword ->
+        textInputViewModel.errorSignUpPassword.observe(viewLifecycleOwner) { errorPassword ->
             validPassword(errorPassword)
         }
 
@@ -34,7 +34,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
 
         viewModel.signUpStatus.observe(viewLifecycleOwner) {
-            handelSignUp(it)
+            handleSignUp(it)
         }
 
         viewModel.logInStatus.observe(viewLifecycleOwner) {
@@ -73,7 +73,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
     }
 
-    private fun handelSignUp(signUpStatus: BaseLoadingStatus) {
+    private fun handleSignUp(signUpStatus: BaseLoadingStatus) {
         Log.d(TAG, "validSignup: $signUpStatus")
         when (signUpStatus) {
             BaseLoadingStatus.LOADING -> {
@@ -89,6 +89,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
                 setLoading(false)
                 binding.btnSignup.isEnabled = true
             }
+            else -> setLoading(false)
         }
     }
 
@@ -120,7 +121,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         with(binding) {
             edtEmail.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkEmail(edtEmail.text.toString())
+                    textInputViewModel.checkEmail(edtEmail.text.toString(), 1)
                     textInputViewModel.setSignUpFormValid()
                 }
 
@@ -128,7 +129,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 1)
                     textInputViewModel.setSignUpFormValid()
                 }
             })
@@ -157,6 +158,11 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
             layoutAlreadyHasAcc.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.login_dest)
             )
+
+//            layoutAlreadyHasAcc.setOnClickListener {
+//                findNavController().navigate(R.id.login_dest)
+//            }
+
             ivFacebook.setOnClickListener { viewModel.logInWithFacebook(this@SignupFragment) }
             ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@SignupFragment) }
         }
@@ -166,7 +172,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     private fun setLoading(isShow: Boolean) {
         if (isShow) {
             binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
-            binding.layoutLoading.circularLoader.showAnimationBehavior
         } else {
             binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
         }

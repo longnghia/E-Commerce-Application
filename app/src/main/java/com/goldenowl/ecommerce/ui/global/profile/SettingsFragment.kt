@@ -97,6 +97,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 if (!it.isNullOrBlank()) {
                     Glide.with(this@SettingsFragment).load(it)
                         .apply(ProfileFragment.options)
+                        .placeholder(R.drawable.ic_user)
                         .into(binding.ivUserAvatar)
                 }
             }
@@ -207,7 +208,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             })
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.checkPassword(edtPassword.text.toString(),0)
                     textInputViewModel.setLoginFormValid()
                 }
             })

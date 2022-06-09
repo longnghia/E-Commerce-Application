@@ -18,7 +18,6 @@ class AuthRepository(
     }
 
     fun logOut() {
-        val logType = localAuthDataSource
         remoteAuthDataSource.logOut()
         localAuthDataSource.logOut()
     }
@@ -27,8 +26,8 @@ class AuthRepository(
         return remoteAuthDataSource.signUpWithEmail(email, password, name)
     }
 
-    fun logInWithFacebook(fragment: Fragment) {
-        remoteAuthDataSource.logInWithFacebook(fragment)
+    fun logInWithFacebook(fragment: Fragment, listener: LoginListener) {
+        remoteAuthDataSource.logInWithFacebook(fragment, listener)
     }
 
     suspend fun logInWithEmail(email: String, password: String): String? {

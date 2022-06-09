@@ -10,8 +10,10 @@ import com.goldenowl.ecommerce.utils.TextValidation
 class TextInputViewModel(application: Application) : AndroidViewModel(application) {
 
     var errorName: MutableLiveData<String> = MutableLiveData<String>()
-    var errorEmail: MutableLiveData<String> = MutableLiveData<String>()
-    var errorPassword: MutableLiveData<String> = MutableLiveData<String>()
+    var errorLoginEmail: MutableLiveData<String> = MutableLiveData<String>()
+    var errorLoginPassword: MutableLiveData<String> = MutableLiveData<String>()
+    var errorSignUpEmail: MutableLiveData<String> = MutableLiveData<String>()
+    var errorSignUpPassword: MutableLiveData<String> = MutableLiveData<String>()
     var errorOldPassword: MutableLiveData<String> = MutableLiveData<String>()
     var errorRePassword: MutableLiveData<String> = MutableLiveData<String>()
     var errorDoB: MutableLiveData<String> = MutableLiveData<String>()
@@ -28,17 +30,17 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setLoginFormValid() {
         logInFormValid.value =
-            errorEmail.value.isNullOrEmpty() && errorPassword.value.isNullOrEmpty()
+            errorLoginEmail.value.isNullOrEmpty() && errorLoginPassword.value.isNullOrEmpty()
     }
 
     fun setSignUpFormValid() {
         signUpFormValid.value =
-            errorName.value.isNullOrEmpty() && errorPassword.value.isNullOrEmpty() && errorEmail.value.isNullOrEmpty()
+            errorName.value.isNullOrEmpty() && errorSignUpEmail.value.isNullOrEmpty() && errorSignUpEmail.value.isNullOrEmpty()
     }
 
     fun setChangePasswordValid() {
         changePasswordValid.value =
-            errorOldPassword.value.isNullOrEmpty() && errorPassword.value.isNullOrEmpty() && errorRePassword.value.isNullOrEmpty()
+            errorOldPassword.value.isNullOrEmpty() && errorLoginPassword.value.isNullOrEmpty() && errorRePassword.value.isNullOrEmpty()
         changePasswordValid.value = true // todo delete
     }
 
@@ -47,24 +49,33 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
         errorName.value = error
     }
 
-    fun checkEmail(email: String) {
+    fun checkEmail(email: String, type: Int) {
         val error = TextValidation.validateEmail(email)
-        errorEmail.value = error
+        if (type == 0)
+            errorLoginEmail.value = error
+        if (type == 1)
+            errorSignUpEmail.value = error
     }
 
-    fun checkPassword(password: String) {
-        val error = TextValidation.validatePassword(password)
-        errorPassword.value = error
+    /**
+     * check if password input valid
+     * @param type =0 if login, =1 if signup
+     */
+    fun checkPassword(password: String, type: Int) {
+        val error = TextValidation.validatePassword(password.trim())
+        if (type == 0) errorLoginPassword.value = error
+        if (type == 1) errorSignUpPassword.value = error
+
     }
 
-    fun checkOldPassword(password: String, oldPassword: String) {
-        val error = if ( md5(password) == oldPassword) "" else "Wrong password"
+    fun checkOldPassword(password: String, oldPasswordHash: String) {
+        val error = if (md5(password) == oldPasswordHash) "" else "Wrong password"
         errorOldPassword.value = error
-        Log.d(TAG, "checkOldPassword: $oldPassword, ${md5(password)} $password ")
+        Log.d(TAG, "checkOldPassword: $oldPasswordHash, ${md5(password)} $password ")
     }
 
     fun checkDoB(dob: String) {
-        val error = TextValidation.validateDoB(dob)
+        val error = TextValidation.validateDoB(dob.trim())
         errorDoB.value = error
     }
 
@@ -72,6 +83,7 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
         val error = if (password == rePassword) "" else "Password mismatch"
         errorRePassword.value = error
     }
+
 
     companion object {
         const val TAG = "TextInputViewModel"

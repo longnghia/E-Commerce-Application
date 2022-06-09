@@ -15,7 +15,7 @@
     >
 <!--    app:statusBarForeground="@color/white"-->
 
-    <!--        app:contentScrim="?attr/colorPrimary"-->
+<!--            app:contentScrim="?attr/colorPrimary"-->
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar_layout"
         android:layout_width="match_parent"

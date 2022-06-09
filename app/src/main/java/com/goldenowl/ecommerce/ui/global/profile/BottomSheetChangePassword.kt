@@ -45,7 +45,7 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
                 validOldPassword(errorOldPassword)
             }
 
-            errorPassword.observe(viewLifecycleOwner) { errorNewPassword ->
+            errorLoginPassword.observe(viewLifecycleOwner) { errorNewPassword ->
                 validNewPassord(errorNewPassword)
             }
 
@@ -139,7 +139,7 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
             }
             edtNewPassword.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
-                    textInputViewModel.checkPassword(edtNewPassword.text.toString())
+                    textInputViewModel.checkPassword(edtNewPassword.text.toString(), 0)
                     textInputViewModel.setChangePasswordValid()
                 }
             }
