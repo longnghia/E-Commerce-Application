@@ -60,6 +60,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
             BaseLoadingStatus.SUCCEEDED->{
                 Toast.makeText(activity, getString(R.string.email_rs_password_sent, binding.edtEmail.text.toString()), Toast.LENGTH_SHORT).show()
+                binding.edtPassword.requestFocus()
                 setLoading(false)
             }
             else -> {
@@ -109,7 +110,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
     private fun handlePassword(errorPassword: String?) {
         with(binding) {
-            if (errorPassword != null) {
+            if (!errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.error = errorPassword
                 inputLayoutPassword.errorIconDrawable = null
             } else {
@@ -121,7 +122,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
     private fun handleErrorEmail(errorEmail: String?) {
         with(binding) {
-            if (errorEmail != null) {
+            if (!errorEmail.isNullOrEmpty()) {
                 inputLayoutEmail.error = errorEmail
                 inputLayoutEmail
             } else {
@@ -158,7 +159,10 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
     override fun setViews() {
         with(binding) {
             btnLogin.setOnClickListener {
-                viewModel.logInWithEmail(binding.edtEmail.text.toString().trim(), binding.edtPassword.text.toString().trim())
+                hideKeyboard()
+                viewModel.logInWithEmail(
+                    binding.edtEmail.text.toString().trim(),
+                    binding.edtPassword.text.toString().trim())
             }
 
             layoutForgotPassword.setOnClickListener {
@@ -175,9 +179,12 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
 
             ivFacebook.setOnClickListener {
+                hideKeyboard()
                 viewModel.logInWithFacebook(this@LoginFragment)
             }
-            ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@LoginFragment) }
+            ivGoogle.setOnClickListener {
+                hideKeyboard()
+                viewModel.logInWithGoogle(this@LoginFragment) }
         }
     }
 

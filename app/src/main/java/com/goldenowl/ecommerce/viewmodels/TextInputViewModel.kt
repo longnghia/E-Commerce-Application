@@ -35,7 +35,7 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun setSignUpFormValid() {
         signUpFormValid.value =
-            errorName.value.isNullOrEmpty() && errorSignUpEmail.value.isNullOrEmpty() && errorSignUpEmail.value.isNullOrEmpty()
+            errorName.value.isNullOrEmpty() && errorSignUpEmail.value.isNullOrEmpty() && errorSignUpPassword.value.isNullOrEmpty()
     }
 
     fun setChangePasswordValid() {

@@ -1,7 +1,7 @@
 package com.goldenowl.ecommerce.models.data
 
 data class User @JvmOverloads constructor(
-    val id: String = "",
+    var id: String = "",
     var name: String = "",
     val email: String = "",
     var dob: String = "",

@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.models.repo
 
 import android.net.Uri
 import androidx.fragment.app.Fragment
+import com.goldenowl.ecommerce.models.data.User
 
 class AuthRepository(
     private val remoteAuthDataSource: RemoteAuthDataSource,
@@ -59,10 +60,9 @@ class AuthRepository(
         return err
     }
 
-    suspend fun updateUserData(fullName: String, dob: String, settings: Map<String, Boolean>): String? {
-        return remoteAuthDataSource.updateUserData(fullName, dob, settings).apply {
-            localAuthDataSource.updateUserData(fullName, dob)
-        }
+    suspend fun updateUserData(user: User): String? {
+        localAuthDataSource.updateUserData(user)
+        return remoteAuthDataSource.updateUserData(user)
     }
 
     companion object {

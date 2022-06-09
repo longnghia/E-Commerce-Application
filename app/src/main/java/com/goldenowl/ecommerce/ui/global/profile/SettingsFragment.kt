@@ -115,6 +115,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private fun restoreViews(
         settingsManager: SettingsManager,
     ) {
+        Log.d(TAG, "restoreViews:  userManager: $userManager")
         val fullName: String = userManager.name
         val dob: String = userManager.dob
 
@@ -122,7 +123,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         with(binding) {
             edtName.setText(fullName)
             edtDob.setText(dob)
-
             swSale.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_SALE]!!
             swDeliStatus.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE]!!
             swNewArrivals.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_ARRIVES]!!
@@ -246,11 +246,11 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     SettingsManager.KEY_NOTIFICATION_ARRIVES to binding.swNewArrivals.isChecked,
                     SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE to binding.swDeliStatus.isChecked,
                 )
-                authViewModel.saveUserSettings(
-                    binding.edtName.text.toString(),
-                    binding.edtDob.text.toString(),
-                    settings
-                )
+                val user = userManager.getUser()
+                user.name = binding.edtName.text.toString().trim()
+                user.dob = binding.edtDob.text.toString().trim()
+                user.settings = settings
+                authViewModel.saveUserSettings(user)
                 findNavController().navigateUp()
             } else {
                 Log.d(TAG, "onOptionsItemSelected: input error")

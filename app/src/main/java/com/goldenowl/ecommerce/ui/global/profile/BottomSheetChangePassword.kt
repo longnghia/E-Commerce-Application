@@ -46,7 +46,7 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
             }
 
             errorLoginPassword.observe(viewLifecycleOwner) { errorNewPassword ->
-                validNewPassord(errorNewPassword)
+                validNewPassword(errorNewPassword)
             }
 
             errorRePassword.observe(viewLifecycleOwner) { errorRePassword ->
@@ -104,7 +104,7 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
         }
     }
 
-    private fun validNewPassord(errorNewPassword: String?) {
+    private fun validNewPassword(errorNewPassword: String?) {
         with(binding) {
             if (errorNewPassword != null) {
                 inputLayoutNewPassword.error = errorNewPassword

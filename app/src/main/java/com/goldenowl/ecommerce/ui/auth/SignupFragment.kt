@@ -7,6 +7,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentSignupBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
@@ -22,6 +23,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     override fun setObservers() {
 
         textInputViewModel.errorSignUpEmail.observe(viewLifecycleOwner) { errorEmail ->
+            Log.d(TAG, "setObservers: erroremail=$errorEmail")
             validEmail(errorEmail)
         }
         textInputViewModel.errorSignUpPassword.observe(viewLifecycleOwner) { errorPassword ->
@@ -95,24 +97,26 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
     private fun validPassword(errorPassword: String?) {
         with(binding) {
-            if (errorPassword != null) {
-                inputLayoutPassword.error = errorPassword
-                inputLayoutPassword.errorIconDrawable = null
-            } else {
+
+            if (errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.isErrorEnabled = false
                 Log.d(TAG, "setObservers: password valid")
+            } else {
+                inputLayoutPassword.error = errorPassword
+                inputLayoutPassword.errorIconDrawable = null
             }
         }
     }
 
     private fun validEmail(errorEmail: String?) {
         with(binding) {
-            if (errorEmail != null) {
-                inputLayoutEmail.error = errorEmail
-            } else {
+
+            if (errorEmail.isNullOrEmpty()) {
                 inputLayoutEmail.isErrorEnabled = false
                 inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
                 Log.d(TAG, "setObservers: email valid")
+            } else {
+                inputLayoutEmail.error = errorEmail
             }
         }
     }
@@ -148,6 +152,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         with(binding) {
             btnSignup.setOnClickListener {
                 Log.d(TAG, "setViews: begin sign up")
+                hideKeyboard()
                 viewModel.signUpWithEmail(
                     edtEmail.text.toString(),
                     edtPassword.text.toString(),

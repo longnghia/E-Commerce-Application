@@ -11,6 +11,7 @@ import com.facebook.CallbackManager
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.SettingsManager
+import com.goldenowl.ecommerce.models.data.User
 import com.goldenowl.ecommerce.models.repo.ICallback
 import com.goldenowl.ecommerce.models.repo.LoginListener
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
@@ -24,7 +25,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val authRepository = (application as MyApplication).authRepository
     private val productsRepository = (application as MyApplication).productsRepository
     private val settingManager: SettingsManager = SettingsManager(application as MyApplication)
-
 
 
     fun logOut() {
@@ -131,10 +131,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun saveUserSettings(fullName: String, dob: String, settings: Map<String, Boolean>) {
-        settingManager.saveUserSettings(settings)
+    fun saveUserSettings(user: User) {
         viewModelScope.launch {
-            val err = authRepository.updateUserData(fullName, dob, settings)
+            settingManager.saveUserSettings(user.settings)
+            val err = authRepository.updateUserData(user)
             toastMessage.value = if (err.isNullOrEmpty()) "Apply changes successfully" else err
         }
     }
