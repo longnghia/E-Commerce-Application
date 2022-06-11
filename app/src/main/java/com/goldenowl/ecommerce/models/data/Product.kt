@@ -56,6 +56,7 @@ data class Product @JvmOverloads constructor(
         return colors[0].sizes
     }
 
+
     data class Color @JvmOverloads constructor(
         var color: String = "",
         var sizes: List<Size> = ArrayList()

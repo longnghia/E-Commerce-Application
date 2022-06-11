@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
+import com.goldenowl.ecommerce.adapter.TutorialPagerAdapter
 import com.goldenowl.ecommerce.databinding.ActivityTutorialBinding
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.utils.Utils.launchHome

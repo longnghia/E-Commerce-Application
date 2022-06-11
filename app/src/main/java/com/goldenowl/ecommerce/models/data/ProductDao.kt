@@ -17,7 +17,7 @@ interface ProductDao {
     suspend fun insertMultipleProduct(product: List<Product>)
 
     @Query("DELETE FROM product_table")
-    suspend fun emptyTable()
+    suspend fun deleteTable()
 
 
 }

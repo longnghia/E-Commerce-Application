@@ -37,14 +37,14 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
             adapter = this@ShopFragment.adapter
             setOnItemClickListener { _, _, position, _ ->
                 val index = fullList.indexOf(list[position])
-                viewModel.currentCategory.value = index
+//                viewModel.currentCategory.value = index
                 findNavController().navigate(
                     R.id.category_dest
                 )
             }
 
             binding.btnViewAll.setOnClickListener {
-                viewModel.currentCategory.value = -1
+//                viewModel.currentCategory.value = -1
 
                 findNavController().navigate(
                     R.id.action_view_all

@@ -54,7 +54,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             val file: Uri? = data.data
             file.let {
                 if (it != null) {
-                    Glide.with(this@SettingsFragment).load(it)
+                    Glide
+                        .with(this@SettingsFragment).load(it)
                         .apply(ProfileFragment.options)
                         .into(binding.ivUserAvatar)
                 }

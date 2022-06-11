@@ -11,26 +11,9 @@ enum class BaseLoadingStatus {
 
 }
 
-//enum class BaseLoadingStatus {
-//    NONE,
-//    LOADING,
-//    SUCCESS,
-//    FAIL,
-//}
-//
-//enum class BaseLoadingStatus {
-//    NONE,
-//    LOADING,
-//    SUCCESS,
-//    FAIL
-//}
-//
-//enum class BaseLoadingStatus {
-//    NONE,
-//    LOADING,
-//    SUCCESS,
-//    FAIL
-//}
+enum class SortType {
+    POPULAR, NEWEST, REVIEW, PRICE_INCREASE, PRICE_DECREASE
+}
 
 val authErrors = mapOf<String, Int>(
     "ERROR_INVALID_CUSTOM_TOKEN" to R.string.error_login_custom_token,

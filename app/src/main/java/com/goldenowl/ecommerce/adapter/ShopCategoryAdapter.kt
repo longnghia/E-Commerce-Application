@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.ui.global.shop
+package com.goldenowl.ecommerce.adapter
 
 import android.content.Context
 import android.view.View

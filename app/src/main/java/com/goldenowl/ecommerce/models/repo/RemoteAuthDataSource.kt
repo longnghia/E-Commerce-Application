@@ -36,6 +36,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
     private var currentUser = firebaseAuth.currentUser
 
     private val userRef = db.collection("users")
+
     private val storageRef = Firebase.storage.reference
     private val settingsManager = SettingsManager(context)
 
@@ -295,11 +296,14 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 Log.d(TAG, "restoreUser: $user")
                 Log.d(TAG, "restoreUserData: userManager isloggin:${userManager.isLoggedIn()}")
                 userManager.addAccount(user!!) // restore local
+                /* restore settings to Preference */
                 if (!user.settings.isNullOrEmpty())
                     settingsManager.saveUserSettings(user.settings)
                 else {
                     Log.d(TAG, "restoreUserData: no settings found")
                 }
+                /* restore database */
+//                restoreDatabase(user.id)
             }
         }.addOnFailureListener {
             Log.e(TAG, "restoreUserData: ERROR", it)

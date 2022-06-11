@@ -41,8 +41,9 @@ class MyApplication : Application() {
         Log.d(TAG, "createLocalProductsDataSource: create database")
 
         val productDao = database.productDao()
-        val userOrderDao = database.userOrderDao()
+        val favoriteDao = database.favoriteDao()
+        val orderDao = database.orderDao()
 
-        return LocalProductsDataSource(productDao, userOrderDao)
+        return LocalProductsDataSource(productDao, favoriteDao, orderDao)
     }
 }

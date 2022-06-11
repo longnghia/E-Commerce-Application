@@ -3,16 +3,24 @@ package com.goldenowl.ecommerce.utils
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -62,6 +70,7 @@ object Utils {
             override fun onClick(textView: View) {
                 listener.onClick()
             }
+
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
 //                ds.color = Color.RED
@@ -86,5 +95,39 @@ object Utils {
     fun Context.hideKeyboard(view: View) {
         val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    fun glideListener(loadingLayout: View): RequestListener<Drawable> {
+        return object : RequestListener<Drawable> {
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                Log.w("Glide", "onLoadFailed: ${e?.message}")
+                loadingLayout.visibility = View.GONE
+                return false
+            }
+
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                loadingLayout.visibility = View.GONE
+                return false
+            }
+
+        }
+    }
+
+    fun TextView.strike(text: String) {
+        this.apply {
+            this.text = text
+            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
     }
 }

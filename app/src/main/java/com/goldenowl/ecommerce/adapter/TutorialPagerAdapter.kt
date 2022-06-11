@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.ui.tutorial
+package com.goldenowl.ecommerce.adapter
 
 import android.view.LayoutInflater
 import android.view.View

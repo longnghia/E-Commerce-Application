@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.ui.global.home
+package com.goldenowl.ecommerce.adapter
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -8,10 +8,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ItemAppBarCategoryListBinding
 
-class AppBarCategoryListAdapter(private val listCategory: List<String>, private val startPos: Int,  private val callback: IClickListener) :
+class AppBarCategoryListAdapter(
+    private val listCategory: List<String>,
+    private val callback: IClickListener
+) :
     RecyclerView.Adapter<AppBarCategoryListAdapter.CategoryViewHolder>() {
 
-    private var checkedPosition = startPos
+    private var checkedPosition = -1
+
+    fun setPosition(position: Int) {
+        checkedPosition = position
+        notifyDataSetChanged()
+    }
 
     interface IClickListener {
         fun onClick(position: Int)
@@ -25,11 +33,8 @@ class AppBarCategoryListAdapter(private val listCategory: List<String>, private 
             binding.btnCategory.text = category
             binding.btnCategory.setOnClickListener {
                 iClickListener.onClick(position)
-                Log.d("CategoryViewHolder", "bind: clicked $position")
-                checkedPosition = position
-                notifyDataSetChanged()
-
-                // toggle turn off
+                Log.d("Appbar", "bind: clicked $position")
+                setPosition(position)
             }
 
             if (position == checkedPosition) {

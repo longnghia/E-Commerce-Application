@@ -7,8 +7,7 @@
 
     <include
         android:id="@+id/top_app_bar"
-        layout="@layout/app_bar_category"
-        />
+        layout="@layout/app_bar_category" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -21,18 +20,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="50dp" />
+            <!--            <androidx.recyclerview.widget.RecyclerView-->
+            <!--                android:id="@+id/rcv_category"-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginStart="16dp"-->
+            <!--                android:layout_marginTop="50dp" />-->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_category_grid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:visibility="gone"
                 android:layout_marginTop="50dp" />
 
         </LinearLayout>

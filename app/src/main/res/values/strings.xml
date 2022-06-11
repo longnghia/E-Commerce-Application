@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECommerce Shopping App</string>
+    <string name="app_name">[Paul] ECommerce Shopping App</string>
     <string name="home">Home</string>
     <string name="bag">Bag</string>
     <string name="favorites">Favorites</string>
@@ -110,5 +110,9 @@
     <string name="add_to_favorite">ADD TO FAVORITES</string>
     <string name="no_image_picker">No image picker found</string>
     <string name="apply_change">Apply changes</string>
+    <string name="color">Color</string>
+    <string name="size">Size</string>
+    <string name="none">None</string>
+    <string name="add_to_cart">Add to cart</string>
 
 </resources>
