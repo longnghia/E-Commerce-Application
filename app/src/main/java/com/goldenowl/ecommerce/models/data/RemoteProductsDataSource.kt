@@ -8,7 +8,6 @@ import com.goldenowl.ecommerce.utils.Consts.PRODUCTS_COLLECTION
 import com.goldenowl.ecommerce.utils.Consts.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
@@ -66,8 +65,10 @@ class RemoteProductsDataSource : ProductDataSource {
 
             listFavorite.add(favorite)
 
+//            userOrderRef
+//                .update("favorites", FieldValue.arrayUnion(favorite))
             userOrderRef
-                .update("favorites", FieldValue.arrayUnion(favorite))
+                .update("favorites", listFavorite)
             Log.d(TAG, "added To list Favorite")
         }
     }
@@ -163,8 +164,10 @@ class RemoteProductsDataSource : ProductDataSource {
 
             listCart.add(cart)
 
+
             userOrderRef
-                .update("carts", FieldValue.arrayUnion(cart))
+                .update("carts",listCart)
+
             Log.d(TAG, "added To list Cart")
         }
     }

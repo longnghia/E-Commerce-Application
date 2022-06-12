@@ -84,7 +84,6 @@ class HomeProductListAdapter(private val listener: IClickListener) :
     }
 
     override fun onBindViewHolder(holder: HomeProductViewHolder, position: Int) {
-        Log.d(TAG, "onBindViewHolder: binding $position")
         val product = mListProductData[position].product
         val favorite = mListProductData[position].favorite
 
@@ -121,7 +120,6 @@ class HomeProductListAdapter(private val listener: IClickListener) :
                 val text = product.getOriginPrice().toString() + "$"
                 holder.originPrice?.strike(text)
             } else {
-                Log.d(TAG, "onBindViewHolder: NO SALE")
                 holder.tvDiscountPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
                 holder.originPrice?.text = product.getOriginPrice().toString() + "$"

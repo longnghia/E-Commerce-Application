@@ -50,12 +50,14 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
     }
 
     fun reloadListProductData() {
-        Log.d(TAG, "reloadListProductData: allFavorite=${allFavorite.value}")
+        Log.d(TAG, "reloadListProductData: \nallFavorite=${allFavorite.value}\nallCart=${allCart.value}")
         listProductData.value = mListProduct.map { p ->
             val favorite: Favorite? = allFavorite.value?.find {
                 it.productId == p.id
             }
-            val cart: Cart? = null // todo allCart.value
+            val cart: Cart? = allCart.value?.find {
+                it.productId == p.id
+            }
             ProductData(p, favorite, cart)
         }
     }
@@ -169,7 +171,7 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
     fun insertCart(cart: Cart) {
         viewModelScope.launch(Dispatchers.IO) {
             productsRepository.insertCart(cart).let {
-                Log.d(TAG, "insertFavorite: result= $it")
+                Log.d(TAG, "insertCart: result= $it")
                 if (it is MyResult.Success) {
 
                 } else if (it is MyResult.Error) {

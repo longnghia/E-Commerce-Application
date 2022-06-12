@@ -1,17 +1,10 @@
 package com.goldenowl.ecommerce.ui.global.home
 
-import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.findNavController
@@ -21,18 +14,16 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.adapter.CategoryProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
-import com.goldenowl.ecommerce.databinding.ModalBottomSheetAddToFavoriteBinding
-import com.goldenowl.ecommerce.databinding.ModalBottomSheetSortProductBinding
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.ui.global.favorites.FavoritesFragment
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.SortType
-import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
@@ -55,7 +46,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     override fun setObservers() {
         viewModel.listProductData.observe(viewLifecycleOwner) {
             listProductData = it
-            Log.d(TAG, "Observers: listProductData=$listProductData")
             adapterGrid.setData(listProductData, filterType, sortType)
         }
 
@@ -145,9 +135,9 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
 
     private fun toggleBottomSheetAddToFavorite(product: Product) {
-        val modalBottomSheet = BottomSheetAddToFavorite(product, viewModel)
+        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
         modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, BottomSheetAddToFavorite.TAG)
+        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
     }
 
 
@@ -255,138 +245,3 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 }
 
 
-class BottomSheetSortProduct(private val viewModel: SortFilterViewModel) : BottomSheetDialogFragment() {
-    private lateinit var binding: ModalBottomSheetSortProductBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        ModalBottomSheetSortProductBinding.inflate(layoutInflater, container, false).apply {
-            binding = this
-        }.root
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val map = mapOf<SortType, TextView>(
-            SortType.POPULAR to binding.sortByPopular,
-            SortType.NEWEST to binding.sortByNewest,
-            SortType.PRICE_INCREASE to binding.sortByPriceInsc,
-            SortType.PRICE_DECREASE to binding.sortByPriceDesc,
-            SortType.REVIEW to binding.sortByReview
-        )
-
-        for (pair in map) {
-            val (type, view) = pair
-            view.setOnClickListener {
-                viewModel.setSortType(type)
-                dismiss()
-            }
-        }
-
-        viewModel.sortType.observe(viewLifecycleOwner) {
-            for (pair in map) {
-                val (type, view) = pair
-                if (type == it) {
-                    setViewBackground(view, R.color.red_dark)
-                } else {
-                    view.setBackgroundColor(0)
-                }
-
-            }
-        }
-    }
-
-    private fun setViewBackground(v: TextView, c: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            v.setBackgroundColor(resources.getColor(c, activity?.theme))
-            v.setTextColor(requireContext().getColor(R.color.white))
-        } else {
-            v.setBackgroundColor(resources.getColor(c))
-        }
-    }
-
-    companion object {
-        const val TAG = "BottomSheetSortProduct"
-    }
-}
-
-class BottomSheetAddToFavorite(private val product: Product, private val viewModel: ShopViewModel) :
-    BottomSheetDialogFragment() {
-//    private val viewModel: ProductViewModel by activityViewModels {
-//        ProductViewModelFactory((requireActivity().application as MyApplication).productsRepository)
-//    }
-
-    private lateinit var binding: ModalBottomSheetAddToFavoriteBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        ModalBottomSheetAddToFavoriteBinding.inflate(layoutInflater, container, false).apply {
-            binding = this
-        }.root
-
-    @SuppressLint("LongLogTag")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        val product = arguments?.get("product") as Product
-        val mapString = mapOf(
-            R.id.radio_size_L to "L",
-            R.id.radio_size_M to "M",
-            R.id.radio_size_S to "S",
-            R.id.radio_size_XL to "XL",
-            R.id.radio_size_XS to "XS"
-        )
-        val mapView = mapOf(
-            "L" to binding.radioSizeL,
-            "M" to binding.radioSizeM,
-            "S" to binding.radioSizeS,
-            "XL" to binding.radioSizeXL,
-            "XS" to binding.radioSizeXS
-        )
-
-        if (product != null) {
-            val listSize = product.getListSize()
-            if (listSize.isNotEmpty()) {
-                Log.d(TAG, "onViewCreated: list size = $listSize")
-                for (size in listSize) {
-                    val s = size.size
-                    val view = mapView[s] as RadioButton
-
-                    val available = size.quantity > 0
-                    setRadioButton(view, available)
-                }
-            }
-        }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            Log.d(TAG, "onViewCreated: checked id = $checkedId, size=${mapString[checkedId]}")
-//            .setTextColor(requireContext().getColor(R.color.white))
-        }
-
-        binding.btnAddToFavorites.setOnClickListener {
-            viewModel.insertFavorite(
-                Favorite(
-                    product.id,
-                    mapString[binding.radioGroup.checkedRadioButtonId]!!,
-                    "black"
-                )
-            )
-            dismiss()
-        }
-
-    }
-
-    private fun setRadioButton(v: RadioButton, available: Boolean) {
-        v.isEnabled = available
-    }
-
-    companion object {
-        const val TAG = "BottomSheetAddToFavorite"
-    }
-}

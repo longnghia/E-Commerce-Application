@@ -135,7 +135,7 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
 
         mMainHandler.removeCallbacksAndMessages(null)
         mMainHandler.postDelayed({
-            adapter.clear() // todo gently change data
+            adapter.clear() // todo gently change data //TODO  Operation is not supported for read-only collection
             adapter.addAll(list)
             adapter.notifyDataSetChanged()
             Log.d(TAG, "setAppBarMenu: start filter count=${adapter.count}")

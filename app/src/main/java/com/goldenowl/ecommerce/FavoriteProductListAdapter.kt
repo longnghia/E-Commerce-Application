@@ -31,7 +31,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     private var mListFavoriteProductData = listOf<ProductData>()
 
     fun setData(listProductData: List<ProductData>, filterType: String?, sortType: SortType?, searchTerm: String) {
-        Log.d(TAG, "setData: listProductData = $listProductData")
         mListProductData = listProductData
         mListFavoriteProductData = getFavoriteProduct()
 
@@ -55,6 +54,8 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
                 ) >= 0
             }
         }
+        Log.d(TAG, "setData: mListFavoriteProductData = $mListFavoriteProductData")
+
         notifyDataSetChanged()
     }
 
@@ -124,7 +125,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     }
 
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
-        Log.d(TAG, "onBindViewHolder: binding $position")
         val product = mListFavoriteProductData[position].product
         val cart = mListFavoriteProductData[position].cart
         val favorite = mListFavoriteProductData[position].favorite
@@ -164,13 +164,18 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
                 val text = product.getOriginPrice().toString() + "$"
                 holder.originPrice?.strike(text)
             } else {
-                Log.d(TAG, "onBindViewHolder: NOT SALE PERCENT")
                 holder.tvDiscoutPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
                 holder.originPrice?.text = product.getOriginPrice().toString() + "$"
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
+        if (cart != null) {
+            holder.ivCart?.setImageResource(R.drawable.ic_bag_selected)
+            Log.d(TAG, "onBindViewHolder: cart: $cart")
+        }else{
+            holder.ivCart?.setImageResource(R.drawable.ic_cart)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CartDao {
     @Query("select  * from cart_table")
-    fun getListCart(): Flow<List<Favorite>>
+    fun getListCart(): Flow<List<Cart>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCart(cart: Cart)

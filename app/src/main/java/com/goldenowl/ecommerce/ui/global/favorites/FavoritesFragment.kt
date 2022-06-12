@@ -18,7 +18,8 @@ import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.ui.global.home.BottomSheetSortProduct
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.Consts.sortMap
@@ -61,6 +62,11 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
             Log.d(CategoryFragment.TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
+        viewModel.allCart.observe(viewLifecycleOwner) {
+            Log.d(CategoryFragment.TAG, "setObservers: allCart change")
+            viewModel.reloadListProductData()
+        }
+
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
@@ -156,9 +162,9 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
 
 
 //    private fun toggleBottomSheetAddToFavorite(product: Product) {
-//        val modalBottomSheet = BottomSheetAddToFavorite(product, viewModel)
+//        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
 //        modalBottomSheet.enterTransition = View.GONE
-//        modalBottomSheet.show(parentFragmentManager, BottomSheetAddToFavorite.TAG)
+//        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
 //    }
 
 
