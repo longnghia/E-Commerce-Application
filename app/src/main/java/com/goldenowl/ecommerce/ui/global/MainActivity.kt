@@ -51,6 +51,8 @@ import com.google.firebase.ktx.Firebase
 * status bar transparent
 *
 * email forgot password custom
+*
+* delete database when logout
 * */
 
 

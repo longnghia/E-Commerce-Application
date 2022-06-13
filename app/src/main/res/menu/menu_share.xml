@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/ic_search"
+        android:icon="@drawable/ic_share"
+        android:title="@string/search"
+        android:iconTint="@color/black"
+        app:showAsAction="ifRoom" />
+</menu>

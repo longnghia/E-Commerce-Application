@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
-import com.goldenowl.ecommerce.utils.Utils.glideListener
+import com.goldenowl.ecommerce.ui.global.IClickListener
+import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
 import java.util.*
 
@@ -25,7 +23,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
 
     private var mListProductData = listOf<ProductData>()
 
-    fun setData(listProductData: List<ProductData>, filterType: String) {
+    fun setData(listProductData: List<ProductData>, filterType: String?) {
         mListProductData = listProductData
         if (filterType == "Sales")
             mListProductData = mListProductData.filter { it.product.salePercent != null }
@@ -50,6 +48,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
         var layoutFrameLoading: FrameLayout? = null
+        var layoutItem: ConstraintLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -59,6 +58,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
+            layoutItem = itemView.findViewById(R.id.layout_item)
             if (layoutLoading != null) {
                 layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
             } else {
@@ -84,8 +84,9 @@ class HomeProductListAdapter(private val listener: IClickListener) :
     }
 
     override fun onBindViewHolder(holder: HomeProductViewHolder, position: Int) {
-        val product = mListProductData[position].product
-        val favorite = mListProductData[position].favorite
+        val productData = mListProductData[position]
+        val product = productData.product
+        val favorite = productData.favorite
 
         if (holder.ivFavorite == null) {
             Log.d(TAG, "onBindViewHolder: not found icon")
@@ -95,12 +96,14 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickFavorite(product, favorite)
         }
-
+        holder.layoutItem?.setOnClickListener {
+            listener.onClickItem(productData)
+        }
 
         holder.productBrand?.text = product.brandName
         holder.productName?.text = product.title
 
-        glideView(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
+        glide2View(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
 
         holder.tvNumberReviews?.text = product.numberReviews.toString()
 
@@ -126,30 +129,14 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             }
         }
 
-        if (favorite != null) {
+        if (favorite != null)
             holder.ivFavorite?.setImageResource(R.drawable.ic_favorites_selected)
-        }
+        else
+            holder.ivFavorite?.setImageResource(R.drawable.ic_favorites_bold)
+
     }
 
     override fun getItemCount() = mListProductData.size
-
-    interface IClickListener {
-        fun onClickFavorite(product: Product, favorite: Favorite?)
-    }
-
-    private fun glideView(imageView: ImageView, loadingLayout: FrameLayout, uri: String) {
-        if (uri.contains("https")) {
-            Glide
-                .with(imageView.context)
-                .load(uri)
-                .listener(
-                    glideListener(loadingLayout)
-                )
-                .into(imageView)
-        } else {
-            imageView.setImageURI(Uri.parse(uri))
-        }
-    }
 }
 
 

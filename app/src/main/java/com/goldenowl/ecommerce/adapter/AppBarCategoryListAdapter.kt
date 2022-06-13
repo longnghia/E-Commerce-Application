@@ -10,7 +10,7 @@ import com.goldenowl.ecommerce.databinding.ItemAppBarCategoryListBinding
 
 class AppBarCategoryListAdapter(
     private val listCategory: List<String>,
-    private val callback: IClickListener
+    private val callback: IClickListenerAppbar
 ) :
     RecyclerView.Adapter<AppBarCategoryListAdapter.CategoryViewHolder>() {
 
@@ -21,7 +21,7 @@ class AppBarCategoryListAdapter(
         notifyDataSetChanged()
     }
 
-    interface IClickListener {
+    interface IClickListenerAppbar {
         fun onClick(position: Int)
     }
 
@@ -29,10 +29,10 @@ class AppBarCategoryListAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("RestrictedApi")
-        fun bind(category: String, position: Int, iClickListener: IClickListener) {
+        fun bind(category: String, position: Int, iClickListenerAppbar: IClickListenerAppbar) {
             binding.btnCategory.text = category
             binding.btnCategory.setOnClickListener {
-                iClickListener.onClick(position)
+                iClickListenerAppbar.onClick(position)
                 Log.d("Appbar", "bind: clicked $position")
                 setPosition(position)
             }

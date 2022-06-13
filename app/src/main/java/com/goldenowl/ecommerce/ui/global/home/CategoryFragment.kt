@@ -13,14 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.adapter.CategoryProductListAdapter
+import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
-import com.goldenowl.ecommerce.ui.global.favorites.FavoritesFragment
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
@@ -87,19 +84,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
 
         gridLayoutManager = GridLayoutManager(context, Consts.SPAN_COUNT_ONE)
-        adapterGrid = CategoryProductListAdapter(gridLayoutManager, object : CategoryProductListAdapter.IClickListener {
-            override fun onClickFavorite(product: Product, favorite: Favorite?) {
-                Log.d(TAG, "onClickFavorite: $favorite")
-                if (favorite == null) {
-                    Log.d(FavoritesFragment.TAG, "onClickFavorite: insert favorite")
-                    toggleBottomSheetAddToFavorite(product)
-                } else {
-                    Log.d(FavoritesFragment.TAG, "onClickFavorite: remove favorite")
-                    viewModel.removeFavorite(favorite!!)
-                }
-            }
-
-        })
+        adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
         val homeFilter = arguments?.getString("home_filter")
         sortViewModel.filterType.value = homeFilter
 
@@ -134,12 +119,12 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     }
 
 
-    private fun toggleBottomSheetAddToFavorite(product: Product) {
-        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
-        modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
-    }
-
+//    private fun toggleBottomSheetInsertFavorite(product: Product) {
+//        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
+//        modalBottomSheet.enterTransition = View.GONE
+//        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
+//    }
+//
 
     override fun setAppbar() {
         binding.topAppBar.toolbar.setNavigationOnClickListener {
@@ -156,7 +141,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 //todo
             AppBarCategoryListAdapter(
                 list,
-                object : AppBarCategoryListAdapter.IClickListener {
+                object : AppBarCategoryListAdapter.IClickListenerAppbar {
                     override fun onClick(position: Int) {
                         sortViewModel.filterType.value = list[position]
                     }
@@ -241,7 +226,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     override fun getViewBinding(): FragmentCategoryBinding {
         return FragmentCategoryBinding.inflate(layoutInflater)
     }
-
 }
 
 

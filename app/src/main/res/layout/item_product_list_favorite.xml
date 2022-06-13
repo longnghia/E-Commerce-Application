@@ -2,20 +2,24 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
+    android:id="@+id/layout_item"
     android:layout_width="match_parent"
     android:layout_height="122dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="26dp"
     android:orientation="vertical">
 
-    <com.google.android.material.card.MaterialCardView
+    <include
+        android:id="@+id/layout_grey_out"
+        layout="@layout/layout_grey_out"
+        android:visibility="invisible" />
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/material_card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/grey_text"
         app:cardCornerRadius="10dp"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -166,22 +170,21 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="@drawable/bg_cart_icon"
-        android:src="@drawable/ic_cart"
         android:elevation="2dp"
         android:padding="8dp"
-
-        app:layout_constraintBottom_toBottomOf="@id/card_view"
-        app:layout_constraintEnd_toEndOf="@id/card_view" />
+        android:src="@drawable/ic_cart"
+        app:layout_constraintBottom_toBottomOf="@id/layout_item"
+        app:layout_constraintEnd_toEndOf="@id/layout_item" />
 
     <ImageView
         android:id="@+id/iv_remove"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:src="@drawable/ic_close"
         android:elevation="2dp"
         android:padding="8dp"
-        app:layout_constraintTop_toTopOf="@id/card_view"
-        app:layout_constraintEnd_toEndOf="@id/card_view" />
+        android:src="@drawable/ic_close"
+        app:layout_constraintEnd_toEndOf="@id/layout_item"
+        app:layout_constraintTop_toTopOf="@id/layout_item" />
 
     <TextView
         android:id="@+id/tv_discount_percent"
@@ -190,12 +193,25 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="7dp"
         android:background="@drawable/bg_rounded_button_red"
+        android:elevation="5dp"
         android:paddingStart="2dp"
         android:paddingEnd="2dp"
         android:text="-20%"
-        android:elevation="5dp"
         android:textColor="@color/white"
         android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="@+id/card_view"
-        app:layout_constraintTop_toTopOf="@+id/card_view" />
+        app:layout_constraintStart_toStartOf="@+id/layout_item"
+        app:layout_constraintTop_toTopOf="@+id/layout_item" />
+
+    <TextView
+        android:id="@+id/tv_sold_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:elevation="5dp"
+        android:text="@string/sold_out"
+        android:textColor="@color/grey_text"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/material_card_view"
+        app:layout_constraintTop_toBottomOf="@+id/material_card_view" />
 </androidx.constraintlayout.widget.ConstraintLayout>

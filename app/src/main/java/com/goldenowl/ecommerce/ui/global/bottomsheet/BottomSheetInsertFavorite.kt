@@ -75,7 +75,7 @@ class BottomSheetInsertFavorite(private val product: Product, private val viewMo
                 Favorite(
                     product.id,
                     mapString[binding.radioGroup.checkedRadioButtonId]!!,
-                    "black"
+                    product.getFirstColor()
                 )
             )
             dismiss()
@@ -84,7 +84,7 @@ class BottomSheetInsertFavorite(private val product: Product, private val viewMo
     }
 
     private fun setRadioButton(v: RadioButton, available: Boolean) {
-        v.isEnabled = available
+        v.isEnabled = true // todo check if product quantity available
     }
 
     companion object {

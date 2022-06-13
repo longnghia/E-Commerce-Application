@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="16dp">
+    android:layout_width="164dp"
+    android:layout_height="260dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="20dp">
+
+    <include
+        android:id="@+id/layout_grey_out"
+        layout="@layout/layout_grey_out"
+        android:visibility="invisible" />
 
     <include
         android:id="@+id/layout_loading"
@@ -16,10 +22,11 @@
         app:layout_constraintStart_toStartOf="@+id/product_img"
         app:layout_constraintTop_toTopOf="@+id/product_img" />
 
+
     <ImageView
         android:id="@+id/product_img"
-        android:layout_width="148dp"
-        android:layout_height="184dp"
+        android:layout_width="164dp"
+        android:layout_height="236dp"
         android:scaleType="centerCrop"
         android:src="@drawable/pexels_photo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -172,4 +179,5 @@
             android:textColor="@color/red_dark"
             android:textSize="14sp" />
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

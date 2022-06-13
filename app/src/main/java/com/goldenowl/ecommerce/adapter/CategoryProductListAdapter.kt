@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +8,22 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.global.IClickListener
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.SortType
-import com.goldenowl.ecommerce.utils.Utils.glideListener
+import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
 import java.util.*
 
-class CategoryProductListAdapter(private val mLayoutManager: GridLayoutManager, private val listener: IClickListener) :
+class CategoryProductListAdapter(
+    private val mLayoutManager: GridLayoutManager,
+    private val listener: IClickListener
+) :
     RecyclerView.Adapter<CategoryProductListAdapter.CategoryProductViewHolder>() {
 
     private var mListProductData = listOf<ProductData>()
@@ -65,6 +66,7 @@ class CategoryProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
         var layoutFrameLoading: FrameLayout? = null
+        var layoutItem: ConstraintLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -74,6 +76,7 @@ class CategoryProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
+            layoutItem = itemView.findViewById(R.id.layout_item)
             if (layoutLoading != null) {
                 layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
             } else {
@@ -107,20 +110,21 @@ class CategoryProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         val product = mListProductData[position].product
         val favorite = mListProductData[position].favorite
 
-        if (holder.ivFavorite == null) {
-            Log.d(TAG, "onBindViewHolder: not found icon")
-        }
 
         holder.ivFavorite?.setOnClickListener {
             Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickFavorite(product, favorite)
         }
 
+        holder.layoutItem?.setOnClickListener {
+            Log.d(TAG, "onBindViewHolder: $position")
+            listener.onClickItem(mListProductData[position])
+        }
 
         holder.productBrand?.text = product.brandName
         holder.productName?.text = product.title
 
-        glideView(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
+        glide2View(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
 
         holder.tvNumberReviews?.text = product.numberReviews.toString()
 
@@ -161,24 +165,6 @@ class CategoryProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     }
 
     override fun getItemCount() = mListProductData.size
-
-    interface IClickListener {
-        fun onClickFavorite(product: Product, favorite: Favorite?)
-    }
-
-    private fun glideView(imageView: ImageView, loadingLayout: FrameLayout, uri: String) {
-        if (uri.contains("https")) {
-            Glide
-                .with(imageView.context)
-                .load(uri)
-                .listener(
-                    glideListener(loadingLayout)
-                )
-                .into(imageView)
-        } else {
-            imageView.setImageURI(Uri.parse(uri))
-        }
-    }
 }
 
 

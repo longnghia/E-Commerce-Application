@@ -64,7 +64,6 @@ class BottomSheetInsertCart(private val product: Product, private val viewModel:
 
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             Log.d(TAG, "onViewCreated: checked id = $checkedId, size=${mapString[checkedId]}")
-//            .setTextColor(requireContext().getColor(R.color.white))
         }
 
         binding.btnAddToFavorites.setOnClickListener {
@@ -72,7 +71,7 @@ class BottomSheetInsertCart(private val product: Product, private val viewModel:
                 Cart(
                     product.id,
                     mapString[binding.radioGroup.checkedRadioButtonId]!!,
-                    "black",
+                    product.getFirstColor(),
                     1
                 )
             )

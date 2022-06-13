@@ -21,7 +21,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
 
     var categoryList: Set<String> = setOf()
 
-    val productsList: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
     var listProductData: MutableLiveData<List<ProductData>> = MutableLiveData<List<ProductData>>()
 
 //    val sortType: MutableLiveData<SortType> = MutableLiveData<SortType>()
@@ -89,7 +88,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
             mListProduct = productsRepository.getAllProducts()
             Log.d(TAG, "getAllProducts: done = $mListProduct")
 //            productsRepository.syncLocalDataSource(mProductsList) // todo
-            productsList.value = mListProduct.toList()
         } else {
             Log.d(TAG, "getAllProducts: using data in mProductList:\n $mListProduct")
         }
@@ -192,6 +190,17 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
                 }
             }
         }
+    }
+
+    fun getRelateProducts(tags: List<Product.Tag>): List<ProductData> {
+        val list = listProductData.value?.toMutableList()
+        return list?.take(5) ?: emptyList()
+        //todo getRelateProducts
+//        list.filter { product->
+//            product.tags.find { tag->
+//                tags.indexOf(tag.)
+//            }
+//        }
     }
 
 //    fun restoreUserDatabase() {

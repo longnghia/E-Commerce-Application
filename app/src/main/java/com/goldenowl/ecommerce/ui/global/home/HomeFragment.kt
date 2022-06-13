@@ -9,13 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentHomeBinding
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
-import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
-import com.goldenowl.ecommerce.ui.global.favorites.FavoritesFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Utils.getColor
 
@@ -56,20 +52,8 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
 
     override fun setViews() {
         Log.d(TAG, "setViews: started")
-        val listener = object : HomeProductListAdapter.IClickListener {
-            override fun onClickFavorite(product: Product, favorite: Favorite?) {
-                Log.d(CategoryFragment.TAG, "onClickFavorite: $favorite")
-                if (favorite == null) {
-                    Log.d(FavoritesFragment.TAG, "onClickFavorite: insert favorite")
-                    toggleBottomSheetAddToFavorite(product)
-                } else {
-                    Log.d(FavoritesFragment.TAG, "onClickFavorite: remove favorite")
-                    viewModel.removeFavorite(favorite!!)
-                }
-            }
-        }
-        salesListAdapter = HomeProductListAdapter(listener)
-        newsListAdapter = HomeProductListAdapter(listener)
+        salesListAdapter = HomeProductListAdapter(this)
+        newsListAdapter = HomeProductListAdapter(this)
         binding.rcvSales.adapter = salesListAdapter
         binding.rcvSales.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         binding.rcvNew.adapter = newsListAdapter
@@ -79,7 +63,7 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             Log.d(TAG, "setViews: View all clicked")
             findNavController().navigate(
                 R.id.action_view_all,
-                bundleOf("home_filter" to "Sale")
+                bundleOf("home_filter" to "Sales")
             )
         }
 
@@ -103,10 +87,5 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             setCollapsedTitleTextColor(getColor(context, R.color.white) ?: 0xFFFFFF)
             setExpandedTitleColor(getColor(context, R.color.white) ?: 0xFFFFFF)
         }
-    }
-    private fun toggleBottomSheetAddToFavorite(product: Product) {
-        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
-        modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
     }
 }

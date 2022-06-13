@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.viewmodels
 
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,18 +8,16 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.models.data.Cart
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.global.IClickListener
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.Consts.SPAN_COUNT_ONE
 import com.goldenowl.ecommerce.utils.SortType
-import com.goldenowl.ecommerce.utils.Utils.glideListener
+import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
 
 
@@ -69,6 +66,7 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         RecyclerView.ViewHolder(itemView) {
         var productName: TextView? = null
         var productBrand: TextView? = null
+        var tvSoldOut: TextView? = null
         var tvColor: TextView? = null
         var tvDiscoutPercent: TextView? = null
         var tvSize: TextView? = null
@@ -80,7 +78,8 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         var ivCart: ImageView? = null
         var ivRemove: ImageView? = null
         var layoutLoading: FrameLayout? = null
-        var layoutFrameLoading: FrameLayout? = null
+        var layoutGreyOut: FrameLayout? = null
+        var layoutItem: ConstraintLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -91,13 +90,11 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             ivCart = itemView.findViewById(R.id.iv_cart)
             ivRemove = itemView.findViewById(R.id.iv_remove)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
-            if (layoutLoading != null) {
-                layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
-            } else {
-                Log.d(TAG, "layoutLoading NULL!! ")
-            }
+            layoutGreyOut = itemView.findViewById(R.id.layout_grey_out)
+            layoutItem = itemView.findViewById(R.id.layout_item)
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
+            tvSoldOut = itemView.findViewById(R.id.tv_sold_out)
             originPrice = itemView.findViewById(R.id.product_origin_price)
             discountPrice = itemView.findViewById(R.id.product_discount_price)
             tvDiscoutPercent = itemView.findViewById(R.id.tv_discount_percent)
@@ -125,9 +122,10 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     }
 
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
-        val product = mListFavoriteProductData[position].product
-        val cart = mListFavoriteProductData[position].cart
-        val favorite = mListFavoriteProductData[position].favorite
+        val productData = mListFavoriteProductData[position]
+        val product = productData.product
+        val cart = productData.cart
+        val favorite = productData.favorite
 
         if (holder.ivCart == null) {
             Log.d(TAG, "onBindViewHolder: not found icon")
@@ -140,13 +138,16 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
 
         holder.ivRemove?.setOnClickListener {
             Log.d(TAG, "onBindViewHolder: $position")
-            listener.onClickRemove(product, favorite)
+            listener.onClickRemoveFavorite(product, favorite)
         }
 
+        holder.layoutItem?.setOnClickListener {
+            listener.onClickItem(productData)
+        }
         holder.productBrand?.text = product.brandName
         holder.productName?.text = product.title
 
-        glideView(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
+        glide2View(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
 
         holder.tvNumberReviews?.text = product.numberReviews.toString()
         holder.tvSize?.text = favorite?.size
@@ -170,11 +171,22 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
-        if (cart != null) {
-            holder.ivCart?.setImageResource(R.drawable.ic_bag_selected)
-            Log.d(TAG, "onBindViewHolder: cart: $cart")
-        }else{
-            holder.ivCart?.setImageResource(R.drawable.ic_cart)
+        Log.d(TAG, "onBindViewHolder: product=${product.colors[0].sizes}")
+        if (product.isAvailable(favorite!!)) {
+            if (cart != null) {
+                holder.ivCart?.apply{
+                    backgroundTintList = this.resources.getColorStateList(R.color.red_dark , this.context.theme)
+                }
+
+            } else {
+                holder.ivCart?.apply{
+                    backgroundTintList = this.resources.getColorStateList(R.color.grey_text , this.context.theme)
+                }
+            }
+        } else {
+            holder.tvSoldOut?.visibility = View.VISIBLE
+            holder.ivCart?.visibility = View.INVISIBLE
+            holder.layoutGreyOut?.visibility = View.VISIBLE
         }
     }
 
@@ -189,23 +201,5 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
 
     override fun getItemCount() = mListFavoriteProductData.size
 
-    interface IClickListener {
-        fun onClickCart(product: Product, cart: Cart?)
-        fun onClickRemove(product: Product, favorite: Favorite?)
-    }
-
-    private fun glideView(imageView: ImageView, loadingLayout: FrameLayout, uri: String) {
-        if (uri.contains("https")) {
-            Glide
-                .with(imageView.context)
-                .load(uri)
-                .listener(
-                    glideListener(loadingLayout)
-                )
-                .into(imageView)
-        } else {
-            imageView.setImageURI(Uri.parse(uri))
-        }
-    }
 }
 
