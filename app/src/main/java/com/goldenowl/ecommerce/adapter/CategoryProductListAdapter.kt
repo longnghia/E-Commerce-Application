@@ -28,7 +28,7 @@ class CategoryProductListAdapter(
 
     private var mListProductData = listOf<ProductData>()
 
-    fun setData(listProductData: List<ProductData>, filterType: String?, sortType: SortType?) {
+    fun setData(listProductData: List<ProductData>, filterType: String?, sortType: SortType?, searchTerm: String) {
         mListProductData = listProductData
 
         if (filterType == "Sales")
@@ -45,6 +45,14 @@ class CategoryProductListAdapter(
             SortType.POPULAR -> mListProductData.sortedByDescending { it.product.isPopular }
             SortType.NEWEST -> mListProductData.sortedByDescending { it.product.createdDate }
             else -> mListProductData
+        }
+        if (searchTerm.isNotBlank()) {
+            mListProductData = mListProductData.filter {
+                it.product.title.indexOf(searchTerm, ignoreCase = true) >= 0 || it.product.brandName.indexOf(
+                    searchTerm,
+                    ignoreCase = true
+                ) >= 0
+            }
         }
         Log.d(TAG, "setData: listProductData = $mListProductData")
 

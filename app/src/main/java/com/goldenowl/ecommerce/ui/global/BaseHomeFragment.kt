@@ -69,6 +69,7 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
         modalBottomSheet.enterTransition = View.GONE
         modalBottomSheet.show(parentFragmentManager, BottomSheetInsertCart.TAG)
     }
+
     protected fun toggleBottomSheetInsertCart(product: Product) {
         val modalBottomSheet = BottomSheetInsertCart(product, viewModel)
         modalBottomSheet.enterTransition = View.GONE

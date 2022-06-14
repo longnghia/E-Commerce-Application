@@ -38,7 +38,7 @@ class BottomSheetSortProduct(private val viewModel: SortFilterViewModel) : Botto
         for (pair in map) {
             val (type, view) = pair
             view.setOnClickListener {
-                viewModel.setSortType(type)
+                viewModel.sortType.value = type
                 dismiss()
             }
         }

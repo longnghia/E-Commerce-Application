@@ -2,12 +2,12 @@ package com.goldenowl.ecommerce.ui.global.bottomsheet
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
+import androidx.recyclerview.widget.GridLayoutManager
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.adapter.ModalAdapter
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetAddToFavoriteBinding
 import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Product
@@ -33,44 +33,17 @@ class BottomSheetInsertCart(private val product: Product, private val viewModel:
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnAddToFavorites.text = getString(R.string.add_to_cart)
-        val mapString = mapOf(
-            R.id.radio_size_L to "L",
-            R.id.radio_size_M to "M",
-            R.id.radio_size_S to "S",
-            R.id.radio_size_XL to "XL",
-            R.id.radio_size_XS to "XS"
-        )
-        val mapView = mapOf(
-            "L" to binding.radioSizeL,
-            "M" to binding.radioSizeM,
-            "S" to binding.radioSizeS,
-            "XL" to binding.radioSizeXL,
-            "XS" to binding.radioSizeXS
-        )
+        val bottomSheetAdapter = ModalAdapter()
+        // todo check if size remain
+        binding.rcvSizes.adapter = bottomSheetAdapter
+        binding.rcvSizes.layoutManager = GridLayoutManager(context, 3)
 
-        if (product != null) {
-            val listSize = product.getListSize()
-            if (listSize.isNotEmpty()) {
-                Log.d(TAG, "onViewCreated: list size = $listSize")
-                for (size in listSize) {
-                    val s = size.size
-                    val view = mapView[s] as RadioButton
-
-                    val available = size.quantity > 0
-                    setRadioButton(view, available)
-                }
-            }
-        }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            Log.d(TAG, "onViewCreated: checked id = $checkedId, size=${mapString[checkedId]}")
-        }
 
         binding.btnAddToFavorites.setOnClickListener {
             viewModel.insertCart(
                 Cart(
                     product.id,
-                    mapString[binding.radioGroup.checkedRadioButtonId]!!,
+                    bottomSheetAdapter.getCheckedSize(),
                     product.getFirstColor(),
                     1
                 )
@@ -78,10 +51,6 @@ class BottomSheetInsertCart(private val product: Product, private val viewModel:
             dismiss()
         }
 
-    }
-
-    private fun setRadioButton(v: RadioButton, available: Boolean) {
-        v.isEnabled = available
     }
 
     companion object {

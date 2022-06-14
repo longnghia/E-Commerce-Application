@@ -3,7 +3,6 @@ package com.goldenowl.ecommerce.ui.global.home
 import android.app.SearchManager
 import android.content.Context
 import android.util.Log
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -13,14 +12,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.adapter.CategoryProductListAdapter
-import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.SortType
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
+import kotlinx.coroutines.*
 
 
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
@@ -33,6 +33,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     private lateinit var listCategory: Set<String>
     private var filterType: String? = null
     private var sortType: SortType? = null
+    private var searchTerm: String = ""
 
 
     //    private val sortViewModel: SortFilterViewModel by viewModels()
@@ -43,7 +44,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     override fun setObservers() {
         viewModel.listProductData.observe(viewLifecycleOwner) {
             listProductData = it
-            adapterGrid.setData(listProductData, filterType, sortType)
+            refreshList()
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
@@ -56,14 +57,19 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             else {
                 filterType = it
                 binding.topAppBar.collapsingToolbar.title = it
-                adapterGrid.setData(listProductData, filterType, sortType)
+                refreshList()
             }
         }
 
         sortViewModel.sortType.observe(viewLifecycleOwner) {
             sortType = it
             binding.topAppBar.tvSort.text = getString(Consts.sortMap[it] ?: R.string.none)
-            adapterGrid.setData(listProductData, filterType, sortType)
+            refreshList()
+        }
+
+        sortViewModel.searchTerm.observe(viewLifecycleOwner) {
+            searchTerm = it
+            refreshList()
         }
 
         viewModel.toastMessage.observe(viewLifecycleOwner) {
@@ -99,6 +105,10 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
     }
 
+    private fun refreshList() {
+        adapterGrid.setData(listProductData, filterType, sortType, searchTerm)
+    }
+
     private fun switchLayout() {
         gridLayoutManager.apply {
             spanCount = if (spanCount == Consts.SPAN_COUNT_ONE) {
@@ -119,13 +129,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     }
 
 
-//    private fun toggleBottomSheetInsertFavorite(product: Product) {
-//        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
-//        modalBottomSheet.enterTransition = View.GONE
-//        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
-//    }
-//
-
     override fun setAppbar() {
         binding.topAppBar.toolbar.setNavigationOnClickListener {
             sortViewModel.filterType.value = null
@@ -145,7 +148,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                     override fun onClick(position: Int) {
                         sortViewModel.filterType.value = list[position]
                     }
-
                 })
         listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
@@ -162,27 +164,35 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 searchView = searchItem.actionView as SearchView
             }
             if (searchView != null) {
-//                searchView!!.setIconifiedByDefault(true)
+//                searchView!!.imeOptions = EditorInfo.IME_ACTION_DONE;
+                val debounceJob: Job? = null
+                val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+                var lastInput = ""
                 searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
                 queryTextListener = object : SearchView.OnQueryTextListener {
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.i("onQueryTextChange", newText!!)
+                        debounceJob?.cancel()
+                        if (lastInput != newText) {
+                            lastInput = newText ?: ""
+                            uiScope.launch {
+                                delay(500)
+                                if (lastInput == newText) {
+                                    Log.i("onQueryTextChange", newText!!)
+                                    Log.d(TAG, "onQueryTextChange: uiScope")
+                                    sortViewModel.searchTerm.value = newText
+                                }
+                            }
+                        }
                         return true
                     }
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        Log.i("onQueryTextSubmit", query!!)
-//                        viewModel.searchProducts(query)
-                        binding.topAppBar.toolbar.collapseActionView()
-                        Log.d(
-                            TAG,
-                            "onQueryTextSubmit: hasactionview=${binding.topAppBar.toolbar.hasExpandedActionView()}"
-                        )
+                        Log.d(TAG, "onQueryTextSubmit  $query!!")
+                        hideKeyboard()
                         return true
                     }
                 }
                 searchView!!.setOnCloseListener {
-//                    binding.topAppBar.collapsingToolbar.hide
                     Log.d(TAG, "setAppBarMenu: closed")
                     false
                 }
@@ -192,27 +202,8 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 Log.d(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
             }
         }
-
-        //todo
-        binding.topAppBar.toolbar.setOnMenuItemClickListener {
-            onMenuClick(it)
-        }
     }
 
-    private fun onMenuClick(menuItem: MenuItem?): Boolean {
-        Log.d(TAG, "onMenuClick: ${menuItem?.itemId}")
-        when (menuItem?.itemId) {
-            R.id.ic_search -> {
-                Log.d(TAG, "onMenuClick: search clicked")
-                // todo
-//                binding.topAppBar.searchBar.searchBarFrameLayout.apply {
-//                    visibility = if (visibility == View.VISIBLE) View.INVISIBLE else View.INVISIBLE
-//                }
-                return false
-            }
-        }
-        return false
-    }
 
     private fun getListCategory(): List<String> {
         return viewModel.categoryList.toList()

@@ -23,16 +23,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
 
     var listProductData: MutableLiveData<List<ProductData>> = MutableLiveData<List<ProductData>>()
 
-//    val sortType: MutableLiveData<SortType> = MutableLiveData<SortType>()
-//        .apply { value = SortType.PRICE_INCREASE }
-
-//    val filterProducts: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
-//    val filterFavoriteProducts: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
-
-
-//    val favoriteList: MutableLiveData<List<Favorite>> = MutableLiveData<List<Favorite>>()
-//    val bagList: MutableLiveData<List<Product>> = MutableLiveData<List<Product>>()
-
     val toastMessage: MutableLiveData<String> = MutableLiveData<String>()
 
     val dataReady: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
@@ -60,15 +50,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
             ProductData(p, favorite, cart)
         }
     }
-
-//    private fun getFavoriteList(): List<Favorite> {
-//        val favoriteList = productsRepository.observeListFavorite()
-//
-//        Log.d(TAG, "getFavoriteList: $favoriteList")
-//        val favoriteProducts = favoriteList.map { it.productId }
-//        filterFavoriteProducts.value = mProductsList.toMutableList().filter { favoriteProducts.indexOf(it.id) >= 0 }
-//        return favoriteList
-//    }
 
     private fun setCategoryList(list: List<Product>) {
         val categoryList = mutableSetOf<String>()
@@ -110,30 +91,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
         return filteredProducts
     }
 
-//    fun sortBy(type: SortType) {
-//        Log.d(TAG, "sortBy: $type")
-////        val currentFilterList = filterProducts.value
-//        if (currentFilterList != null) {
-//            var resultList = when (type) {
-//                SortType.REVIEW -> currentFilterList.sortedByDescending { it.reviewStars }
-//                SortType.PRICE_DECREASE -> currentFilterList.sortedByDescending { it.getDiscountPrice() }
-//                SortType.PRICE_INCREASE -> currentFilterList.sortedBy { it.getDiscountPrice() }
-//                SortType.POPULAR -> currentFilterList.sortedByDescending { it.isPopular }
-//                SortType.NEWEST -> currentFilterList.sortedByDescending { it.createdDate }
-//            }
-//            filterProducts.value = resultList
-//        }
-//    }
-
-//    fun searchProducts(query: String) {
-//        if (query.isEmpty())
-//            filterProducts.value = mListProduct.toList()
-//        var currentFilterList = mListProduct.filter {
-//            it.title.indexOf(query, ignoreCase = true) >= 0 || it.brandName.indexOf(query, ignoreCase = true) >= 0
-//        }
-//        filterProducts.value = currentFilterList
-//    }
-
     fun insertFavorite(favorite: Favorite) {
         Log.d(TAG, "insertFavorite: $favorite")
         viewModelScope.launch(Dispatchers.IO) {
@@ -147,10 +104,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
             }
         }
     }
-
-//    fun setFilterProducts(it: Int?) {
-//        filterProducts.value = getFilterProducts(it ?: -1, mListProduct)
-//    }
 
     fun removeFavorite(favorite: Favorite) {
         viewModelScope.launch(Dispatchers.IO) {

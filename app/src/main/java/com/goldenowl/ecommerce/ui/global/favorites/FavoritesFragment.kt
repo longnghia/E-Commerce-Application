@@ -20,8 +20,10 @@ import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
 import com.goldenowl.ecommerce.utils.Consts
 import com.goldenowl.ecommerce.utils.Consts.sortMap
 import com.goldenowl.ecommerce.utils.SortType
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.FavoriteProductListAdapter
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
+import kotlinx.coroutines.*
 
 class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     override fun getViewBinding(): FragmentFavoritesBinding {
@@ -115,7 +117,6 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     }
 
 
-
     private fun switchLayout() {
         gridLayoutManager.apply {
             spanCount = if (spanCount == Consts.SPAN_COUNT_ONE) {
@@ -135,14 +136,6 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
         modalBottomSheet.show(parentFragmentManager, BottomSheetSortProduct.TAG)
     }
 
-
-//    private fun toggleBottomSheetInsertFavorite(product: Product) {
-//        val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
-//        modalBottomSheet.enterTransition = View.GONE
-//        modalBottomSheet.show(parentFragmentManager, BottomSheetInsertFavorite.TAG)
-//    }
-
-
     private fun setAppBarMenu() {
         binding.topAppBar.toolbar.apply {
             inflateMenu(R.menu.menu_search)
@@ -153,22 +146,31 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
                 searchView = searchItem.actionView as SearchView
             }
             if (searchView != null) {
-//                searchView!!.setIconifiedByDefault(true)
+                val debounceJob: Job? = null
+                val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+                var lastInput = ""
+
                 searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
                 queryTextListener = object : SearchView.OnQueryTextListener {
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.i("onQueryTextChange", newText!!)
+                        debounceJob?.cancel()
+                        if (lastInput != newText) {
+                            lastInput = newText ?: ""
+                            uiScope.launch {
+                                delay(500)
+                                if (lastInput == newText) {
+                                    Log.i("onQueryTextChange", newText!!)
+                                    Log.d(CategoryFragment.TAG, "onQueryTextChange: uiScope")
+                                    sortViewModel.searchTerm.value = newText
+                                }
+                            }
+                        }
                         return true
                     }
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        Log.i("onQueryTextSubmit", query!!)
-//                        viewModel.searchProducts(query) // todo filter search
-                        binding.topAppBar.toolbar.collapseActionView()
-                        Log.d(
-                            TAG,
-                            "onQueryTextSubmit: hasactionview=${binding.topAppBar.toolbar.hasExpandedActionView()}"
-                        )
+                        Log.d("onQueryTextSubmit", query!!)
+                        hideKeyboard()
                         return true
                     }
                 }
