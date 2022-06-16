@@ -40,6 +40,13 @@ class SettingsManager(context: Context) {
         )
     }
 
+    fun clear() {
+        editor.remove(KEY_NOTIFICATION_SALE)
+        editor.remove(KEY_NOTIFICATION_ARRIVES)
+        editor.remove(KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE)
+        editor.commit()
+    }
+
     companion object {
         const val KEY_FIRST_LAUNCH = "firstLaunch"
         const val KEY_DARK_MODE = "darkMode"

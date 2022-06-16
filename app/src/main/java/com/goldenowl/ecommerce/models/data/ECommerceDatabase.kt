@@ -6,10 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [UserOrder::class, Product::class], version = 1)
+@Database(entities = [Favorite::class, Cart::class, Product::class], version = 1, exportSchema = false)
 @TypeConverters(UserOrderTypeConverters::class, ProductTypeConverters::class)
 abstract class ECommerceDatabase : RoomDatabase() {
-    abstract fun userOrderDao(): UserOrderDao
+    abstract fun favoriteDao(): FavoriteDao
+    abstract fun orderDao(): CartDao
     abstract fun productDao(): ProductDao
 
     companion object {
@@ -28,6 +29,4 @@ abstract class ECommerceDatabase : RoomDatabase() {
         }
 
     }
-
-
 }

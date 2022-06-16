@@ -47,7 +47,7 @@ jobs:
           appId: 1:174656673319:android:23f81df8e8d7885646e002
           token: ${{secrets.FIREBASE_TOKEN}}
           groups: go
-          file: app/release/app-release.apk
+          file: app/build/outputs/apk/release/app-release.apk
           releaseNotesFile: log.txt
           
           

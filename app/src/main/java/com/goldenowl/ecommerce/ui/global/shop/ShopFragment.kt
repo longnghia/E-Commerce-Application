@@ -2,8 +2,6 @@ package com.goldenowl.ecommerce.ui.global.shop
 
 import android.app.SearchManager
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import androidx.appcompat.widget.SearchView
@@ -22,29 +20,23 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
         return FragmentShopBinding.inflate(layoutInflater)
     }
 
-    //    private lateinit var adapter: ShopCategoryAdapter
     private lateinit var adapter: ArrayAdapter<String>
-    private val mMainHandler = Handler(Looper.getMainLooper())
 
     override fun setViews() {
         val fullList = viewModel.categoryList.toList()
         val list = fullList.toList()
 
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, list)
-//        adapter = ShopCategoryAdapter(requireContext(), list)
-        Log.d(TAG, "setViews: count=${adapter.count}")
         binding.listCategory.apply {
             adapter = this@ShopFragment.adapter
             setOnItemClickListener { _, _, position, _ ->
                 val index = fullList.indexOf(list[position])
-                viewModel.currentCategory.value = index
                 findNavController().navigate(
                     R.id.category_dest
                 )
             }
 
             binding.btnViewAll.setOnClickListener {
-                viewModel.currentCategory.value = -1
 
                 findNavController().navigate(
                     R.id.action_view_all
@@ -70,17 +62,14 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
         val toolBar = binding.topAppBar.toolbar
 
         if (toolBar.menu.isEmpty()) {
-            Log.d(TAG, "setAppBarMenu: menu empty, creating")
             toolBar.apply {
                 inflateMenu(R.menu.menu_search)
             }
             setSearchView()
-        } else {
-            Log.d(TAG, "setAppBarMenu: menu not empty")
         }
 
         /* todo: not work but refresh category array*/
-        if(searchView!=null){
+        if (searchView != null) {
             searchView!!.setQuery("", false);
         }
     }
@@ -99,7 +88,8 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
         val queryTextListener = object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String?): Boolean {
                 Log.i("onQueryTextChange", newText!!)
-                filterCategory(fullList, newText)
+//                filterCategory(fullList, newText)
+                //todo uiscope
                 return false
             }
 
@@ -118,29 +108,12 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
             searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
 
             searchView!!.setOnCloseListener {
-//                    binding.topAppBar.collapsingToolbar.hide
                 Log.d(TAG, "setAppBarMenu: closed")
                 false
             }
             searchView!!.maxWidth = Integer.MAX_VALUE
             searchView!!.setOnQueryTextListener(queryTextListener)
-        } else {
-            Log.d(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
         }
-
-    }
-
-    private fun filterCategory(fullList: List<String>, newText: String) {
-        val list = fullList.filter { it.indexOf(newText, ignoreCase = true) >= 0 }
-
-        mMainHandler.removeCallbacksAndMessages(null)
-        mMainHandler.postDelayed({
-            adapter.clear() // todo gently change data
-            adapter.addAll(list)
-            adapter.notifyDataSetChanged()
-            Log.d(TAG, "setAppBarMenu: start filter count=${adapter.count}")
-
-        }, 500)
     }
 
     companion object {

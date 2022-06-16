@@ -1,7 +1,7 @@
 package com.goldenowl.ecommerce.models.data
 
 data class User @JvmOverloads constructor(
-    val id: String = "",
+    var id: String = "",
     var name: String = "",
     val email: String = "",
     var dob: String = "",
@@ -11,6 +11,6 @@ data class User @JvmOverloads constructor(
     var settings: Map<String, Boolean> = mapOf()
 ) {
     override fun toString(): String {
-        return "User(id=$id, name=$name, email=$email, dob=$dob, password=$password, avatar=$avatar, logType=$logType)"
+        return "User(id=$id, name=$name, email=$email, \ndob=$dob, password=$password, avatar=$avatar, logType=$logType), \nsettings=$settings"
     }
 }

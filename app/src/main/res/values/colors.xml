@@ -14,6 +14,7 @@
     <color name="grey_text">#9B9B9B</color>
 
     <color name="red_dark">#DB3022</color>
+    <color name="red_dark_second">#B2DB3022</color>
     <color name="red_light">#B2DB3022</color>
     <color name="red_error">#F01F0E</color>
     <color name="black_light">#222222</color>

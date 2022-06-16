@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp">
 
     <include
@@ -15,6 +16,7 @@
         app:layout_constraintEnd_toEndOf="@+id/product_img"
         app:layout_constraintStart_toStartOf="@+id/product_img"
         app:layout_constraintTop_toTopOf="@+id/product_img" />
+
     <ImageView
         android:id="@+id/product_img"
         android:layout_width="148dp"
@@ -29,11 +31,11 @@
     </ImageView>
 
     <ImageView
+        android:id="@+id/iv_favorite"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_marginBottom="-18dp"
         android:background="@drawable/bg_rounded_item"
-
         android:elevation="2dp"
         android:padding="12dp"
         android:src="@drawable/ic_favorites"
@@ -44,7 +46,7 @@
         app:layout_constraintEnd_toEndOf="@+id/product_img" />
 
     <TextView
-        android:id="@+id/tv_product_discount"
+        android:id="@+id/tv_discount_percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -79,7 +81,7 @@
             />
 
         <TextView
-            android:id="@+id/tv_rate_count"
+            android:id="@+id/tv_number_reviews"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(10)"
@@ -117,7 +119,7 @@
         app:layout_constraintTop_toBottomOf="@+id/product_name">
 
         <TextView
-            android:id="@+id/product_old_price"
+            android:id="@+id/product_origin_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="15$"
@@ -125,7 +127,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/product_current_price"
+            android:id="@+id/product_discount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

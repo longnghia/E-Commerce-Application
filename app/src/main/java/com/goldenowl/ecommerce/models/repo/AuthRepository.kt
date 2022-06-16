@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.models.repo
 
 import android.net.Uri
 import androidx.fragment.app.Fragment
+import com.goldenowl.ecommerce.models.data.User
 
 class AuthRepository(
     private val remoteAuthDataSource: RemoteAuthDataSource,
@@ -18,7 +19,6 @@ class AuthRepository(
     }
 
     fun logOut() {
-        val logType = localAuthDataSource
         remoteAuthDataSource.logOut()
         localAuthDataSource.logOut()
     }
@@ -27,8 +27,8 @@ class AuthRepository(
         return remoteAuthDataSource.signUpWithEmail(email, password, name)
     }
 
-    fun logInWithFacebook(fragment: Fragment) {
-        remoteAuthDataSource.logInWithFacebook(fragment)
+    fun logInWithFacebook(fragment: Fragment, listener: LoginListener) {
+        remoteAuthDataSource.logInWithFacebook(fragment, listener)
     }
 
     suspend fun logInWithEmail(email: String, password: String): String? {
@@ -60,10 +60,9 @@ class AuthRepository(
         return err
     }
 
-    suspend fun updateUserData(fullName: String, dob: String, settings: Map<String, Boolean>): String? {
-        return remoteAuthDataSource.updateUserData(fullName, dob, settings).apply {
-            localAuthDataSource.updateUserData(fullName, dob)
-        }
+    suspend fun updateUserData(user: User): String? {
+        localAuthDataSource.updateUserData(user)
+        return remoteAuthDataSource.updateUserData(user)
     }
 
     companion object {

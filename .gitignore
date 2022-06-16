@@ -7,8 +7,8 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
-/release
+/app/build
+/app/release
 /app/E-Commerce.zip
 /captures
 .externalNativeBuild

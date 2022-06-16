@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECommerce Shopping App</string>
+    <string name="app_name">[Paul] ECommerce Shopping App</string>
     <string name="home">Home</string>
     <string name="bag">Bag</string>
     <string name="favorites">Favorites</string>
@@ -27,7 +27,7 @@
     <!--    facebook-->
     <string name="facebook_app_id">786339678998565</string>
     <string name="fb_login_protocol_scheme">fb786339678998565</string>
-    <string name="facebook_client_token">a4317660d0b5f2ab1950f53ba2867272</string>
+    <string name="facebook_client_token">79f5b6a5cf31fe78053e389995af1b7a</string>
 
     <string name="hello">Hello</string>
     <string name="guest_email">Sign in to shop more easily and enjoy many promotions  Sign in to shop more easily and enjoy many promotions  </string>
@@ -110,5 +110,14 @@
     <string name="add_to_favorite">ADD TO FAVORITES</string>
     <string name="no_image_picker">No image picker found</string>
     <string name="apply_change">Apply changes</string>
+    <string name="color">Color</string>
+    <string name="size">Size</string>
+    <string name="none">None</string>
+    <string name="add_to_cart">Add to cart</string>
+    <string name="sold_out">Sorry, this item is currently sold out</string>
+    <string name="summer_sale">Super summer sale</string>
+    <string name="shipping_info">Shipping info</string>
+    <string name="support">Support</string>
+    <string name="you_can_also_like">You can also like this</string>
 
 </resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 
     <!--    Bottom Navigation Bar-->
@@ -29,7 +29,7 @@
     <style name="TextAppearance.MyApp.TextTitle.CollapsingToolbar" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">italic</item>
         <item name="fontFamily">@font/metropolis_regular</item>
-<!--        <item name="android:fontFamily">sans-serif-smallcaps</item>-->
+        <!--        <item name="android:fontFamily">sans-serif-smallcaps</item>-->
     </style>
     <!--    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">-->
     <!--        <item name="android:textStyle">bold</item>-->
@@ -79,5 +79,15 @@
     <style name="roundedCorners" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">8dp</item>
+        <item name="boxBackgroundMode">none</item>
     </style>
+
+    <style name="menuSelect" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
+        <item name="shapeAppearanceOverlay">@style/roundedCorners</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxBackgroundColor">@color/white</item>
+    </style>
+
+
 </resources>

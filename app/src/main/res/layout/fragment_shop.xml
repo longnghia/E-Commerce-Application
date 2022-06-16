@@ -8,14 +8,13 @@
 
     <include
         android:id="@+id/top_app_bar"
-        layout="@layout/app_bar_collapsible_nav"
-        />
+        layout="@layout/app_bar_collapsible_nav" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:background="@color/background_color"
+        android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -47,7 +46,7 @@
                 android:id="@+id/list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="16dp" />
 
         </LinearLayout>
 

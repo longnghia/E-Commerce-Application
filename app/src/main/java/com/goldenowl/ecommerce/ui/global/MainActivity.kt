@@ -48,6 +48,11 @@ import com.google.firebase.ktx.Firebase
 * homepage viewpager
 *
 * guest: hide add to favorite
+* status bar transparent
+*
+* email forgot password custom
+*
+* delete database when logout
 * */
 
 
@@ -60,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: create")
         super.onCreate(savedInstanceState)
-//        setWindow()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
 
 

@@ -59,7 +59,6 @@ class LoginSignupActivity : AppCompatActivity() {
     }
 
 
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
     }

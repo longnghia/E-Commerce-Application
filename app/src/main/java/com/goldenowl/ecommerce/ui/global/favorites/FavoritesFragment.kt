@@ -1,162 +1,140 @@
 package com.goldenowl.ecommerce.ui.global.favorites
 
-import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.Context
-import android.os.Build
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentFavoritesBinding
-import com.goldenowl.ecommerce.databinding.ModalBottomSheetAddToFavoriteBinding
-import com.goldenowl.ecommerce.databinding.ModalBottomSheetSortProductBinding
-import com.goldenowl.ecommerce.models.data.Product
-import com.goldenowl.ecommerce.models.data.UserOrder
+import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.ui.global.home.AppBarCategoryListAdapter
-import com.goldenowl.ecommerce.ui.global.home.CategoryProductListAdapter
-import com.goldenowl.ecommerce.ui.global.home.HomeProductListAdapter
-import com.goldenowl.ecommerce.viewmodels.ShopViewModel
-import com.goldenowl.ecommerce.viewmodels.SortType
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
+import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
+import com.goldenowl.ecommerce.utils.Consts
+import com.goldenowl.ecommerce.utils.Consts.sortMap
+import com.goldenowl.ecommerce.utils.SortType
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
+import com.goldenowl.ecommerce.viewmodels.FavoriteProductListAdapter
+import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
+import kotlinx.coroutines.*
 
 class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     override fun getViewBinding(): FragmentFavoritesBinding {
         return FragmentFavoritesBinding.inflate(layoutInflater)
     }
 
-    private lateinit var products: List<Product>
+    //        private val sortViewModel: SortFilterViewModel by activityViewModels()
+//    private lateinit var sortViewModel: SortFilterViewModel
+//    private val sortViewModel: SortFilterViewModel by viewModels()
+    private val sortViewModel = SortFilterViewModel()
 
-    private val map = mapOf(
-        SortType.POPULAR to R.string.sort_by_popular,
-        SortType.NEWEST to R.string.sort_by_newest,
-        SortType.PRICE_INCREASE to R.string.sort_by_price_low_2_high,
-        SortType.PRICE_DECREASE to R.string.sort_by_price_high_2_low,
-        SortType.REVIEW to R.string.sort_by_customer_review
-    )
 
-    private lateinit var adapterList: CategoryProductListAdapter
-    private lateinit var adapterGrid: HomeProductListAdapter
-    private var favoriteList: List<UserOrder.Favorite> = ArrayList()
+    private lateinit var adapterGrid: FavoriteProductListAdapter
+    private lateinit var gridLayoutManager: GridLayoutManager
+
+    private lateinit var listProductData: List<ProductData>
+    private lateinit var listCategory: Set<String>
+    private var filterType: String? = null
+    private var sortType: SortType? = null
+    private var searchTerm: String = ""
 
 
     private var searchView: SearchView? = null
     private var queryTextListener: SearchView.OnQueryTextListener? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentFavoritesBinding.inflate(layoutInflater)
-        setHasOptionsMenu(true)
-
-        init()
-        setViews()
-        setObservers()
-
-        return binding.root
-    }
 
     override fun setObservers() {
-        viewModel.currentCategory.observe(viewLifecycleOwner) {
-            if (it < 0) {
-                binding.topAppBar.collapsingToolbar.title = "All products"
-            } else {
-                Log.d(TAG, "setObservers: currentCategory=$it: ${viewModel.categoryList.elementAt(it)}")
-                viewModel.setFilterProducts(it)
-                binding.topAppBar.collapsingToolbar.title = viewModel.categoryList.elementAt(it).toString()
+        viewModel.listProductData.observe(viewLifecycleOwner) {
+            listProductData = it
+            refreshList()
+        }
+
+        viewModel.allFavorite.observe(viewLifecycleOwner) {
+            Log.d(CategoryFragment.TAG, "setObservers: allFavorite change")
+            viewModel.reloadListProductData()
+        }
+        viewModel.allCart.observe(viewLifecycleOwner) {
+            Log.d(CategoryFragment.TAG, "setObservers: allCart change")
+            viewModel.reloadListProductData()
+        }
+
+        viewModel.toastMessage.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+        sortViewModel.filterType.observe(viewLifecycleOwner) {
+            if (it == null) binding.topAppBar.collapsingToolbar.title = "My Favorites"
+            else {
+                filterType = it
+                binding.topAppBar.collapsingToolbar.title = it
+                refreshList()
             }
         }
 
-        viewModel.filterFavoriteProducts.observe(viewLifecycleOwner) {
-            products = it
-            Log.d(TAG, "setObservers: ${it.size} products")
-            Log.d(TAG, "setObservers: filterProducts changed: $products")
-            reLoadAdapter()
+        sortViewModel.sortType.observe(viewLifecycleOwner) {
+            sortType = it
+            binding.topAppBar.tvSort.text = getString(sortMap[it] ?: R.string.none)
+            refreshList()
         }
 
-        viewModel.sortType.observe(viewLifecycleOwner) {
-            binding.topAppBar.tvSort.text = getString(map[it]!!)
-        }
-        viewModel.favoriteList.observe(viewLifecycleOwner) {
-            favoriteList = it
-            val favoriteProductList = it.map { it.productId }
-            products = viewModel.mProductsList.filter {
-                favoriteProductList.indexOf(it.id) >= 0
-            }
+        sortViewModel.searchTerm.observe(viewLifecycleOwner) {
+            searchTerm = it
+            refreshList()
         }
     }
 
-    private fun reLoadAdapter() {
-
-        adapterList.setData(products, favoriteList)
-        adapterGrid.setData(products, favoriteList)
+    private fun refreshList() {
+        adapterGrid.setData(listProductData, filterType, sortType, searchTerm)
     }
+
 
     override fun init() {
-        products = viewModel.filterProducts.value!!
+        listCategory = viewModel.categoryList
+        Log.d(TAG, "init: listCategory=$listCategory")
+        listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
     override fun setViews() {
-//        setAppBar()
+        gridLayoutManager = GridLayoutManager(context, Consts.SPAN_COUNT_ONE)
+        adapterGrid = FavoriteProductListAdapter(gridLayoutManager, this)
 
-        /*list view*/
-        adapterList = CategoryProductListAdapter(object : CategoryProductListAdapter.IClickListener {
-            override fun onClickFavorite(product: Product) {
-                toggleBottomSheetAddToFavorite(product)
-            }
-
-        })
-        adapterList.setData(products, favoriteList)
-        binding.rcvCategory.adapter = adapterList
-        val linearLayoutManager = LinearLayoutManager(context)
-        binding.rcvCategory.layoutManager = linearLayoutManager
-
-        /*grid view*/
-        adapterGrid = HomeProductListAdapter(true)
-        adapterGrid.setData(products, favoriteList)
         binding.rcvCategoryGrid.adapter = adapterGrid
-        val gridLayoutManager = GridLayoutManager(context, 2)
         binding.rcvCategoryGrid.layoutManager = gridLayoutManager
 
+
         binding.topAppBar.ivViewType.setOnClickListener {
-            toggleGridView()
+            switchLayout()
         }
         binding.topAppBar.layoutSort.setOnClickListener {
             toggleBottomSheetSortProduct()
         }
     }
 
+
+    private fun switchLayout() {
+        gridLayoutManager.apply {
+            spanCount = if (spanCount == Consts.SPAN_COUNT_ONE) {
+                binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_list)
+                Consts.SPAN_COUNT_TWO
+            } else {
+                binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_grid)
+                Consts.SPAN_COUNT_ONE
+            }
+        }
+        adapterGrid.notifyDataSetChanged()
+    }
+
     private fun toggleBottomSheetSortProduct() {
-        val modalBottomSheet = BottomSheetSortProduct(viewModel)
+        val modalBottomSheet = BottomSheetSortProduct(sortViewModel)
         modalBottomSheet.enterTransition = View.GONE
         modalBottomSheet.show(parentFragmentManager, BottomSheetSortProduct.TAG)
     }
-
-
-    private fun toggleBottomSheetAddToFavorite(product: Product) {
-        val modalBottomSheet = BottomSheetAddToFavorite(product, viewModel)
-        modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, BottomSheetAddToFavorite.TAG)
-    }
-
-    private fun toggleGridView() {
-        if (binding.rcvCategory.visibility == View.VISIBLE) {
-            binding.rcvCategory.visibility = View.GONE
-            binding.rcvCategoryGrid.visibility = View.VISIBLE
-        } else {
-            binding.rcvCategory.visibility = View.VISIBLE
-            binding.rcvCategoryGrid.visibility = View.GONE
-        }
-    }
-
 
     private fun setAppBarMenu() {
         binding.topAppBar.toolbar.apply {
@@ -168,22 +146,31 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
                 searchView = searchItem.actionView as SearchView
             }
             if (searchView != null) {
-//                searchView!!.setIconifiedByDefault(true)
+                val debounceJob: Job? = null
+                val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+                var lastInput = ""
+
                 searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
                 queryTextListener = object : SearchView.OnQueryTextListener {
                     override fun onQueryTextChange(newText: String?): Boolean {
-                        Log.i("onQueryTextChange", newText!!)
+                        debounceJob?.cancel()
+                        if (lastInput != newText) {
+                            lastInput = newText ?: ""
+                            uiScope.launch {
+                                delay(500)
+                                if (lastInput == newText) {
+                                    Log.i("onQueryTextChange", newText!!)
+                                    Log.d(CategoryFragment.TAG, "onQueryTextChange: uiScope")
+                                    sortViewModel.searchTerm.value = newText
+                                }
+                            }
+                        }
                         return true
                     }
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        Log.i("onQueryTextSubmit", query!!)
-                        viewModel.searchProducts(query)
-                        binding.topAppBar.toolbar.collapseActionView()
-                        Log.d(
-                            TAG,
-                            "onQueryTextSubmit: hasactionview=${binding.topAppBar.toolbar.hasExpandedActionView()}"
-                        )
+                        Log.d("onQueryTextSubmit", query!!)
+                        hideKeyboard()
                         return true
                     }
                 }
@@ -226,167 +213,32 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
 
 
     companion object {
-        const val TAG = "CategoryFragment"
+        const val TAG = "FavoriteFragment"
     }
 
     override fun setAppbar() {
-
-        binding.topAppBar.toolbar.setNavigationOnClickListener { findNavController().navigateUp() }
+        binding.topAppBar.toolbar.setNavigationOnClickListener {
+            sortViewModel.filterType.value = null
+            sortViewModel.sortType.value = null
+            findNavController().navigateUp()
+        }
         setAppBarMenu()
 
-        val listCategory = binding.topAppBar.listCategory
-        listCategory.adapter =
+        val appbarListCategory = binding.topAppBar.listCategory
+        appbarListCategory.adapter =
                 //todo
             AppBarCategoryListAdapter(
                 getListCategory(),
-                viewModel.currentCategory.value!!,
-                object : AppBarCategoryListAdapter.IClickListener {
+                object : AppBarCategoryListAdapter.IClickListenerAppbar {
                     override fun onClick(position: Int) {
-                        viewModel.currentCategory.value = position
+                        sortViewModel.filterType.value = listCategory.elementAt(position)
                     }
-
                 })
-        listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-    }
-}
-
-class BottomSheetSortProduct(private val viewModel: ShopViewModel) : BottomSheetDialogFragment() {
-    //    private val viewModel: ProductViewModel by activityViewModels {
-//        ProductViewModelFactory((requireActivity().application as MyApplication).productsRepository)
-//    }
-    private lateinit var binding: ModalBottomSheetSortProductBinding
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        ModalBottomSheetSortProductBinding.inflate(layoutInflater, container, false).apply {
-            binding = this
-        }.root
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val map = mapOf<SortType, TextView>(
-            SortType.POPULAR to binding.sortByPopular,
-            SortType.NEWEST to binding.sortByNewest,
-            SortType.PRICE_INCREASE to binding.sortByPriceInsc,
-            SortType.PRICE_DECREASE to binding.sortByPriceDesc,
-            SortType.REVIEW to binding.sortByReview
-        )
-
-        for (pair in map) {
-            val (type, view) = pair
-            view.setOnClickListener {
-                viewModel.setSortBy(type)
-                viewModel.sortBy(type)
-                dismiss()
-            }
-        }
-
-        viewModel.sortType.observe(viewLifecycleOwner) {
-            for (pair in map) {
-                val (type, view) = pair
-                if (type == it) {
-                    setViewBackground(view, R.color.red_dark)
-                } else {
-                    view.setBackgroundColor(0)
-                }
-
-            }
-        }
-    }
-
-    private fun setViewBackground(v: TextView, c: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            v.setBackgroundColor(resources.getColor(c, activity?.theme))
-            v.setTextColor(requireContext().getColor(R.color.white))
-        } else {
-            v.setBackgroundColor(resources.getColor(c))
-        }
-    }
-
-    companion object {
-        const val TAG = "BottomSheetSortProduct"
+        appbarListCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 }
 
 
-class BottomSheetAddToFavorite(private val product: Product, private val viewModel: ShopViewModel) :
-    BottomSheetDialogFragment() {
-//    private val viewModel: ProductViewModel by activityViewModels {
-//        ProductViewModelFactory((requireActivity().application as MyApplication).productsRepository)
-//    }
 
-    private lateinit var binding: ModalBottomSheetAddToFavoriteBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View =
-        ModalBottomSheetAddToFavoriteBinding.inflate(layoutInflater, container, false).apply {
-            binding = this
-        }.root
 
-    @SuppressLint("LongLogTag")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-//        val product = arguments?.get("product") as Product
-        val mapString = mapOf(
-            R.id.radio_size_L to "L",
-            R.id.radio_size_M to "M",
-            R.id.radio_size_S to "S",
-            R.id.radio_size_XL to "XL",
-            R.id.radio_size_XS to "XS"
-        )
-        val mapView = mapOf(
-            "L" to binding.radioSizeL,
-            "M" to binding.radioSizeM,
-            "S" to binding.radioSizeS,
-            "XL" to binding.radioSizeXL,
-            "XS" to binding.radioSizeXS
-        )
-
-        if (product != null) {
-            val listSize = product.getListSize()
-            if (listSize.isNotEmpty()) {
-                Log.d(TAG, "onViewCreated: list size = $listSize")
-                for (size in listSize) {
-                    val s = size.size
-                    val view = mapView[s] as RadioButton
-
-                    val available = size.quantity > 0
-                    setRadioButton(view, available)
-                }
-            }
-        }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            Log.d(TAG, "onViewCreated: checked id = $checkedId, size=${mapString[checkedId]}")
-//            .setTextColor(requireContext().getColor(R.color.white))
-        }
-
-        binding.btnAddToFavorites.setOnClickListener {
-            viewModel.addToFavorite(
-                UserOrder.Favorite(
-                    product.id,
-                    mapString[binding.radioGroup.checkedRadioButtonId]!!,
-                    "black"
-                )
-            )
-        }
-
-    }
-
-    private fun setRadioButton(v: RadioButton, available: Boolean) {
-        v.isEnabled = available
-    }
-
-    companion object {
-        const val TAG = "BottomSheetAddToFavorite"
-    }
-}

@@ -54,7 +54,8 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             val file: Uri? = data.data
             file.let {
                 if (it != null) {
-                    Glide.with(this@SettingsFragment).load(it)
+                    Glide
+                        .with(this@SettingsFragment).load(it)
                         .apply(ProfileFragment.options)
                         .into(binding.ivUserAvatar)
                 }
@@ -81,7 +82,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         datePicker.addOnPositiveButtonClickListener { time ->
             val date = getDateTime(time)
-            Log.d(TAG, "setViews: time=$date")
             binding.edtDob.setText(date)
         }
 
@@ -97,6 +97,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 if (!it.isNullOrBlank()) {
                     Glide.with(this@SettingsFragment).load(it)
                         .apply(ProfileFragment.options)
+                        .placeholder(R.drawable.ic_user)
                         .into(binding.ivUserAvatar)
                 }
             }
@@ -114,6 +115,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private fun restoreViews(
         settingsManager: SettingsManager,
     ) {
+        Log.d(TAG, "restoreViews:  userManager: $userManager")
         val fullName: String = userManager.name
         val dob: String = userManager.dob
 
@@ -121,7 +123,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         with(binding) {
             edtName.setText(fullName)
             edtDob.setText(dob)
-
             swSale.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_SALE]!!
             swDeliStatus.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE]!!
             swNewArrivals.isChecked = userSettings[SettingsManager.KEY_NOTIFICATION_ARRIVES]!!
@@ -207,7 +208,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             })
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 0)
                     textInputViewModel.setLoginFormValid()
                 }
             })
@@ -245,11 +246,11 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                     SettingsManager.KEY_NOTIFICATION_ARRIVES to binding.swNewArrivals.isChecked,
                     SettingsManager.KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE to binding.swDeliStatus.isChecked,
                 )
-                authViewModel.saveUserSettings(
-                    binding.edtName.text.toString(),
-                    binding.edtDob.text.toString(),
-                    settings
-                )
+                val user = userManager.getUser()
+                user.name = binding.edtName.text.toString().trim()
+                user.dob = binding.edtDob.text.toString().trim()
+                user.settings = settings
+                authViewModel.saveUserSettings(user)
                 findNavController().navigateUp()
             } else {
                 Log.d(TAG, "onOptionsItemSelected: input error")

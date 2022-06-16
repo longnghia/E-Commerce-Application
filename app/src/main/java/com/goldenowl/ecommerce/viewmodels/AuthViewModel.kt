@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.viewmodels
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -10,8 +11,11 @@ import com.facebook.CallbackManager
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.SettingsManager
+import com.goldenowl.ecommerce.models.data.User
 import com.goldenowl.ecommerce.models.repo.ICallback
+import com.goldenowl.ecommerce.models.repo.LoginListener
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -22,8 +26,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val productsRepository = (application as MyApplication).productsRepository
     private val settingManager: SettingsManager = SettingsManager(application as MyApplication)
 
+
     fun logOut() {
         authRepository.logOut()
+        settingManager.clear()
     }
 
     val toastMessage = MutableLiveData<String?>()
@@ -57,7 +63,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun logInWithFacebook(fragment: Fragment) {
-        authRepository.logInWithFacebook(fragment)
+        logInStatus.value = BaseLoadingStatus.LOADING
+        authRepository.logInWithFacebook(fragment, object : LoginListener {
+            override fun callback(result: MyResult<Boolean>) {
+                if (result is MyResult.Success) {
+                    logInStatus.value = BaseLoadingStatus.SUCCEEDED
+                } else if (result is MyResult.Error) {
+                    logInStatus.value = BaseLoadingStatus.FAILED
+                    toastMessage.value = result.exception.message
+                }
+            }
+        })
     }
 
     fun logInWithEmail(email: String, password: String) {
@@ -79,6 +95,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun onDone(res: String?, status: MutableLiveData<BaseLoadingStatus>) {
+        Log.d(TAG, "onDone: error = $res")
         errorMessage.value = res
         if (res.isNullOrBlank())
             status.value = BaseLoadingStatus.SUCCEEDED
@@ -87,6 +104,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun logInWithGoogle(fragment: Fragment) {
+        logInStatus.value = BaseLoadingStatus.LOADING
         authRepository.logInWithGoogle(fragment)
     }
 
@@ -109,16 +127,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun updateAvatar(file: Uri?) {
         viewModelScope.launch {
             val res = authRepository.updateAvatar(authRepository.getUserId(), file)
+//            onDone(res, uploadAvatarStatus) // todo add loading upload avatar
         }
     }
 
-    fun saveUserSettings(fullName: String, dob: String, settings: Map<String, Boolean>) {
-        settingManager.saveUserSettings(settings)
+    fun saveUserSettings(user: User) {
         viewModelScope.launch {
-            val err = authRepository.updateUserData(fullName, dob, settings)
+            settingManager.saveUserSettings(user.settings)
+            val err = authRepository.updateUserData(user)
             toastMessage.value = if (err.isNullOrEmpty()) "Apply changes successfully" else err
         }
     }
+
+    fun clearMessage() {
+        errorMessage.value = ""
+    }
+
 
     companion object {
         const val TAG = "AuthViewModel"

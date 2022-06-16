@@ -1,10 +1,12 @@
 package com.goldenowl.ecommerce.models.data
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-
+@Parcelize
 @Entity(tableName = "product_table")
 data class Product @JvmOverloads constructor(
     @PrimaryKey
@@ -22,13 +24,10 @@ data class Product @JvmOverloads constructor(
     var reviewStars: Int = 0,
     var salePercent: Int? = null,
     var tags: List<Tag> = ArrayList(),
-) {
+) : Parcelable {
     override fun toString(): String {
         return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getOriginPrice()} , image=${getImage()}, isPopular=${isPopular}, date=$createdDate)"
     }
-//    override fun toString(): String {
-//        return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getPrice()} , image=${getImage()}, color=$colors, isPopular=${isPopular})"
-//    }
 
     fun getOriginPrice(): Int {
         if (this.colors.isNotEmpty())
@@ -59,21 +58,36 @@ data class Product @JvmOverloads constructor(
         return colors[0].sizes
     }
 
+    fun isAvailable(favorite: Favorite): Boolean {
+        val color = colors[0]
+        val size = color?.sizes?.find {
+            it.size == favorite.size
+        }
+        val quantity = size?.quantity ?: 0
+        return quantity != 0
+    }
+
+    fun getFirstColor(): String {
+        return colors[0].color
+    }
+
+    @Parcelize
     data class Color @JvmOverloads constructor(
         var color: String = "",
         var sizes: List<Size> = ArrayList()
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class Size @JvmOverloads constructor(
         var price: Int = 0,
         var quantity: Int = 0,
         var size: String = ""
-    )
+    ) : Parcelable
 
-
+    @Parcelize
     data class Tag @JvmOverloads constructor(
         var id: String = "",
         var name: String = ""
-    )
+    ) : Parcelable
 }
 

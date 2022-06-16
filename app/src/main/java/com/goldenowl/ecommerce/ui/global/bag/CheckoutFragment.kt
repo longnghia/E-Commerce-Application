@@ -9,7 +9,7 @@ import com.goldenowl.ecommerce.R
 
 class CheckoutFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view : View = inflater.inflate(R.layout.fragment_checkout, container, false);
+        val view: View = inflater.inflate(R.layout.fragment_checkout, container, false);
         return view;
     }
 }

@@ -11,11 +11,10 @@
     android:elevation="4dp"
     android:fitsSystemWindows="true"
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-    app:liftOnScroll="true"
-    >
-<!--    app:statusBarForeground="@color/white"-->
+    app:liftOnScroll="true">
+    <!--    app:statusBarForeground="@color/white"-->
 
-    <!--        app:contentScrim="?attr/colorPrimary"-->
+    <!--            app:contentScrim="?attr/colorPrimary"-->
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar_layout"
         android:layout_width="match_parent"
@@ -34,11 +33,11 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Light"
             app:contentInsetEnd="@dimen/icon_width"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_collapseMode="pin"
             app:navigationIcon="@drawable/ic_back"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Light"
             app:titleCentered="true"
             tools:title="@string/app_name"
 

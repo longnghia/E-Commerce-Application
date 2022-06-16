@@ -2,7 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_item"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
@@ -26,21 +26,21 @@
         android:layout_height="184dp"
         android:scaleType="centerCrop"
         android:src="@drawable/pexels_photo"
-        app:shapeAppearanceOverlay="@style/roundedCorners"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/roundedCorners">
 
 
     </com.google.android.material.imageview.ShapeableImageView>
 
     <ImageView
+        android:id="@+id/iv_favorite"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginBottom="-18dp"
         android:layout_marginEnd="0dp"
+        android:layout_marginBottom="-18dp"
         android:background="@drawable/bg_rounded_item"
-        android:id="@+id/iv_favorite"
         android:elevation="2dp"
         android:padding="12dp"
         android:src="@drawable/ic_favorites"
@@ -51,7 +51,7 @@
         app:layout_constraintEnd_toEndOf="@+id/product_img" />
 
     <TextView
-        android:id="@+id/tv_product_discount"
+        android:id="@+id/tv_discount_percent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -81,11 +81,10 @@
             android:layout_height="wrap_content"
             android:progressTint="@color/gold"
             android:rating="4.25"
-            android:secondaryProgressTint="#FFFFFF"
-            />
+            android:secondaryProgressTint="#FFFFFF" />
 
         <TextView
-            android:id="@+id/tv_rate_count"
+            android:id="@+id/tv_number_reviews"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(10)"
@@ -123,7 +122,7 @@
         app:layout_constraintTop_toBottomOf="@+id/product_name">
 
         <TextView
-            android:id="@+id/product_old_price"
+            android:id="@+id/product_origin_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="15$"
@@ -131,7 +130,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/product_current_price"
+            android:id="@+id/product_discount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

@@ -10,6 +10,7 @@
         <entry key="../../../../../home/longa/Android/Sdk/platforms/android-32/data/res/layout/simple_list_item_1.xml" value="0.21145833333333333" />
         <entry key="../../../../../layout/custom_preview.xml" value="0.14166666666666666" />
         <entry key="app/src/main/res/drawable/abc.xml" value="0.23385416666666667" />
+        <entry key="app/src/main/res/drawable/bg_cart_icon.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/bg_navbar.xml" value="0.33" />
         <entry key="app/src/main/res/drawable/bg_rounded_button.xml" value="0.1695" />
         <entry key="app/src/main/res/drawable/bg_rounded_button_black.xml" value="0.1695" />
@@ -23,13 +24,17 @@
         <entry key="app/src/main/res/drawable/ic_back.xml" value="0.1195" />
         <entry key="app/src/main/res/drawable/ic_bag.xml" value="0.19739583333333333" />
         <entry key="app/src/main/res/drawable/ic_bag_selected.xml" value="0.215625" />
+        <entry key="app/src/main/res/drawable/ic_cart.xml" value="0.2475" />
         <entry key="app/src/main/res/drawable/ic_error.xml" value="0.3697916666666667" />
+        <entry key="app/src/main/res/drawable/ic_favorite.xml" value="0.1715" />
+        <entry key="app/src/main/res/drawable/ic_favorites.xml" value="0.1715" />
         <entry key="app/src/main/res/drawable/ic_favorites_bold.xml" value="0.235" />
         <entry key="app/src/main/res/drawable/ic_favorites_selected.xml" value="0.215625" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.10989583333333333" />
         <entry key="app/src/main/res/drawable/ic_home_selected.xml" value="0.215625" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.215625" />
         <entry key="app/src/main/res/drawable/ic_profile_selected.xml" value="0.215625" />
+        <entry key="app/src/main/res/drawable/ic_share.xml" value="0.175" />
         <entry key="app/src/main/res/drawable/ic_shop.xml" value="0.10677083333333333" />
         <entry key="app/src/main/res/drawable/ic_shop_selected.xml" value="0.215625" />
         <entry key="app/src/main/res/drawable/pinner.xml" value="0.67" />
@@ -59,6 +64,7 @@
         <entry key="app/src/main/res/layout/app_bar_collapsible_navigation.xml" value="0.19114583333333332" />
         <entry key="app/src/main/res/layout/app_bar_navigation.xml" value="0.128125" />
         <entry key="app/src/main/res/layout/app_bar_settings.xml" value="0.35625" />
+        <entry key="app/src/main/res/layout/app_bar_share.xml" value="0.20925925925925926" />
         <entry key="app/src/main/res/layout/app_bar_simple.xml" value="0.18125" />
         <entry key="app/src/main/res/layout/appbar_collapsible.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/bag_fragment.xml" value="0.2536443148688047" />
@@ -71,6 +77,8 @@
         <entry key="app/src/main/res/layout/fragment_favorites.xml" value="0.35625" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.21875" />
+        <entry key="app/src/main/res/layout/fragment_product_cart.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_product_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_shop.xml" value="0.18177083333333333" />
@@ -78,17 +86,23 @@
         <entry key="app/src/main/res/layout/fragment_tutorial.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/home_fragment.xml" value="0.2972972972972973" />
         <entry key="app/src/main/res/layout/item_app_bar_category_list.xml" value="0.15052083333333333" />
+        <entry key="app/src/main/res/layout/item_bottom_sheet_size.xml" value="0.67" />
         <entry key="app/src/main/res/layout/item_category_list.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_divider.xml" value="0.1984375" />
         <entry key="app/src/main/res/layout/item_product_list_catalog.xml" value="0.5352941176470588" />
         <entry key="app/src/main/res/layout/item_product_list_category.xml" value="0.44191919191919193" />
+        <entry key="app/src/main/res/layout/item_product_list_category_favorite.xml" value="0.8428571428571429" />
         <entry key="app/src/main/res/layout/item_product_list_category_grid.xml" value="0.1796875" />
+        <entry key="app/src/main/res/layout/item_product_list_favorite.xml" value="0.42701525054466233" />
+        <entry key="app/src/main/res/layout/item_product_list_favorite_grid.xml" value="0.22" />
         <entry key="app/src/main/res/layout/item_product_list_home.xml" value="0.75" />
         <entry key="app/src/main/res/layout/item_user_action.xml" value="0.19947916666666668" />
-        <entry key="app/src/main/res/layout/layout_divider.xml" value="0.14166666666666666" />
+        <entry key="app/src/main/res/layout/layout_divider.xml" value="0.21" />
+        <entry key="app/src/main/res/layout/layout_grey_out.xml" value="0.1814814814814815" />
         <entry key="app/src/main/res/layout/layout_loading.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_modal_pinner.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_my_button.xml" value="0.184375" />
+        <entry key="app/src/main/res/layout/layout_product_image.xml" value="0.134375" />
         <entry key="app/src/main/res/layout/layout_radio_button_size.xml" value="0.14166666666666666" />
         <entry key="app/src/main/res/layout/layout_radio_button_size_select.xml" value="0.14166666666666666" />
         <entry key="app/src/main/res/layout/layout_search_bar.xml" value="0.22" />
@@ -112,6 +126,7 @@
         <entry key="app/src/main/res/menu/menu.xml" value="0.35520833333333335" />
         <entry key="app/src/main/res/menu/menu_check.xml" value="0.35625" />
         <entry key="app/src/main/res/menu/menu_search.xml" value="0.15052083333333333" />
+        <entry key="app/src/main/res/menu/menu_share.xml" value="0.17864583333333334" />
         <entry key="app/src/main/res/xml/searchable.xml" value="0.15052083333333333" />
       </map>
     </option>

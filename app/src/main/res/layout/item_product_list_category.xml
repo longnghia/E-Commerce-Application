@@ -2,7 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/card_view"
+    android:id="@+id/layout_item"
     android:layout_width="match_parent"
     android:layout_height="122dp"
     android:layout_marginEnd="16dp"
@@ -90,7 +90,7 @@
                         android:secondaryProgressTint="#FFFFFF" />
 
                     <TextView
-                        android:id="@+id/tv_rate_count"
+                        android:id="@+id/tv_number_reviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="(10)"
@@ -102,15 +102,34 @@
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/product_current_price"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="9dp"
-                    android:text="15$"
-                    android:textColor="@color/text_title_color"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/product_origin_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="15$"
+                        android:textColor="@color/text_title_color"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/product_discount_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:text="15$"
+                        android:textColor="@color/red_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/product_origin_price"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -120,14 +139,30 @@
     </com.google.android.material.card.MaterialCardView>
 
     <ImageView
+        android:id="@+id/iv_favorite"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="@drawable/bg_rounded_item"
         android:elevation="2dp"
         android:padding="12dp"
-        android:id="@+id/iv_favorite"
         android:src="@drawable/ic_favorites_bold"
 
-        app:layout_constraintBottom_toBottomOf="@id/card_view"
-        app:layout_constraintEnd_toEndOf="@id/card_view" />
+        app:layout_constraintBottom_toBottomOf="@id/layout_item"
+        app:layout_constraintEnd_toEndOf="@id/layout_item" />
+
+    <TextView
+        android:id="@+id/tv_discount_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/bg_rounded_button_red"
+        android:elevation="5dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:text="-20%"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        app:layout_constraintStart_toStartOf="@+id/layout_item"
+        app:layout_constraintTop_toTopOf="@+id/layout_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="black">#FFFFFF</color>
+    <color name="white">#000000</color>
+    <color name="transparent">#00000000</color>
+
+
+    <color name="grey_shadow">#C7C7C7</color>
+    <color name="grey_text">#C3C3C3</color>
+
+    <color name="red_dark">#D8948F</color>
+    <color name="red_light">#B2DD948E</color>
+    <color name="red_error">#AA1A0E</color>
+    <color name="black_light">#515151</color>
+    <color name="green_success">#2AA952</color>
+    <color name="gold">#FFBA49</color>
+
+
+    <color name="grey_white">#858585</color>
+    <color name="background_color">#000000</color>
+    <color name="login_card_bg">#EBFEF2</color>
+
+    <color name="colorAccent">#DB3022</color>
+    <color name="indicator_default">#E9E6E6</color>
+    <color name="indicator_selected">#DB3022</color>
+
+    <color name="text_title_color">#FFFFFF</color>
+    <color name="text_subtitle_color">#DFDFDF</color>
+    <color name="loading_background_color">#1A000000</color>
+
+</resources>

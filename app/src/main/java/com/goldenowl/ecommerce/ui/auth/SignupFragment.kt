@@ -7,6 +7,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentSignupBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
+import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
@@ -21,20 +22,19 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
     override fun setObservers() {
 
-        textInputViewModel.errorEmail.observe(viewLifecycleOwner) { errorEmail ->
+        textInputViewModel.errorSignUpEmail.observe(viewLifecycleOwner) { errorEmail ->
             validEmail(errorEmail)
         }
-        textInputViewModel.errorPassword.observe(viewLifecycleOwner) { errorPassword ->
+        textInputViewModel.errorSignUpPassword.observe(viewLifecycleOwner) { errorPassword ->
             validPassword(errorPassword)
         }
 
         textInputViewModel.signUpFormValid.observe(viewLifecycleOwner) { signUpValid ->
-            Log.d(TAG, "setObservers: logInValid=$signUpValid ")
             binding.btnSignup.isEnabled = signUpValid
         }
 
         viewModel.signUpStatus.observe(viewLifecycleOwner) {
-            handelSignUp(it)
+            handleSignUp(it)
         }
 
         viewModel.logInStatus.observe(viewLifecycleOwner) {
@@ -46,7 +46,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     }
 
     private fun handleLogin(it: BaseLoadingStatus?) {
-        Log.d(TAG, "validSignup: $it")
         when (it) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
@@ -68,13 +67,11 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         if (it != null) {
             if (it.isNotEmpty()) {
                 binding.inputLayoutEmail.error = it
-                Log.d(TAG, "hasError: $it")
             }
         }
     }
 
-    private fun handelSignUp(signUpStatus: BaseLoadingStatus) {
-        Log.d(TAG, "validSignup: $signUpStatus")
+    private fun handleSignUp(signUpStatus: BaseLoadingStatus) {
         when (signUpStatus) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
@@ -89,29 +86,32 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
                 setLoading(false)
                 binding.btnSignup.isEnabled = true
             }
+            else -> setLoading(false)
         }
     }
 
     private fun validPassword(errorPassword: String?) {
         with(binding) {
-            if (errorPassword != null) {
-                inputLayoutPassword.error = errorPassword
-                inputLayoutPassword.errorIconDrawable = null
-            } else {
+
+            if (errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.isErrorEnabled = false
                 Log.d(TAG, "setObservers: password valid")
+            } else {
+                inputLayoutPassword.error = errorPassword
+                inputLayoutPassword.errorIconDrawable = null
             }
         }
     }
 
     private fun validEmail(errorEmail: String?) {
         with(binding) {
-            if (errorEmail != null) {
-                inputLayoutEmail.error = errorEmail
-            } else {
+
+            if (errorEmail.isNullOrEmpty()) {
                 inputLayoutEmail.isErrorEnabled = false
                 inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
                 Log.d(TAG, "setObservers: email valid")
+            } else {
+                inputLayoutEmail.error = errorEmail
             }
         }
     }
@@ -120,7 +120,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         with(binding) {
             edtEmail.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkEmail(edtEmail.text.toString())
+                    textInputViewModel.checkEmail(edtEmail.text.toString(), 1)
                     textInputViewModel.setSignUpFormValid()
                 }
 
@@ -128,7 +128,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString())
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 1)
                     textInputViewModel.setSignUpFormValid()
                 }
             })
@@ -147,6 +147,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         with(binding) {
             btnSignup.setOnClickListener {
                 Log.d(TAG, "setViews: begin sign up")
+                hideKeyboard()
                 viewModel.signUpWithEmail(
                     edtEmail.text.toString(),
                     edtPassword.text.toString(),
@@ -157,6 +158,11 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
             layoutAlreadyHasAcc.setOnClickListener(
                 Navigation.createNavigateOnClickListener(R.id.login_dest)
             )
+
+//            layoutAlreadyHasAcc.setOnClickListener {
+//                findNavController().navigate(R.id.login_dest)
+//            }
+
             ivFacebook.setOnClickListener { viewModel.logInWithFacebook(this@SignupFragment) }
             ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@SignupFragment) }
         }
@@ -166,7 +172,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     private fun setLoading(isShow: Boolean) {
         if (isShow) {
             binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
-            binding.layoutLoading.circularLoader.showAnimationBehavior
         } else {
             binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
         }

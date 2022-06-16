@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.goldenowl.ecommerce.models.auth.UserManager
@@ -18,7 +17,7 @@ import com.google.firebase.FirebaseApp
 class MyApplication : Application() {
 
     private val TAG = "MyApplication"
-    private val userManager by lazy {UserManager.getInstance(this)}
+    private val userManager by lazy { UserManager.getInstance(this) }
     private val database by lazy { ECommerceDatabase.getDatabase(this) }
 
     lateinit var productsRepository: ProductsRepository
@@ -26,7 +25,6 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "onCreate: app on create")
         FacebookSdk.sdkInitialize(applicationContext)
         AppEventsLogger.activateApp(this)
         FirebaseApp.initializeApp(this)
@@ -36,13 +34,11 @@ class MyApplication : Application() {
     }
 
 
-
     private fun createLocalProductsDataSource(context: Context): LocalProductsDataSource {
-        Log.d(TAG, "createLocalProductsDataSource: create database")
-
         val productDao = database.productDao()
-        val userOrderDao = database.userOrderDao()
+        val favoriteDao = database.favoriteDao()
+        val orderDao = database.orderDao()
 
-        return LocalProductsDataSource(productDao, userOrderDao)
+        return LocalProductsDataSource(productDao, favoriteDao, orderDao)
     }
 }

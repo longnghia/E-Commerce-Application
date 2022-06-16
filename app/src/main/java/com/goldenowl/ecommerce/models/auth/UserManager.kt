@@ -65,12 +65,14 @@ class UserManager(context: Context) {
         }
 
     fun addAccount(
-        id: String?,
-        email: String?,
-        access_token: String?,
-        name: String?,
-        logType: String?,
-        avatar: String?
+        id: String,
+        email: String,
+        access_token: String,
+        name: String,
+        logType: String,
+        avatar: String,
+        dob: String
+
     ) {
 
         val data = Bundle()
@@ -81,6 +83,7 @@ class UserManager(context: Context) {
                 this.putString(NAME, name)
                 this.putString(LOGTYPE, logType)
                 this.putString(AVATAR, avatar)
+                this.putString(DOB, dob)
             }
         val account = Account(email, ACCOUNT_TYPE)
         accountManager.addAccountExplicitly(account, access_token, data)
@@ -91,7 +94,7 @@ class UserManager(context: Context) {
         user: User
     ) {
         user.apply {
-            addAccount(id, email, password, name, logType, avatar)
+            addAccount(id, email, password, name, logType, avatar, dob)
         }
     }
 
@@ -125,7 +128,8 @@ class UserManager(context: Context) {
 
     override fun toString(): String {
         return if (isLoggedIn())
-            "UserManager(email='$email', avatar='$avatar', id='$id')"
+            "UserManager(email='$email', avatar='$avatar', id='$id',dob=$dob, avatar=$avatar," +
+                    "hash=$hash)"
         else "NULL"
     }
 

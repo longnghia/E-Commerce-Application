@@ -18,6 +18,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentProfileBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
@@ -76,17 +77,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setObservers() {
-//        with(binding) {
-//            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
-//                if (user != null) {
-//                    Log.d(TAG, "onCreateView: viewmodel.currentuser changed: $user ${user.email} $user.uid")
-//
-//                } else {
-//                    Log.d(TAG, "onCreateView:  viewmodel.currentuser  null")
-//                }
-//            }
-//        }
-
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
@@ -105,6 +95,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                     Log.d(TAG, "setUpUserUI: sett avatar ${uri.path}")
                     Glide.with(this@ProfileFragment)
                         .load(uri)
+                        .placeholder(R.drawable.ic_user)
                         .apply(options).into(userIcon)
                 }
             }
