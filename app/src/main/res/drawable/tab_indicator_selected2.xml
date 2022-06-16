@@ -3,27 +3,31 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
 
+    >
+        <shape
+                android:innerRadius="0dp"
+                android:shape="oval"
+                android:thickness="4dp"
+                android:useLevel="false"
+
+                xmlns:android="http://schemas.android.com/apk/res/android"
+
         >
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
-            android:innerRadius="0dp"
-            android:shape="oval"
-            android:thickness="4dp"
-
-            android:useLevel="false"
-
-            >
-            <solid android:color="@color/indicator_default" />
+            <solid android:color="@color/indicator_default"/>
         </shape>
 
 
     </item>
-    <item android:gravity="bottom">
-        <shape xmlns:android="http://schemas.android.com/apk/res/android"
-            android:innerRadius="0dp"
-            android:shape="ring"
-            android:thickness="4dp"
-            android:useLevel="false">
-            <solid android:color="@color/indicator_selected" />
+    <item android:gravity="bottom"
+    >
+        <shape
+                android:innerRadius="0dp"
+                android:shape="ring"
+                android:thickness="4dp"
+                android:useLevel="false"
+                xmlns:android="http://schemas.android.com/apk/res/android"
+        >
+            <solid android:color="@color/indicator_selected"/>
 
         </shape>
     </item>

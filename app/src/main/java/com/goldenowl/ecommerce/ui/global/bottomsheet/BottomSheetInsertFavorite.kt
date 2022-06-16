@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
-import com.goldenowl.ecommerce.adapter.ModalAdapter
+import com.goldenowl.ecommerce.adapter.BottomSheetSizeAdapter
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetAddToFavoriteBinding
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
@@ -31,7 +31,7 @@ class BottomSheetInsertFavorite(private val product: Product, private val viewMo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val bottomSheetAdapter = ModalAdapter()
+        val bottomSheetAdapter = BottomSheetSizeAdapter()
         // todo check if size remain
         binding.rcvSizes.adapter = bottomSheetAdapter
         binding.rcvSizes.layoutManager = GridLayoutManager(context, 3)

@@ -11,7 +11,8 @@ import kotlinx.coroutines.withContext
 class LocalProductsDataSource(
     private val productDao: ProductDao,
     private val favoriteDao: FavoriteDao,
-    private val cartDao: CartDao
+    private val cartDao: CartDao,
+    private val orderDao: OrderDao
 ) : ProductDataSource {
 
     private val dispatchers = Dispatchers.IO
@@ -62,9 +63,21 @@ class LocalProductsDataSource(
         cartDao.insertCart(cart)
     }
 
+    suspend fun updateCart(cart: Cart) {
+        cartDao.updateCart(cart)
+    }
+
     suspend fun removeCart(cart: Cart) {
         cartDao.removeCart(cart)
     }
+
+
+//    override suspend fun emptyTable() {
+//        withContext(dispatchers) {
+//            productDao.emptyTable()
+//        }
+//    }
+
 
     companion object {
         val TAG = "LocalProductsDataSource"

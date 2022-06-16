@@ -23,4 +23,12 @@ object Consts {
         SortType.REVIEW to R.string.sort_by_customer_review
     )
 
+    val colorMap = mapOf(
+        "red" to R.color.red_dark,
+        "black" to R.color.black_light,
+        "grey" to R.color.grey_text,
+    )
+
+    val listSize = listOf("L", "M", "S", "XL", "XS")
+
 }

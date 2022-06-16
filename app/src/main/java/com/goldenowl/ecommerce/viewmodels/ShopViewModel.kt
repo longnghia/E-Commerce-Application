@@ -2,10 +2,7 @@ package com.goldenowl.ecommerce.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.goldenowl.ecommerce.models.data.Cart
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
-import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.models.repo.AuthRepository
 import com.goldenowl.ecommerce.models.repo.ProductsRepository
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
@@ -22,6 +19,10 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
     var categoryList: Set<String> = setOf()
 
     var listProductData: MutableLiveData<List<ProductData>> = MutableLiveData<List<ProductData>>()
+    var listPromo: MutableLiveData<List<Promo>> = MutableLiveData<List<Promo>>().apply { value = emptyList() }
+    var bagPromo: MutableLiveData<Promo?> = MutableLiveData<Promo?>()
+    var bagPrice: MutableLiveData<Float> = MutableLiveData<Float>()
+
 
     val toastMessage: MutableLiveData<String> = MutableLiveData<String>()
 
@@ -35,6 +36,8 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
     init {
         viewModelScope.launch {
             getAllProducts()
+            getListPromo()
+            dataReady.value = BaseLoadingStatus.SUCCEEDED
         }
     }
 
@@ -68,14 +71,38 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
         if (mListProduct.isEmpty()) {
             mListProduct = productsRepository.getAllProducts()
             Log.d(TAG, "getAllProducts: done = $mListProduct")
+//            productsRepository.syncLocalDataSource(mProductsList) // todo
         } else {
             Log.d(TAG, "getAllProducts: using data in mProductList:\n $mListProduct")
         }
         setCategoryList(mListProduct)
-        dataReady.value = BaseLoadingStatus.SUCCEEDED
+    }
+
+    private suspend fun getListPromo() {
+        val res = productsRepository.getListPromo()
+        Log.w(TAG, "getListPromo: $res")
+        if (res is MyResult.Error) {
+            toastMessage.value = res.exception.message
+        } else if (res is MyResult.Success) {
+            listPromo.value = res.data
+        }
+    }
+
+    private fun getFilterProducts(index: Int, fromList: List<Product>): List<Product> {
+        Log.d(TAG, "getFilterProducts: position $index")
+        var filteredProducts = fromList.toList()
+        if (index < 0) {
+            return filteredProducts
+        }
+
+        filteredProducts = filteredProducts.filter {
+            it.categoryName == categoryList.elementAt(index)
+        }
+        return filteredProducts
     }
 
     fun insertFavorite(favorite: Favorite) {
+        Log.d(TAG, "insertFavorite: $favorite")
         viewModelScope.launch(Dispatchers.IO) {
             productsRepository.insertFavorite(favorite).let {
                 Log.d(TAG, "insertFavorite: result= $it")
@@ -93,6 +120,7 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
             productsRepository.removeFavorite(favorite).let {
                 if (it is MyResult.Success) {
                     Log.d(TAG, "removeFavorite: success= $it")
+
                 } else if (it is MyResult.Error) {
                     Log.e(TAG, "removeFavorite: ERROR ", it.exception)
                     toastMessage.postValue(it.exception.message)
@@ -127,6 +155,20 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
         }
     }
 
+    fun updateCart(cart: Cart) {
+        viewModelScope.launch(Dispatchers.IO) {
+            productsRepository.updateCart(cart).let {
+                Log.d(TAG, "updateCart: result= $it")
+                if (it is MyResult.Success) {
+
+                } else if (it is MyResult.Error) {
+                    toastMessage.postValue(it.exception.message)
+                }
+            }
+        }
+    }
+
+
     fun getRelateProducts(tags: List<Product.Tag>): List<ProductData> {
         val list = listProductData.value?.toMutableList()
         return list?.take(5) ?: emptyList()
@@ -138,7 +180,7 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
 //        }
     }
 
-    //todo restore user database
+
 //    fun restoreUserDatabase() {
 //        viewModelScope.launch {
 //            val userOrderResult = productsRepository.getUserOrder(userId!!)

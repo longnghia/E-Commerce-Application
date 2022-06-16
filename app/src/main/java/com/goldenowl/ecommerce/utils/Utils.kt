@@ -28,6 +28,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -161,6 +162,10 @@ object Utils {
 
             override fun run() {
                 val count = adapter?.itemCount ?: 0
+                if (count == 0) {
+                    Log.w("autoScroll", "run: Empty list images")
+                    return
+                }
                 setCurrentItem(scrollPosition++ % count, true)
                 handler.postDelayed(this, interval)
             }

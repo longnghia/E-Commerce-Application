@@ -77,6 +77,17 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setObservers() {
+//        with(binding) {
+//            viewModel.currentUser.observe(viewLifecycleOwner) { user ->
+//                if (user != null) {
+//                    Log.d(TAG, "onCreateView: viewmodel.currentuser changed: $user ${user.email} $user.uid")
+//
+//                } else {
+//                    Log.d(TAG, "onCreateView:  viewmodel.currentuser  null")
+//                }
+//            }
+//        }
+
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }

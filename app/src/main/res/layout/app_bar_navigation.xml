@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/app_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/background_color"
-    android:fitsSystemWindows="true">
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:background="@color/background_color"
+                                                 android:id="@+id/app_bar_layout"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="wrap_content"
+                                                 android:fitsSystemWindows="true">
 
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
-        android:id="@+id/collapsing_toolbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
-        app:contentScrim="?attr/colorPrimary"
-        app:expandedTitleGravity="bottom"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
+            android:id="@+id/collapsing_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/collapsingToolbarLayoutMediumSize"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="bottom"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+    >
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="0dp"
-            app:buttonGravity="center_vertical"
-            app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_back"
-            app:navigationIconTint="@color/black_light"
-            app:titleTextColor="@color/black"
-            tools:title="@string/app_name" />
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:buttonGravity="center_vertical"
+                app:contentInsetStartWithNavigation="0dp"
+                tools:title="@string/app_name"
+                app:titleTextColor="@color/black"
+                android:elevation="0dp"
+                app:navigationIcon="@drawable/ic_back"
+                app:navigationIconTint="@color/black_light"
+        />
     </com.google.android.material.appbar.CollapsingToolbarLayout>
-    <!--                app:titleTextAppearance="@style/AppBarTitleStyle"-->
+<!--                app:titleTextAppearance="@style/AppBarTitleStyle"-->
 
 </com.google.android.material.appbar.AppBarLayout>
