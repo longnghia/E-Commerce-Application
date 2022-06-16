@@ -12,14 +12,14 @@ class TutorialPagerAdapter() : RecyclerView.Adapter<TutorialPagerAdapter.ViewHol
 
     val NUM_PAGES = 4
 
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view){
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         val tutImg = view.findViewById<ImageView>(R.id.tut_img)
-        val tutTitle =  view.findViewById<TextView>(R.id.tut_title)
-        val tutDes =  view.findViewById<TextView>(R.id.tut_des)
+        val tutTitle = view.findViewById<TextView>(R.id.tut_title)
+        val tutDes = view.findViewById<TextView>(R.id.tut_des)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_tutorial,parent,false))
+        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.fragment_tutorial, parent, false))
     }
 
     override fun getItemCount(): Int = NUM_PAGES
@@ -27,7 +27,7 @@ class TutorialPagerAdapter() : RecyclerView.Adapter<TutorialPagerAdapter.ViewHol
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-        when(position) {
+        when (position) {
             0 -> holder.apply {
                 tutImg.setImageResource(R.drawable.tut_1)
                 tutTitle.setText("Introduction 1")

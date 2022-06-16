@@ -37,12 +37,10 @@ class RemoteProductsDataSource : ProductDataSource {
             for (d in documents) {
                 val product = d.toObject<Product>()
                 listProducts.add(product)
-//                Log.d(TAG, "getAllProducts: product=$product")
             }
         } else {
             Log.w(TAG, "getAllProducts: Failed")
         }
-        Log.d(TAG, "getAllProducts: result=$listProducts")
         return listProducts
     }
 
@@ -65,11 +63,8 @@ class RemoteProductsDataSource : ProductDataSource {
 
             listFavorite.add(favorite)
 
-//            userOrderRef
-//                .update("favorites", FieldValue.arrayUnion(favorite))
             userOrderRef
                 .update("favorites", listFavorite)
-            Log.d(TAG, "added To list Favorite")
         }
     }
 
@@ -90,11 +85,7 @@ class RemoteProductsDataSource : ProductDataSource {
                 userOrder?.favorites?.toMutableList() ?: mutableListOf()
 
             listFavorite.add(favorite)
-
-//            userOrderRef
-//                .update("favorites", FieldValue.arrayUnion(favorite)).await()
             userOrderRef.update("favorites", listFavorite).await()
-            Log.d(TAG, "removeFavorite")
         }
 
     }
@@ -166,9 +157,7 @@ class RemoteProductsDataSource : ProductDataSource {
 
 
             userOrderRef
-                .update("carts",listCart)
-
-            Log.d(TAG, "added To list Cart")
+                .update("carts", listCart)
         }
     }
 
@@ -193,7 +182,6 @@ class RemoteProductsDataSource : ProductDataSource {
             userOrderRef
                 .update("carts", listCart).await()
         }
-        Log.d(TAG, "removeCart")
     }
 
     companion object {

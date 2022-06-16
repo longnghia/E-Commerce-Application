@@ -127,6 +127,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
                 findNavController().navigateUp()
             }
             setOnMenuItemClickListener {
+                //todo share product
                 Log.d(TAG, "setAppbar: ${it.itemId == R.drawable.ic_share} ")
                 false
             }
@@ -136,10 +137,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
 
     private fun onMenuClick(menuItem: MenuItem?): Boolean {
-        Log.d(TAG, "onMenuClick: ${menuItem?.itemId}")
         when (menuItem?.itemId) {
             R.id.ic_search -> {
-                Log.d(TAG, "onMenuClick: search clicked")
                 // todo
 //                binding.topAppBar.searchBar.searchBarFrameLayout.apply {
 //                    visibility = if (visibility == View.VISIBLE) View.INVISIBLE else View.INVISIBLE
@@ -162,24 +161,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     override fun getViewBinding(): FragmentProductDetailBinding {
         return FragmentProductDetailBinding.inflate(layoutInflater)
     }
-
-//    override fun onClickFavorite(product: Product, favorite: Favorite?) {
-//        Log.d(TAG, "onClickFavorite: $favorite")
-//        if (favorite == null) {
-//            Log.d(TAG, "onClickFavorite: insert favorite")
-//            toggleBottomSheetInsertFavorite(product)
-//        } else {
-//            Log.d(TAG, "onClickFavorite: remove favorite")
-//            viewModel.removeFavorite(favorite!!)
-//        }
-//    }
-//
-//    override fun onClickItem(productData: ProductData) {
-//        findNavController().navigate(
-//            R.id.detail_dest,
-//            bundleOf("product_data" to productData)
-//        )
-//    }
 }
 
 

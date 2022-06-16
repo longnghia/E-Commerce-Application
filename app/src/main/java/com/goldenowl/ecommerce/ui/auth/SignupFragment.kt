@@ -23,7 +23,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     override fun setObservers() {
 
         textInputViewModel.errorSignUpEmail.observe(viewLifecycleOwner) { errorEmail ->
-            Log.d(TAG, "setObservers: erroremail=$errorEmail")
             validEmail(errorEmail)
         }
         textInputViewModel.errorSignUpPassword.observe(viewLifecycleOwner) { errorPassword ->
@@ -31,7 +30,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
 
         textInputViewModel.signUpFormValid.observe(viewLifecycleOwner) { signUpValid ->
-            Log.d(TAG, "setObservers: logInValid=$signUpValid ")
             binding.btnSignup.isEnabled = signUpValid
         }
 
@@ -48,7 +46,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     }
 
     private fun handleLogin(it: BaseLoadingStatus?) {
-        Log.d(TAG, "validSignup: $it")
         when (it) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
@@ -70,13 +67,11 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         if (it != null) {
             if (it.isNotEmpty()) {
                 binding.inputLayoutEmail.error = it
-                Log.d(TAG, "hasError: $it")
             }
         }
     }
 
     private fun handleSignUp(signUpStatus: BaseLoadingStatus) {
-        Log.d(TAG, "validSignup: $signUpStatus")
         when (signUpStatus) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)

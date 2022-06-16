@@ -32,7 +32,6 @@ class ModalAdapter : RecyclerView.Adapter<ModalAdapter.ViewHolder>() {
                 refresh(position)
             }
             if (position == checkItem) {
-//                this.background.state = listOf(android.R.attr.state_selected).toIntArray()
                 this.isSelected = true
                 this.setTextColor(R.color.white)
             } else {

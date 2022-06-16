@@ -13,4 +13,4 @@ data class Cart @JvmOverloads constructor(
     val size: String = "",
     val color: String = "",
     var quantity: Int = 0
-): Parcelable
+) : Parcelable

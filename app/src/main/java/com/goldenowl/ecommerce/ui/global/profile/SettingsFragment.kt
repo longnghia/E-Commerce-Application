@@ -82,7 +82,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
 
         datePicker.addOnPositiveButtonClickListener { time ->
             val date = getDateTime(time)
-            Log.d(TAG, "setViews: time=$date")
             binding.edtDob.setText(date)
         }
 
@@ -209,7 +208,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             })
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString(),0)
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 0)
                     textInputViewModel.setLoginFormValid()
                 }
             })

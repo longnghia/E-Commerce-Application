@@ -16,9 +16,8 @@
         android:fitsSystemWindows="true"
         app:collapsedTitleGravity="center_horizontal"
         app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
-        app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
-        >
-<!--        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"-->
+        app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded">
+        <!--        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"-->
 
         <ImageView
             android:id="@+id/appbar_img"

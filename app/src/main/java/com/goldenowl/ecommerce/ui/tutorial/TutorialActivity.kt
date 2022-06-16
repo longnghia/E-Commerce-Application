@@ -1,7 +1,6 @@
 package com.goldenowl.ecommerce.ui.tutorial
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -18,7 +17,6 @@ class TutorialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Log.d(TAG, "onCreate: create TutorialActivity")
         binding = ActivityTutorialBinding.inflate(layoutInflater)
 
         setViews()
@@ -45,20 +43,16 @@ class TutorialActivity : AppCompatActivity() {
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-//            tab.text = "OBJECT ${(position + 1)}"
-//            Log.d(TAG, "onCreate: position = $position")
-
         }.attach()
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d(TAG, "onPageSelected: $position")
 
-                if (position == 3){
+                if (position == 3) {
                     binding.tutNextLayout.visibility = View.INVISIBLE
                     binding.btnGetStarted.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.tutNextLayout.visibility = View.VISIBLE
                     binding.btnGetStarted.visibility = View.INVISIBLE
                 }
@@ -73,8 +67,6 @@ class TutorialActivity : AppCompatActivity() {
 
     private fun skipTutorial() {
         setFirstLaunch(false)
-
-        Log.d(TAG, "skipTutorial: skipped")
         launchHome(this)
         finish()
     }

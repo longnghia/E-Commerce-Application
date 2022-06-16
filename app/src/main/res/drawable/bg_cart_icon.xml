@@ -2,28 +2,28 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="false">
         <shape android:shape="oval">
-            <solid android:color="@color/grey_text"/>
+            <solid android:color="@color/grey_text" />
         </shape>
     </item>
     <item android:state_selected="true">
         <shape android:shape="oval">
-            <solid android:color="@color/red_dark"/>
+            <solid android:color="@color/red_dark" />
         </shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="oval">
-            <solid android:color="@color/red_dark"/>
+            <solid android:color="@color/red_dark" />
         </shape>
     </item>
     <item android:state_checked="true">
         <shape android:shape="oval">
-            <solid android:color="@color/red_dark"/>
+            <solid android:color="@color/red_dark" />
         </shape>
     </item>
 
     <item android:state_selected="true">
         <shape android:shape="oval">
-            <solid android:color="@color/red_dark"/>
+            <solid android:color="@color/red_dark" />
         </shape>
     </item>
 </selector>

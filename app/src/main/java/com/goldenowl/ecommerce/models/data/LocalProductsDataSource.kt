@@ -58,22 +58,13 @@ class LocalProductsDataSource(
         Log.d(TAG, "testWait: after $i s !!!")
     }
 
-     suspend fun insertCart(cart: Cart) {
+    suspend fun insertCart(cart: Cart) {
         cartDao.insertCart(cart)
     }
 
-     suspend fun removeCart(cart: Cart) {
+    suspend fun removeCart(cart: Cart) {
         cartDao.removeCart(cart)
     }
-
-
-
-//    override suspend fun emptyTable() {
-//        withContext(dispatchers) {
-//            productDao.emptyTable()
-//        }
-//    }
-
 
     companion object {
         val TAG = "LocalProductsDataSource"

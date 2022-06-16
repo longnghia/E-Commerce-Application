@@ -68,31 +68,14 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
         if (mListProduct.isEmpty()) {
             mListProduct = productsRepository.getAllProducts()
             Log.d(TAG, "getAllProducts: done = $mListProduct")
-//            productsRepository.syncLocalDataSource(mProductsList) // todo
         } else {
             Log.d(TAG, "getAllProducts: using data in mProductList:\n $mListProduct")
         }
         setCategoryList(mListProduct)
-//        filterProducts.value = getFilterProducts(-1, mListProduct)
-//        filterFavoriteProducts.value = getFilterProducts(-1, mListProduct)
         dataReady.value = BaseLoadingStatus.SUCCEEDED
     }
 
-    private fun getFilterProducts(index: Int, fromList: List<Product>): List<Product> {
-        Log.d(TAG, "getFilterProducts: position $index")
-        var filteredProducts = fromList.toList()
-        if (index < 0) {
-            return filteredProducts
-        }
-
-        filteredProducts = filteredProducts.filter {
-            it.categoryName == categoryList.elementAt(index)
-        }
-        return filteredProducts
-    }
-
     fun insertFavorite(favorite: Favorite) {
-        Log.d(TAG, "insertFavorite: $favorite")
         viewModelScope.launch(Dispatchers.IO) {
             productsRepository.insertFavorite(favorite).let {
                 Log.d(TAG, "insertFavorite: result= $it")
@@ -110,7 +93,6 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
             productsRepository.removeFavorite(favorite).let {
                 if (it is MyResult.Success) {
                     Log.d(TAG, "removeFavorite: success= $it")
-
                 } else if (it is MyResult.Error) {
                     Log.e(TAG, "removeFavorite: ERROR ", it.exception)
                     toastMessage.postValue(it.exception.message)
@@ -156,6 +138,7 @@ class ShopViewModel(private val productsRepository: ProductsRepository, private 
 //        }
     }
 
+    //todo restore user database
 //    fun restoreUserDatabase() {
 //        viewModelScope.launch {
 //            val userOrderResult = productsRepository.getUserOrder(userId!!)

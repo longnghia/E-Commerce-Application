@@ -4,7 +4,6 @@ import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.supervisorScope
 
 
@@ -47,7 +46,6 @@ class ProductsRepository(
     }
 
     suspend fun removeFavorite(favorite: Favorite): MyResult<Boolean> {
-        Log.d(TAG, "removeFavorite: $favorite")
         return supervisorScope {
             val remoteSource = async { remoteProductDataSource.removeFavorite(favorite) }
             val localSource = async { localProductDataSource.removeFavorite(favorite) }
@@ -56,7 +54,6 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
@@ -86,7 +83,6 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }

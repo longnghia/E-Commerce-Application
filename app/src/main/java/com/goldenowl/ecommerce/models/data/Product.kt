@@ -24,7 +24,7 @@ data class Product @JvmOverloads constructor(
     var reviewStars: Int = 0,
     var salePercent: Int? = null,
     var tags: List<Tag> = ArrayList(),
-): Parcelable {
+) : Parcelable {
     override fun toString(): String {
         return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getOriginPrice()} , image=${getImage()}, isPopular=${isPopular}, date=$createdDate)"
     }
@@ -59,9 +59,6 @@ data class Product @JvmOverloads constructor(
     }
 
     fun isAvailable(favorite: Favorite): Boolean {
-//        val color = colors.find {
-//            it.color == favorite.color
-//        }
         val color = colors[0]
         val size = color?.sizes?.find {
             it.size == favorite.size
@@ -78,19 +75,19 @@ data class Product @JvmOverloads constructor(
     data class Color @JvmOverloads constructor(
         var color: String = "",
         var sizes: List<Size> = ArrayList()
-    ): Parcelable
+    ) : Parcelable
 
     @Parcelize
     data class Size @JvmOverloads constructor(
         var price: Int = 0,
         var quantity: Int = 0,
         var size: String = ""
-    ): Parcelable
+    ) : Parcelable
 
     @Parcelize
     data class Tag @JvmOverloads constructor(
         var id: String = "",
         var name: String = ""
-    ): Parcelable
+    ) : Parcelable
 }
 

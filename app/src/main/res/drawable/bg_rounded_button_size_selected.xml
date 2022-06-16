@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
+<?xml version="1.0" encoding="utf-8"?><!--<shape xmlns:android="http://schemas.android.com/apk/res/android"-->
 <!--&gt;-->
 <!--    <solid android:color="@color/white" />-->
 <!--    <corners android:radius="8dp" />-->
@@ -8,12 +7,9 @@
 <!--        android:color="@color/grey_text" />-->
 <!--</shape>-->
 
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
-    <corners
-        android:radius="8dp" />
-    <solid
-        android:color="@color/red_dark" />
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <corners android:radius="8dp" />
+    <solid android:color="@color/red_dark" />
 
 </shape>

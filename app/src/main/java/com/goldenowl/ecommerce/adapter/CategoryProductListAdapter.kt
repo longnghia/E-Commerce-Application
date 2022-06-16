@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,8 +53,6 @@ class CategoryProductListAdapter(
                 ) >= 0
             }
         }
-        Log.d(TAG, "setData: listProductData = $mListProductData")
-
         notifyDataSetChanged()
     }
 
@@ -73,7 +70,6 @@ class CategoryProductListAdapter(
         var productRatingBar: RatingBar? = null
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
-        var layoutFrameLoading: FrameLayout? = null
         var layoutItem: ConstraintLayout? = null
 
         init {
@@ -85,11 +81,7 @@ class CategoryProductListAdapter(
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
             layoutItem = itemView.findViewById(R.id.layout_item)
-            if (layoutLoading != null) {
-                layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
-            } else {
-                Log.d(TAG, "layoutLoading NULL!! ")
-            }
+
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
             originPrice = itemView.findViewById(R.id.product_origin_price)
@@ -120,12 +112,10 @@ class CategoryProductListAdapter(
 
 
         holder.ivFavorite?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickFavorite(product, favorite)
         }
 
-        holder.layoutItem?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
+        holder.itemView.setOnClickListener {
             listener.onClickItem(mListProductData[position])
         }
 

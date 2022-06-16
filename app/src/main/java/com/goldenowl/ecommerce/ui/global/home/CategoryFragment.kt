@@ -48,7 +48,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
 
@@ -80,7 +79,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
     override fun init() {
         listCategory = viewModel.categoryList
-        Log.d(TAG, "init: listCategory=$listCategory")
         listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
@@ -177,8 +175,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                             uiScope.launch {
                                 delay(500)
                                 if (lastInput == newText) {
-                                    Log.i("onQueryTextChange", newText!!)
-                                    Log.d(TAG, "onQueryTextChange: uiScope")
                                     sortViewModel.searchTerm.value = newText
                                 }
                             }
@@ -187,19 +183,17 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                     }
 
                     override fun onQueryTextSubmit(query: String?): Boolean {
-                        Log.d(TAG, "onQueryTextSubmit  $query!!")
                         hideKeyboard()
                         return true
                     }
                 }
                 searchView!!.setOnCloseListener {
-                    Log.d(TAG, "setAppBarMenu: closed")
                     false
                 }
                 searchView!!.maxWidth = Integer.MAX_VALUE
                 searchView!!.setOnQueryTextListener(queryTextListener)
             } else {
-                Log.d(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
+                Log.e(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
             }
         }
     }
