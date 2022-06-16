@@ -12,16 +12,16 @@ import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetEnterPromo
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
-import com.goldenowl.ecommerce.ui.global.favorites.FavoritesFragment
-import com.goldenowl.ecommerce.ui.global.home.ProductDetailFragment
 import com.goldenowl.ecommerce.viewmodels.ProductViewModelFactory
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 
 abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>(),
     IClickListener {
 
+    private val TAG = "BaseHomeFragment"
     protected val viewModel: ShopViewModel by activityViewModels {
         ProductViewModelFactory(
             (requireActivity().application as MyApplication).productsRepository,
@@ -30,12 +30,12 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     override fun onClickFavorite(product: Product, favorite: Favorite?) {
-        Log.d(ProductDetailFragment.TAG, "onClickFavorite: $favorite")
+        Log.d(TAG, "onClickFavorite: $favorite")
         if (favorite == null) {
-            Log.d(ProductDetailFragment.TAG, "onClickFavorite: insert favorite")
+            Log.d(TAG, "onClickFavorite: insert favorite")
             toggleBottomSheetInsertFavorite(product)
         } else {
-            Log.d(ProductDetailFragment.TAG, "onClickFavorite: remove favorite")
+            Log.d(TAG, "onClickFavorite: remove favorite")
             viewModel.removeFavorite(favorite!!)
         }
     }
@@ -48,9 +48,9 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     override fun onClickCart(product: Product, cart: Cart?) {
-        Log.d(FavoritesFragment.TAG, "onClickCart: $cart")
+        Log.d(TAG, "onClickCart: $cart")
         if (cart == null) {
-            toggleBottomSheetInsertCart(product)
+            toggleBottomSheetInsertCart(product, null)
         } else {
             viewModel.removeCart(cart)
         }
@@ -59,21 +59,34 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
 
     override fun onClickRemoveFavorite(product: Product, favorite: Favorite?) {
         if (favorite != null) {
-            Log.d(FavoritesFragment.TAG, "onClickRemoveFavorite: remove from favorite")
+            Log.d(TAG, "onClickRemoveFavorite: remove from favorite")
             viewModel.removeFavorite(favorite)
         }
     }
 
+    override fun updateCart(cart: Cart) {
+        viewModel.updateCart(cart)
+    }
     protected fun toggleBottomSheetInsertFavorite(product: Product) {
         val modalBottomSheet = BottomSheetInsertFavorite(product, viewModel)
         modalBottomSheet.enterTransition = View.GONE
         modalBottomSheet.show(parentFragmentManager, BottomSheetInsertCart.TAG)
     }
 
-    protected fun toggleBottomSheetInsertCart(product: Product) {
-        val modalBottomSheet = BottomSheetInsertCart(product, viewModel)
+    /**
+     * Open model bottom sheet to select size
+     * @param cart if cart not null, mean user has chosen color and size in product detail screen
+     */
+    protected fun toggleBottomSheetInsertCart(product: Product, cart: Cart?) {
+        val modalBottomSheet = BottomSheetInsertCart(product, cart, viewModel)
         modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, ProductDetailFragment.TAG)
+        modalBottomSheet.show(parentFragmentManager, TAG)
+    }
+
+    protected fun toggleBottomSheetEnterPromo(){
+        val modalBottomSheet = BottomSheetEnterPromo(viewModel)
+        modalBottomSheet.enterTransition = View.GONE
+        modalBottomSheet.show(parentFragmentManager, TAG)
     }
 }
 
@@ -82,5 +95,6 @@ interface IClickListener {
     fun onClickItem(productData: ProductData)
     fun onClickCart(product: Product, cart: Cart?)
     fun onClickRemoveFavorite(product: Product, favorite: Favorite?)
+    fun updateCart(cart: Cart)
 }
 

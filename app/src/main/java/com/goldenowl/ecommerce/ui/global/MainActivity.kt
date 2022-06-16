@@ -53,6 +53,8 @@ import com.google.firebase.ktx.Firebase
 * email forgot password custom
 *
 * delete database when logout
+*
+* image avatar, icon in reviews
 * */
 
 

@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentProductDetailBinding
+import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.Consts.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 
 
@@ -53,6 +55,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
 
         viewModel.toastMessage.observe(viewLifecycleOwner) {
+            Log.d(TAG, "setObservers: toastMessage=${it}")
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
@@ -61,6 +64,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     override fun init() {
         productData = arguments?.get("product_data") as ProductData
         product = productData.product
+        favorite = productData.favorite
     }
 
 
@@ -77,10 +81,24 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
 
         /* drop down menu*/
-        val items = listOf("Option 1", "Option 2", "Option 3", "Option 4")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, items)
-        (binding.menuSize.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-        (binding.menuColor.editText as? AutoCompleteTextView)?.setAdapter(adapter)
+        val adapterSize = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, listSize)
+        val adapterColor =
+            ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, product.getListColor())
+        (binding.menuSize.editText as? AutoCompleteTextView)?.setAdapter(adapterSize)
+        (binding.menuColor.editText as? AutoCompleteTextView)?.setAdapter(adapterColor)
+
+        if (favorite != null) {
+            binding.tvColor.setText(favorite!!.color, false)
+            binding.tvSize.setText(favorite!!.size, false)
+        }
+
+        binding.menuSize.editText?.doAfterTextChanged {
+            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
+        }
+        binding.menuColor.editText?.doAfterTextChanged {
+            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
+        }
+
         /* viewpager*/
         binding.viewPager.adapter = ImageProductDetailAdapter(product.images)
         binding.viewPager.autoScroll(3500)
@@ -91,16 +109,21 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         binding.rcvProducts.adapter = relateProductAdapter
         binding.rcvProducts.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        binding.tvNumItem.text = relateProducts.size.toString()
+        binding.tvNumItem.text =
+            resources.getQuantityString(R.plurals.num_item, relateProducts.size, relateProducts.size)
 
-        binding.menuSize.editText?.doAfterTextChanged {
-            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
-        }
-        binding.menuColor.editText?.doAfterTextChanged {
-            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
-        }
         binding.btnAddToCart.setOnClickListener {
-            toggleBottomSheetInsertCart(product)
+            val size = binding.menuSize.editText?.text.toString()
+            val color = binding.menuColor.editText?.text.toString()
+            Log.d(TAG, "setViews: size = ${size}, color=$color")
+            if (color.isNullOrBlank()) {
+                Toast.makeText(context, "Please select color!", Toast.LENGTH_SHORT).show()
+                binding.menuColor.requestFocus()
+            } else {
+                toggleBottomSheetInsertCart(
+                    product, Cart(product.id, size, color, 1)
+                )
+            }
         }
         /* insert favorite btn */
         binding.ivFavorite.setOnClickListener {
@@ -127,7 +150,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
                 findNavController().navigateUp()
             }
             setOnMenuItemClickListener {
-                //todo share product
                 Log.d(TAG, "setAppbar: ${it.itemId == R.drawable.ic_share} ")
                 false
             }
@@ -137,8 +159,10 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
 
     private fun onMenuClick(menuItem: MenuItem?): Boolean {
+        Log.d(TAG, "onMenuClick: ${menuItem?.itemId}")
         when (menuItem?.itemId) {
             R.id.ic_search -> {
+                Log.d(TAG, "onMenuClick: search clicked")
                 // todo
 //                binding.topAppBar.searchBar.searchBarFrameLayout.apply {
 //                    visibility = if (visibility == View.VISIBLE) View.INVISIBLE else View.INVISIBLE
@@ -161,6 +185,24 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     override fun getViewBinding(): FragmentProductDetailBinding {
         return FragmentProductDetailBinding.inflate(layoutInflater)
     }
+
+//    override fun onClickFavorite(product: Product, favorite: Favorite?) {
+//        Log.d(TAG, "onClickFavorite: $favorite")
+//        if (favorite == null) {
+//            Log.d(TAG, "onClickFavorite: insert favorite")
+//            toggleBottomSheetInsertFavorite(product)
+//        } else {
+//            Log.d(TAG, "onClickFavorite: remove favorite")
+//            viewModel.removeFavorite(favorite!!)
+//        }
+//    }
+//
+//    override fun onClickItem(productData: ProductData) {
+//        findNavController().navigate(
+//            R.id.detail_dest,
+//            bundleOf("product_data" to productData)
+//        )
+//    }
 }
 
 

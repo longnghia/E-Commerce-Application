@@ -13,6 +13,7 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Utils.autoScroll
 import com.goldenowl.ecommerce.utils.Utils.getColor
 
 class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
@@ -87,5 +88,14 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             setCollapsedTitleTextColor(getColor(context, R.color.white) ?: 0xFFFFFF)
             setExpandedTitleColor(getColor(context, R.color.white) ?: 0xFFFFFF)
         }
+
+        // todo fetch list image and title
+        val imgs = listOf<String>(
+            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75",
+            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75",
+            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75"
+        )
+        binding.topAppBar.viewPager.adapter = ImageProductDetailAdapter(imgs)
+        binding.topAppBar.viewPager.autoScroll(3500)
     }
 }

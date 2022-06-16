@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.viewmodels
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,8 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
                 ) >= 0
             }
         }
+        Log.d(TAG, "setData: mListFavoriteProductData = $mListFavoriteProductData")
+
         notifyDataSetChanged()
     }
 
@@ -124,15 +127,21 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         val cart = productData.cart
         val favorite = productData.favorite
 
+        if (holder.ivCart == null) {
+            Log.d(TAG, "onBindViewHolder: not found icon")
+        }
+
         holder.ivCart?.setOnClickListener {
+            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickCart(product, cart)
         }
 
         holder.ivRemove?.setOnClickListener {
+            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickRemoveFavorite(product, favorite)
         }
 
-        holder.itemView.setOnClickListener {
+        holder.layoutItem?.setOnClickListener {
             listener.onClickItem(productData)
         }
         holder.productBrand?.text = product.brandName
@@ -162,15 +171,16 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
+        Log.d(TAG, "onBindViewHolder: product=${product.colors[0].sizes}")
         if (product.isAvailable(favorite!!)) {
             if (cart != null) {
-                holder.ivCart?.apply {
-                    backgroundTintList = this.resources.getColorStateList(R.color.red_dark, this.context.theme)
+                holder.ivCart?.apply{
+                    backgroundTintList = this.resources.getColorStateList(R.color.red_dark , this.context.theme)
                 }
 
             } else {
-                holder.ivCart?.apply {
-                    backgroundTintList = this.resources.getColorStateList(R.color.grey_text, this.context.theme)
+                holder.ivCart?.apply{
+                    backgroundTintList = this.resources.getColorStateList(R.color.grey_text , this.context.theme)
                 }
             }
         } else {
