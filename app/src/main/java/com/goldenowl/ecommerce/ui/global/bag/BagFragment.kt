@@ -5,7 +5,9 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.core.view.isEmpty
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentBagBinding
@@ -101,6 +103,16 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
         binding.layoutPromo.setOnClickListener {
             toggleBottomSheetEnterPromo()
         }
+
+        binding.btnCheckOut.setOnClickListener {
+            checkOut()
+        }
+    }
+
+    private fun checkOut() {
+        val listCartProductData = adapterGrid.getBag()
+        findNavController().navigate(R.id.checkout_dest, bundleOf(
+            "listCartProductData" to listCartProductData))
     }
 
 
