@@ -1,6 +1,7 @@
 package com.goldenowl.ecommerce.utils
 
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.models.data.Delivery
 
 object Consts {
     const val PRODUCTS_COLLECTION = "products"
@@ -30,5 +31,12 @@ object Consts {
     )
 
     val listSize = listOf("L", "M", "S", "XL", "XS")
+    val listDelivery = listOf<Delivery>(
+        Delivery("fedex", " 2-3 days", R.drawable.ic_fedex),
+        Delivery("usps", " 2-3 days", R.drawable.ic_usps),
+        Delivery("dhl", " 2-3 days", R.drawable.ic_dhl),
+        Delivery("dhl", " 2-3 days", R.drawable.ic_dhl),
+        Delivery("dhl", " 2-3 days", R.drawable.ic_dhl),
+    )
 
 }

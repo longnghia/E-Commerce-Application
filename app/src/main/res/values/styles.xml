@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
 
     <!--    Bottom Navigation Bar-->
@@ -57,10 +57,17 @@
         <item name="android:textColor">@color/text_subtitle_color</item>
         <item name="android:textSize">14sp</item>
     </style>
+
+    <style name="TextAppearance.MyApp.Text11" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/text_subtitle_color</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
     <style name="TextAppearance.MyApp.Text18" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="android:textColor">@color/black_light</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="TextAppearance.MyApp.TextSubTitle" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">@color/text_subtitle_color</item>
         <item name="android:textSize">11sp</item>
@@ -89,7 +96,6 @@
         <item name="boxBackgroundMode">none</item>
     </style>
 
-    <!--    <style name="menuSelect" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">-->
     <style name="menuSelect" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu">
         <item name="shapeAppearanceOverlay">@style/roundedCorners</item>
         <item name="boxStrokeWidth">0dp</item>
@@ -100,7 +106,8 @@
     <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
         <item name="android:textColor">@color/black_light</item>
     </style>
-    <!--        <item name="android:textColor">@color/shrine_pink_900</item>-->
-    <!--        <item name="fontFamily">@font/rubik</item>-->
-    <!--        <item name="android:fontFamily">@font/rubik</item>-->
+
+    <style name="MetropolisStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/metropolis_regular</item>
+    </style>
 </resources>
