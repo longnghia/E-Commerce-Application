@@ -103,6 +103,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
     val googleCallbackManager = object : ICallback {
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, listener: LoginListener) {
             if (requestCode != GOOGLE_SIGN_IN) {
+                Log.d(TAG, "onActivityResult: requestCode = $requestCode")
                 return
             }
             if (data == null)
@@ -115,12 +116,14 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                     val firebaseCredential = GoogleAuthProvider.getCredential(it.idToken, null)
                     firebaseAuth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener {
+                            Log.d(TAG, "onActivityResult: signIn Google WithCredential success ")
                             currentUser = firebaseAuth.currentUser
                             listener.callback(MyResult.Success(true))
                             onLoginSuccess(currentUser, UserManager.TYPEGOOGLE)
 
                         }
                         .addOnFailureListener { e ->
+                            Log.d(TAG, "onActivityResult: ERROR", e)
                             listener.callback(MyResult.Error(e))
                         }
                 }

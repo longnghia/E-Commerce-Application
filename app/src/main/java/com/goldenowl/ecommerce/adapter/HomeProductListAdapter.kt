@@ -29,6 +29,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             mListProductData = mListProductData.filter { it.product.salePercent != null }
         else if (filterType == "News")
             mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
+        Log.d(TAG, "setData: listProductData = $mListProductData")
         notifyDataSetChanged()
     }
 

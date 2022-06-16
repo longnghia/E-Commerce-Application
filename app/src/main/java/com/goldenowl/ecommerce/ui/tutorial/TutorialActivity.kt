@@ -18,6 +18,7 @@ class TutorialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d(TAG, "onCreate: create TutorialActivity")
         binding = ActivityTutorialBinding.inflate(layoutInflater)
 
         setViews()
