@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/auth_navigation.xml"
-    app:startDestination="@id/signup_dest">
+            xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/auth_navigation.xml"
+            app:startDestination="@id/signup_dest"
+>
     <fragment
         android:id="@+id/login_dest"
         android:name="com.goldenowl.ecommerce.ui.auth.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login">
 
-        <action
-            android:id="@+id/action_login_to_signup"
-            app:destination="@id/signup_dest"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
-            app:popUpTo="@id/signup_dest"
-            app:popUpToInclusive="true" />
+        <action android:id="@+id/action_login_to_signup" app:destination="@id/signup_dest"
+                app:popUpTo="@id/signup_dest"
+                app:popUpToInclusive="true"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -26,13 +24,11 @@
         android:name="com.goldenowl.ecommerce.ui.auth.SignupFragment"
         android:label="@string/signup"
         tools:layout="@layout/fragment_signup">
-        <action
-            android:id="@+id/action_signup_to_login"
-            app:destination="@id/login_dest"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right" />
+        <action android:id="@+id/action_signup_to_login" app:destination="@id/login_dest"
+                app:enterAnim="@anim/slide_in_right"
+                app:exitAnim="@anim/slide_out_left"
+                app:popEnterAnim="@anim/slide_in_left"
+                app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
 </navigation>

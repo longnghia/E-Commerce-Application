@@ -31,7 +31,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_menu"
                 android:layout_width="match_parent"
@@ -45,7 +44,7 @@
                     android:id="@+id/menu_size"
                     style="@style/menuSelect"
                     android:layout_width="138dp"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:hint="@string/size"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -53,6 +52,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <AutoCompleteTextView
+                        android:id="@+id/tv_size"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none" />
@@ -63,7 +63,7 @@
                     android:id="@+id/menu_color"
                     style="@style/menuSelect"
                     android:layout_width="138dp"
-                    android:layout_height="48dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginStart="16dp"
                     android:hint="@string/color"
@@ -72,6 +72,7 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <AutoCompleteTextView
+                        android:id="@+id/tv_color"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="none" />

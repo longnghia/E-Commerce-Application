@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_gravity="center"
-        android:src="@drawable/cv_splash" />
+    <ImageView android:layout_width="250dp" android:layout_height="250dp"
+               android:src="@drawable/cv_splash"
+               android:layout_gravity="center"/>
 
 </FrameLayout>

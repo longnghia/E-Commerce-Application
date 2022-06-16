@@ -9,7 +9,7 @@ data class ProductData @JvmOverloads constructor(
     var favorite: Favorite?,
     var cart: Cart?
 
-) : Parcelable {
+): Parcelable {
     override fun toString(): String {
         return "ProductData(product=${product.id}, favorite=$favorite, cart=$cart)"
     }

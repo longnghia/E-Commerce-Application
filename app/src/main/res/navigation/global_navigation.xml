@@ -94,7 +94,8 @@
         android:id="@+id/detail_dest"
         android:name="com.goldenowl.ecommerce.ui.global.home.ProductDetailFragment"
         android:label="@string/settings"
-        tools:layout="@layout/fragment_product_detail"></fragment>
+        tools:layout="@layout/fragment_product_detail">
+    </fragment>
 
 
 </navigation>

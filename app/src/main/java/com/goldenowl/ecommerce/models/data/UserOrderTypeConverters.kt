@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.models.data
 
+import android.util.Log
 import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

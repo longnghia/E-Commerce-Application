@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.utils.Consts.PRODUCTS_COLLECTION
+import com.goldenowl.ecommerce.utils.Consts.PROMOTIONS_COLLECTION
 import com.goldenowl.ecommerce.utils.Consts.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
@@ -37,10 +38,12 @@ class RemoteProductsDataSource : ProductDataSource {
             for (d in documents) {
                 val product = d.toObject<Product>()
                 listProducts.add(product)
+//                Log.d(TAG, "getAllProducts: product=$product")
             }
         } else {
             Log.w(TAG, "getAllProducts: Failed")
         }
+        Log.d(TAG, "getAllProducts: result=$listProducts")
         return listProducts
     }
 
@@ -63,8 +66,11 @@ class RemoteProductsDataSource : ProductDataSource {
 
             listFavorite.add(favorite)
 
+//            userOrderRef
+//                .update("favorites", FieldValue.arrayUnion(favorite))
             userOrderRef
                 .update("favorites", listFavorite)
+            Log.d(TAG, "added To list Favorite")
         }
     }
 
@@ -85,7 +91,11 @@ class RemoteProductsDataSource : ProductDataSource {
                 userOrder?.favorites?.toMutableList() ?: mutableListOf()
 
             listFavorite.add(favorite)
+
+//            userOrderRef
+//                .update("favorites", FieldValue.arrayUnion(favorite)).await()
             userOrderRef.update("favorites", listFavorite).await()
+            Log.d(TAG, "removeFavorite")
         }
 
     }
@@ -158,8 +168,41 @@ class RemoteProductsDataSource : ProductDataSource {
 
             userOrderRef
                 .update("carts", listCart)
+
+            Log.d(TAG, "added To list Cart")
         }
     }
+
+    suspend fun updateCart(cart: Cart) {
+        val userId =
+            firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        val snapshot = userOrderRef.get().await()
+        if (!snapshot.exists()) {
+            userOrderRef
+                .set(UserOrder(userId, favorites = emptyList(), carts = listOf(cart)))
+        } else {
+            val userOrder = snapshot.toObject(UserOrder::class.java)
+            if (userOrder == null) {
+                Log.w(TAG, "insertCart: user cart NULL")
+            }
+            var listCart: MutableList<Cart> =
+                userOrder?.carts?.toMutableList() ?: mutableListOf()
+
+            val remoteCart: Cart? = listCart.find {
+                cart.isSame(it)
+            }
+
+            if (remoteCart != null)
+                listCart.remove(remoteCart)
+
+            userOrderRef
+                .update("carts", listCart)
+
+            Log.d(TAG, "added To list Cart")
+        }
+    }
+
 
     suspend fun removeCart(cart: Cart) {
         val userId =
@@ -181,6 +224,23 @@ class RemoteProductsDataSource : ProductDataSource {
 
             userOrderRef
                 .update("carts", listCart).await()
+        }
+        Log.d(TAG, "removeCart")
+    }
+
+    suspend fun getListPromo(): MyResult<List<Promo>> {
+        return try {
+            val listPromos = mutableListOf<Promo>()
+            val source = Source.SERVER
+            val documents = db.collection(PROMOTIONS_COLLECTION).get(source).await()
+
+            for (d in documents) {
+                val promo = d.toObject<Promo>()
+                listPromos.add(promo)
+            }
+            MyResult.Success(listPromos)
+        } catch (e: Exception) {
+            MyResult.Error(e)
         }
     }
 

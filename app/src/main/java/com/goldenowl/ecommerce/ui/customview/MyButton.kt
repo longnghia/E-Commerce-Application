@@ -17,7 +17,7 @@ class MyButton @JvmOverloads constructor(
 
     init {
         val l = LayoutInflater.from(context).inflate(R.layout.layout_my_button, this, true)
-        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.MyButton)
+        val typedArray = context.obtainStyledAttributes(attrs,R.styleable.MyButton)
         val text = typedArray.getText(R.styleable.MyButton_mbText)
         l.button.text = text
     }

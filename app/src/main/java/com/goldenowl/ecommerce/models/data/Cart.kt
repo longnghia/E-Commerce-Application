@@ -12,5 +12,9 @@ data class Cart @JvmOverloads constructor(
     val productId: String = "",
     val size: String = "",
     val color: String = "",
-    var quantity: Int = 0
-) : Parcelable
+    var quantity: Int = 0,
+) : Parcelable {
+    fun isSame(other: Cart): Boolean {
+        return productId == other.productId && size == other.size
+    }
+}

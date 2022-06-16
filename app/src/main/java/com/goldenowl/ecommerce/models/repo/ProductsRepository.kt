@@ -46,6 +46,7 @@ class ProductsRepository(
     }
 
     suspend fun removeFavorite(favorite: Favorite): MyResult<Boolean> {
+        Log.d(TAG, "removeFavorite: $favorite")
         return supervisorScope {
             val remoteSource = async { remoteProductDataSource.removeFavorite(favorite) }
             val localSource = async { localProductDataSource.removeFavorite(favorite) }
@@ -54,6 +55,7 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
+                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
@@ -74,6 +76,21 @@ class ProductsRepository(
         }
     }
 
+    suspend fun updateCart(cart: Cart): MyResult<Boolean> {
+        return supervisorScope {
+            try {
+                val remoteSource = async { remoteProductDataSource.updateCart(cart) }
+                val localSource = async { localProductDataSource.updateCart(cart) }
+                remoteSource.await()
+                localSource.await()
+                MyResult.Success(true)
+            } catch (e: Exception) {
+                Log.e(TAG, "insertFavorite: ERROR", e)
+                MyResult.Error(e)
+            }
+        }
+    }
+
     suspend fun removeCart(cart: Cart): MyResult<Boolean> {
         return supervisorScope {
             val remoteSource = async { remoteProductDataSource.removeCart(cart) }
@@ -83,9 +100,14 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
+                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
+    }
+
+    suspend fun getListPromo(): MyResult<List<Promo>> {
+        return remoteProductDataSource.getListPromo()
     }
 
 //    suspend fun updateLocalDatabase(userOrder: UserOrder) {

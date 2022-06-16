@@ -60,7 +60,7 @@ class ProductTypeConverters {
     }
 
     @TypeConverter
-    fun listImageFromString(listString: String): List<String> {
+    fun listImageFromString(listString: String ): List<String> {
         if (listString.isNullOrBlank())
             return emptyList()
         return listString.split(",").map { it }
@@ -74,7 +74,6 @@ class ProductTypeConverters {
         val type = object : TypeToken<Product.Tag>() {}.type
         return gson.toJson(tag, type)
     }
-
     @TypeConverter
     fun tagFromJson(tag: String): Product.Tag {
         if (tag.isNullOrBlank())
