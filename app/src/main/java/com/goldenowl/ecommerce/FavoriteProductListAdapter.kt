@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.IClickListener
-import com.goldenowl.ecommerce.utils.Consts
-import com.goldenowl.ecommerce.utils.Consts.SPAN_COUNT_ONE
+import com.goldenowl.ecommerce.utils.Constants
+import com.goldenowl.ecommerce.utils.Constants.SPAN_COUNT_ONE
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
@@ -107,7 +107,7 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteProductViewHolder {
-        if (viewType == Consts.GRID_VIEW) {
+        if (viewType == Constants.GRID_VIEW) {
             return FavoriteProductViewHolder(
                 (LayoutInflater.from(parent.context)).inflate(
                     R.layout.item_product_list_favorite_grid,
@@ -161,13 +161,14 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
                 }
                 holder.discountPrice?.visibility = View.VISIBLE
                 holder.discountPrice?.text =
-                    product.getDiscountPrice().toString() + "$"
-                val text = product.getOriginPrice().toString() + "$"
+                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
+                val text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
                 holder.originPrice?.strike(text)
             } else {
                 holder.tvDiscoutPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
-                holder.originPrice?.text = product.getOriginPrice().toString() + "$"
+                holder.originPrice?.text =                     holder.itemView.context.resources.getString(R.string.money_unit_int,  product.getOriginPrice())
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
@@ -193,9 +194,9 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
     override fun getItemViewType(position: Int): Int {
         val spanCount = mLayoutManager.spanCount
         return if (spanCount == SPAN_COUNT_ONE) {
-            Consts.LIST_VIEW
+            Constants.LIST_VIEW
         } else {
-            Consts.GRID_VIEW
+            Constants.GRID_VIEW
         }
     }
 

@@ -26,7 +26,6 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d(TAG, "onCreate: app on create")
         FacebookSdk.sdkInitialize(applicationContext)
         AppEventsLogger.activateApp(this)
         FirebaseApp.initializeApp(this)
@@ -44,7 +43,8 @@ class MyApplication : Application() {
         val favoriteDao = database.favoriteDao()
         val cartDao = database.cartDao()
         val orderDao = database.orderDao()
+        val addressDao = database.addressDao()
 
-        return LocalProductsDataSource(productDao, favoriteDao, cartDao, orderDao)
+        return LocalProductsDataSource(productDao, favoriteDao, cartDao, orderDao, addressDao)
     }
 }

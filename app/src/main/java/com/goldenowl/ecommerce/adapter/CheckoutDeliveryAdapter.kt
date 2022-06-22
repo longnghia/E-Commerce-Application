@@ -1,23 +1,38 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.databinding.ItemDeliveryBinding
 import com.goldenowl.ecommerce.models.data.Delivery
-import com.goldenowl.ecommerce.utils.Consts
+import com.goldenowl.ecommerce.utils.Constants
 
-class CheckoutDeliveryAdapter : RecyclerView.Adapter<CheckoutDeliveryAdapter.ViewHolder>() {
-    private val listDelivery = Consts.listDelivery
+class CheckoutDeliveryAdapter(private val listener: IClickDelivery) :
+    RecyclerView.Adapter<CheckoutDeliveryAdapter.ViewHolder>() {
+    private val listDelivery = Constants.listDelivery
+    private var selected = -1
 
-    class ViewHolder(private val binding: ItemDeliveryBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(delivery: Delivery) {
+    interface IClickDelivery {
+        fun onClickDelivery(delivery: Delivery)
+    }
+
+    fun setSelected(position: Int) {
+        selected = position
+        notifyDataSetChanged()
+    }
+
+    inner class ViewHolder(private val binding: ItemDeliveryBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(delivery: Delivery, position: Int) {
             binding.ivDeliveryImg.setImageResource(delivery.logo)
             binding.tvDeliveryTime.text = delivery.time
             binding.root.setOnClickListener {
-                Log.d("CheckoutDeliveryAdapter", "bind: clicked $delivery")
+                listener.onClickDelivery(delivery)
+                setSelected(position)
             }
+            if (position == selected) {
+                    binding.cardViewDelivery.strokeWidth = 3
+            } else
+                binding.cardViewDelivery.strokeWidth = 0
         }
     }
 
@@ -29,7 +44,7 @@ class CheckoutDeliveryAdapter : RecyclerView.Adapter<CheckoutDeliveryAdapter.Vie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val delivery = listDelivery[position]
-        holder.bind(delivery)
+        holder.bind(delivery, position)
     }
 
     override fun getItemCount() = listDelivery.size

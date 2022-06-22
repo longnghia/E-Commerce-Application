@@ -9,14 +9,17 @@ import java.util.*
 @Parcelize
 @Entity(tableName = "order_table")
 data class Order @JvmOverloads constructor(
-    @PrimaryKey
-    val id: String = "",
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val trackingNumber: String = "",
-    val date: Date,
+    val date: Date = Date(),
     val listCart: List<Cart> = emptyList(),
     val promoCode: String = "",
+    val cardId: String = "",
+    val totalAmount: Float = 0f,
+    val shippingAddress: String = ""
 
-    ) : Parcelable {
+) : Parcelable {
     override fun toString(): String {
         return "Order(id='$id', listCart=$listCart)"
     }

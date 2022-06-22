@@ -11,7 +11,7 @@ import com.goldenowl.ecommerce.adapter.BottomSheetSizeAdapter
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetAddToFavoriteBinding
 import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Product
-import com.goldenowl.ecommerce.utils.Consts.listSize
+import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

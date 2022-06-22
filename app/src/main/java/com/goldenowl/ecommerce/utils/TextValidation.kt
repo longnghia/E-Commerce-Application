@@ -70,5 +70,47 @@ class TextValidation {
         fun validateRePassword(password: String, rePassword: String): String {
             return if (password == rePassword) "" else "Password mismatch"
         }
+
+        fun validateCardName(name: String): String {
+            return validateName(name)
+        }
+
+        fun validateCardNumber(cardNumber: String): String {
+            if (cardNumber.isBlank()) {
+                return "Field required"
+            }
+            if (cardNumber[0] != '4' && cardNumber[0] != '5') {
+                return "Card number must start with 4 or 5"
+            }
+            if (cardNumber.length < 19) {
+                return "Card number invalid"
+            }
+            return ""
+        }
+
+        fun validateCardCvv(cvv: String): String {
+            if (cvv.isEmpty())
+                return "Field required"
+            if (cvv.length < 3)
+                return "Invalid CVV"
+            return ""
+        }
+
+        fun validateCardExpireDate(expireDate: String): String {
+            if (expireDate.isEmpty())
+                return "Field required"
+            val date = expireDate.split("/")
+            if(date[0].isEmpty())
+                return "Require month"
+            val month = date[0].toInt()
+            if(date.size<2)
+                return "Require month and year"
+            if(date[1].isEmpty())
+                return "Require year"
+            val year = date[1].toInt()
+            if (year <= 0 || month <= 0 || month > 12)
+                return "Invalid date"
+            return ""
+        }
     }
 }

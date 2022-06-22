@@ -31,11 +31,7 @@
         <item name="fontFamily">@font/metropolis_regular</item>
         <!--        <item name="android:fontFamily">sans-serif-smallcaps</item>-->
     </style>
-    <!--    <style name="TextAppearance.MyApp.TextTitle" parent="Widget.AppCompat.TextView">-->
-    <!--        <item name="android:textStyle">bold</item>-->
-    <!--        <item name="android:textColor">@color/black_light</item>-->
-    <!--        <item name="android:textSize">16dp</item>-->
-    <!--    </style>   -->
+
     <style name="TextAppearance.MyApp.TextTitle" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text_title_color</item>
@@ -58,12 +54,25 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="TextAppearance.MyApp.Text16" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/text_subtitle_color</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="TextAppearance.MyApp.Text14.Black" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/black_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    <style name="TextAppearance.MyApp.Text16.Black" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/black_light</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="TextAppearance.MyApp.Text11" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">@color/text_subtitle_color</item>
         <item name="android:textSize">11sp</item>
     </style>
 
-    <style name="TextAppearance.MyApp.Text18" parent="TextAppearance.MaterialComponents.Headline3">
+    <style name="TextAppearance.MyApp.Text18.Black" parent="TextAppearance.MaterialComponents.Headline3">
         <item name="android:textColor">@color/black_light</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -76,6 +85,7 @@
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="backgroundTint">@color/background_color</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+<!--        <item name="background">@drawable/bg_rounded_bottom_sheet</item>-->
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">
@@ -101,6 +111,14 @@
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">0dp</item>
         <item name="boxBackgroundColor">@color/white</item>
+    </style>
+
+    <style name="userInput" parent="@style/Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="colorPrimary">@color/grey_text</item>
+        <item name="boxStrokeColor">@color/grey_text</item>
     </style>
 
     <style name="TextAppearance.App.Subtitle1" parent="TextAppearance.MaterialComponents.Subtitle1">
