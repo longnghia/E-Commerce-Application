@@ -17,8 +17,8 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
-import com.goldenowl.ecommerce.utils.Consts
-import com.goldenowl.ecommerce.utils.Consts.sortMap
+import com.goldenowl.ecommerce.utils.Constants
+import com.goldenowl.ecommerce.utils.Constants.sortMap
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.FavoriteProductListAdapter
@@ -57,11 +57,9 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            Log.d(CategoryFragment.TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
         viewModel.allCart.observe(viewLifecycleOwner) {
-            Log.d(CategoryFragment.TAG, "setObservers: allCart change")
             viewModel.reloadListProductData()
         }
 
@@ -101,7 +99,7 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     }
 
     override fun setViews() {
-        gridLayoutManager = GridLayoutManager(context, Consts.SPAN_COUNT_ONE)
+        gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = FavoriteProductListAdapter(gridLayoutManager, this)
 
         binding.rcvCategoryGrid.adapter = adapterGrid
@@ -119,12 +117,12 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
 
     private fun switchLayout() {
         gridLayoutManager.apply {
-            spanCount = if (spanCount == Consts.SPAN_COUNT_ONE) {
+            spanCount = if (spanCount == Constants.SPAN_COUNT_ONE) {
                 binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_list)
-                Consts.SPAN_COUNT_TWO
+                Constants.SPAN_COUNT_TWO
             } else {
                 binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_grid)
-                Consts.SPAN_COUNT_ONE
+                Constants.SPAN_COUNT_ONE
             }
         }
         adapterGrid.notifyDataSetChanged()

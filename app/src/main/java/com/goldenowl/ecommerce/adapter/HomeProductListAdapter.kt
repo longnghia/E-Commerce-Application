@@ -29,7 +29,6 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             mListProductData = mListProductData.filter { it.product.salePercent != null }
         else if (filterType == "News")
             mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
-        Log.d(TAG, "setData: listProductData = $mListProductData")
         notifyDataSetChanged()
     }
 
@@ -119,13 +118,15 @@ class HomeProductListAdapter(private val listener: IClickListener) :
                 }
                 holder.discountPrice?.visibility = View.VISIBLE
                 holder.discountPrice?.text =
-                    product.getDiscountPrice().toString() + "$"
-                val text = product.getOriginPrice().toString() + "$"
+                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
+                val text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getOriginPrice())
                 holder.originPrice?.strike(text)
             } else {
                 holder.tvDiscountPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
-                holder.originPrice?.text = product.getOriginPrice().toString() + "$"
+                holder.originPrice?.text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
             }
         }
 

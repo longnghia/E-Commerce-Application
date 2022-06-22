@@ -13,8 +13,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentBagBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
-import com.goldenowl.ecommerce.utils.Consts
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.BagProductListAdapter
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
@@ -48,21 +47,15 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            Log.d(CategoryFragment.TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
         viewModel.allCart.observe(viewLifecycleOwner) {
-            Log.d(CategoryFragment.TAG, "setObservers: allCart change")
             viewModel.reloadListProductData()
             setPrice()
         }
-//        viewModel.allOrder.observe(viewLifecycleOwner) {
-//            Log.d(CategoryFragment.TAG, "setObservers: allCart change")
-//            viewModel.reloadListProductData()
-//        }
 
-        viewModel.bagPromo.observe(viewLifecycleOwner) {
-            binding.tvPromoCode.text = it?.id
+        viewModel.curBag.observe(viewLifecycleOwner) {
+            binding.tvPromoCode.text = it?.promo?.id
             setPrice()
         }
 
@@ -78,8 +71,10 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
     }
 
     private fun setPrice() {
-        totalPrice = adapterGrid.getPrice(viewModel.bagPromo.value?.salePercent ?: 0)
-        binding.tvTotal.text = "$totalPrice$"
+        totalPrice = adapterGrid.getPrice(viewModel.curBag.value?.promo?.salePercent ?: 0)
+        binding.tvTotal.text = getString(R.string.money_unit_float, totalPrice)
+        val bag = viewModel.curBag.value
+        viewModel.orderPrice.value = totalPrice
     }
 
     private fun refreshList() {
@@ -88,13 +83,11 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
 
 
     override fun init() {
-        listCategory = viewModel.categoryList
-        Log.d(TAG, "init: listCategory=$listCategory")
         listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
     override fun setViews() {
-        gridLayoutManager = GridLayoutManager(context, Consts.SPAN_COUNT_ONE)
+        gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = BagProductListAdapter(this)
 
         binding.rcvCategoryGrid.adapter = adapterGrid
@@ -140,8 +133,6 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
                                 uiScope.launch {
                                     delay(500)
                                     if (lastInput == newText) {
-                                        Log.i("onQueryTextChange", newText!!)
-                                        Log.d(CategoryFragment.TAG, "onQueryTextChange: uiScope")
                                         sortViewModel.searchTerm.value = newText
                                     }
                                 }
@@ -174,7 +165,7 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
     }
 
     override fun setAppbar() {
-        binding.topAppBar.collapsingToolbar.title = "My Bag"
+        binding.topAppBar.collapsingToolbar.title = getString(R.string.my_bag)
         setAppBarMenu()
     }
 }

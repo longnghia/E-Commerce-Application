@@ -15,6 +15,7 @@ data class Promo @JvmOverloads constructor(
     }
 
     fun getDayRemain(): Int {
+        //todo count remain day
 //        val current = LocalDateTime.now()
 //        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
 //        val formatted = current.format(formatter)

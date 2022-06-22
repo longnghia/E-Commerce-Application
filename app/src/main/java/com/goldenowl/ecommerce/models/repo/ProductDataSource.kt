@@ -8,7 +8,6 @@ interface ProductDataSource {
     suspend fun insertFavorite(favorite: Favorite)
     suspend fun removeFavorite(favorite: Favorite)
 
-    suspend fun insertMultipleProduct(productsList: List<Product>, userId: String)
 //    suspend fun emptyProductTable()
 //    suspend fun insertUserOrder(userOrder: UserOrder)
 //    suspend fun getFavoriteList(userId: String): List<Favorite>

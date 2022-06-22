@@ -1,27 +1,24 @@
 package com.goldenowl.ecommerce.models.data
 
-import android.util.Log
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
-import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.withContext
 
 class LocalProductsDataSource(
     private val productDao: ProductDao,
     private val favoriteDao: FavoriteDao,
     private val cartDao: CartDao,
-    private val orderDao: OrderDao
+    private val orderDao: OrderDao,
+    private val addressDao: AddressDao,
 ) : ProductDataSource {
 
     private val dispatchers = Dispatchers.IO
 
     val allFavorite = favoriteDao.getListFavorite()
     val allCart = cartDao.getListCart()
+    val allAddress = addressDao.getListAddress()
 
     override suspend fun getAllProducts(): List<Product> {
-        return listOf()
+        return productDao.getListProduct()
     }
 
     override suspend fun insertFavorite(favorite: Favorite) {
@@ -32,31 +29,9 @@ class LocalProductsDataSource(
         favoriteDao.removeFavorite(favorite)
     }
 
-    override suspend fun insertMultipleProduct(productsList: List<Product>, userId: String) {
-        withContext(dispatchers) {
-            try {
-                productDao.deleteTable()
-                productDao.insertMultipleProduct(productsList)
-            } catch (e: Exception) {
-                Log.e(TAG, "insertMultipleProduct: ERROR", e)
-            }
-        }
-    }
-
-    suspend fun observeListFavorite(): MyResult<Flow<List<Favorite>>> {
-        return withContext(dispatchers) {
-            try {
-                val flow = favoriteDao.getListFavorite()
-                return@withContext MyResult.Success(flow)
-            } catch (e: Exception) {
-                return@withContext MyResult.Error(e)
-            }
-        }
-    }
-
-    suspend fun testWait(i: Long) {
-        delay(i)
-        Log.d(TAG, "testWait: after $i s !!!")
+    suspend fun insertMultipleProduct(productsList: List<Product>) {
+        productDao.deleteTable()
+        productDao.insertMultipleProduct(productsList)
     }
 
     suspend fun insertCart(cart: Cart) {
@@ -71,15 +46,27 @@ class LocalProductsDataSource(
         cartDao.removeCart(cart)
     }
 
+    suspend fun emptyCartTable() {
+        cartDao.deleteTable()
+    }
 
-//    override suspend fun emptyTable() {
-//        withContext(dispatchers) {
-//            productDao.emptyTable()
-//        }
-//    }
+    suspend fun insertOrder(order: Order) {
+        orderDao.insertOrder(order)
+    }
 
+    suspend fun removeOrder(order: Order) {
+        orderDao.removeOrder(order)
+    }
 
-    companion object {
-        val TAG = "LocalProductsDataSource"
+    suspend fun insertAddress(address: Address) {
+        addressDao.insertAddress(address)
+    }
+
+    suspend fun updateAddress(address: Address) {
+        addressDao.updateAddress(address)
+    }
+
+    suspend fun removeAddress(address: Address) {
+        addressDao.removeAddress(address)
     }
 }

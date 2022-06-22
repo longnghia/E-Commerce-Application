@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce.ui.global.bottomsheet
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +34,9 @@ class BottomSheetEnterPromo(private val viewModel: ShopViewModel) :
             viewModel.listPromo.value ?: emptyList(),
             object : BottomSheetPromoAdapter.IClickListenerPromo {
                 override fun onClick(promo: Promo) {
-                    viewModel.bagPromo.value = promo
+                    val bag = viewModel.curBag.value
+                    bag?.promo = promo
+                    viewModel.curBag.value = bag
                     dismiss()
                 }
             })

@@ -35,7 +35,6 @@ class BagProductListAdapter(private val listener: IClickListener) :
                 ) >= 0
             }
         }
-        Log.d(TAG, "setData: mListCartProductData = $mListCartProductData")
 
         notifyDataSetChanged()
     }
@@ -74,7 +73,7 @@ class BagProductListAdapter(private val listener: IClickListener) :
             val productPrice = product.getPriceByCart(cart).also {
                 if (it != null) {
                     val price = it * cart.quantity
-                    binding.tvPrice?.text = "${price}$"
+                    binding.tvPrice?.text = binding.root.context.resources.getString(R.string.money_unit_float, price)
                 } else {
                     Log.d(TAG, "bind: $cart ERROR")
                 }
@@ -83,7 +82,7 @@ class BagProductListAdapter(private val listener: IClickListener) :
 
             binding.tvAdd?.setOnClickListener {
                 cart?.quantity++
-                listener.updateCart(cart)
+                listener.updateCartQuantity(cart, position)
                 notifyItemChanged(position)
             }
 
@@ -92,7 +91,7 @@ class BagProductListAdapter(private val listener: IClickListener) :
                     listener.onClickCart(product, cart)
                 } else {
                     cart!!.quantity--
-                    listener.updateCart(cart)
+                    listener.updateCartQuantity(cart, position)
                 }
                 notifyItemChanged(position)
             }

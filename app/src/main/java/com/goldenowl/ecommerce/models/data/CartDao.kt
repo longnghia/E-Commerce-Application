@@ -17,4 +17,6 @@ interface CartDao {
     @Update
     suspend fun updateCart(cart: Cart)
 
+    @Query("Delete from cart_table")
+    suspend fun deleteTable()
 }
