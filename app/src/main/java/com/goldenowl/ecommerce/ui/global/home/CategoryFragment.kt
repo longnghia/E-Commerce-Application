@@ -48,7 +48,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
 
