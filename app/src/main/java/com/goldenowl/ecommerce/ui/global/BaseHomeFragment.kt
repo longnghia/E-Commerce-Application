@@ -85,6 +85,8 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     protected fun showToast(msg: String) {
+        if(msg.isNullOrBlank())
+            return
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 

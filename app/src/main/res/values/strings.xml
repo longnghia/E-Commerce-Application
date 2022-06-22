@@ -164,6 +164,7 @@
     <string name="order_success">Success!</string>
     <string name="delivery_soon">Your order will be delivered soon.\n Thank you for choosing our app!</string>
     <string name="continue_shopping">Continue shopping</string>
+    <string name="trending">Trending</string>
 
     <plurals name="num_item">
         <item quantity="one">%d item</item>

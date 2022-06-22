@@ -7,13 +7,14 @@ import com.goldenowl.ecommerce.databinding.ItemShippingAddressBinding
 import com.goldenowl.ecommerce.models.data.Address
 
 
-class ShippingAddressAdapter( private val listener: ICheckListener) :
+class ShippingAddressAdapter(private val listener: ICheckListener) :
     RecyclerView.Adapter<ShippingAddressAdapter.ViewHolder>() {
 
     private var checkedPosition = 0
     private var listAddress: List<Address> = emptyList()
+
     interface ICheckListener {
-        fun selectAddress(position: Int, address: Address)
+        fun selectAddress(position: Int)
         fun removeAddress(position: Int)
         fun insertAddress(address: Address)
         fun editAddress(position: Int)
@@ -38,7 +39,7 @@ class ShippingAddressAdapter( private val listener: ICheckListener) :
                 isSelected = position == checkedPosition
                 setOnClickListener {
                     setCheckPos(position)
-                    listener.selectAddress(position, address)
+                    listener.selectAddress(position)
                 }
             }
             binding.tvEdit.setOnClickListener {

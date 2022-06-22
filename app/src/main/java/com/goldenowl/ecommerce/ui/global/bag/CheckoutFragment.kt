@@ -24,6 +24,12 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
     private var listCard: List<Card> = emptyList()
     private var listAddress: List<Address> = emptyList()
 
+    private var defaultCardIndex: Int? = null
+    private var defaultAddressIndex: Int? = null
+
+    private var card: Card? = null
+    private var address: Address? = null
+
     private var orderPrice = 0f
     private var deliveryPrice = 0
     private var summaryPrice = 0f
@@ -41,22 +47,11 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
                 binding.btnAddPayment.visibility = View.GONE
                 binding.layoutCard.visibility = View.VISIBLE
                 if (it.size == 1)
-                    viewModel.setDefaultCard(0, it[0])
+                    viewModel.setDefaultCard(0)
             } else {
                 binding.btnAddPayment.visibility = View.VISIBLE
                 binding.layoutCard.visibility = View.GONE
-            }
-        }
-
-        viewModel.defaultCard.observe(viewLifecycleOwner) { card ->
-            if (card != null) {
-                if (card != null) {
-                    binding.tvCardNumber.text = card.getHiddenNumber()
-                    if (card.cardNumber[0] == '4')
-                        binding.ivCardImg.setImageResource(R.drawable.ic_master_card_2)
-                    else if (card.cardNumber[0] == '5')
-                        binding.ivCardImg.setImageResource(R.drawable.ic_visa)
-                }
+                setCard()
             }
         }
 
@@ -68,19 +63,10 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
                 binding.cardViewAddress.visibility = View.GONE
             } else {
                 if (it.size == 1)
-                    viewModel.setDefaultAddress(0, it[0])
+                    viewModel.setDefaultAddress(0)
                 binding.btnAddAddress.visibility = View.GONE
                 binding.cardViewAddress.visibility = View.VISIBLE
-            }
-        }
-
-        viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
-            Log.d(TAG, "setObservers: defaultAddress=$address")
-
-            if (address != null) {
-                Log.d(TAG, "setObservers: address=$address")
-                binding.tvFullName.text = address?.fullName
-                binding.tvAddress.text = address?.getAddressString()
+                setAddress()
             }
         }
 
@@ -90,6 +76,18 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
             summaryPrice = orderPrice + deliveryPrice
             binding.tvSummaryPrice.text = getString(R.string.money_unit_float, summaryPrice)
         }
+
+        viewModel.defaultAddressIndex.observe(viewLifecycleOwner) {
+            defaultAddressIndex = it
+            Log.d(TAG, "setObservers: defaultAddressIndex=$it")
+            setAddress()
+        }
+
+        viewModel.defaultCardIndex.observe(viewLifecycleOwner) {
+            defaultCardIndex = it
+            setCard()
+        }
+
         viewModel.deliveryMethod.observe(viewLifecycleOwner) {
             if (it != null) {
                 deliveryPrice = it.price
@@ -101,6 +99,26 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
         viewModel.loadingStatus.observe(viewLifecycleOwner) {
             handleResult(it)
+        }
+    }
+
+    private fun setCard() {
+        card = defaultCardIndex?.let { listCard.getOrNull(it) }
+        if (card != null) {
+            binding.tvCardNumber.text = card!!.getHiddenNumber()
+            if (card!!.cardNumber[0] == '4')
+                binding.ivCardImg.setImageResource(R.drawable.ic_master_card_2)
+            else if (card!!.cardNumber[0] == '5')
+                binding.ivCardImg.setImageResource(R.drawable.ic_visa)
+        }
+    }
+
+    private fun setAddress() {
+        address = defaultAddressIndex?.let { listAddress.getOrNull(it) }
+        Log.d(TAG, "setAddress: $address")
+        if (address != null) {
+            binding.tvFullName.text = address?.fullName
+            binding.tvAddress.text = address?.getAddressString()
         }
     }
 
@@ -155,9 +173,9 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
                     date = Date(),
                     listCart = listCart,
                     promoCode = viewModel.curBag.value?.promo?.name ?: "",
-                    cardId = viewModel.defaultCard.value?.getHiddenNumber() ?: "",
+                    cardId = card?.getHiddenNumber() ?: "",
                     totalAmount = summaryPrice,
-                    shippingAddress = viewModel.defaultAddress.value?.getShippingAddress() ?: ""
+                    shippingAddress = address?.getShippingAddress() ?: ""
                 )
                 viewModel.insertOrder(order)
                 viewModel.emptyCartTable()

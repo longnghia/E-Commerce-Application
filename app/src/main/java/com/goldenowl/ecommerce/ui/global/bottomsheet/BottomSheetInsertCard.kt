@@ -95,7 +95,7 @@ class BottomSheetInsertCard(private val viewModel: ShopViewModel) :
                 viewModel.insertCard(card)
                 if (binding.checkDefault.isSelected) {
                     val defaultCard = viewModel.listCard.value?.size ?: 0
-                    viewModel.setDefaultCard(defaultCard, card)
+                    viewModel.setDefaultCard(defaultCard)
                 }
                 dismiss()
             } else {

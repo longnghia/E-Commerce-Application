@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
+import com.goldenowl.ecommerce.adapter.ImageProductDetailAdapter
 import com.goldenowl.ecommerce.databinding.FragmentProductDetailBinding
 import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Favorite

@@ -17,7 +17,7 @@ class SuccessFragment : BaseHomeFragment<FragmentSuccessBinding>() {
 
     override fun setViews() {
         binding.btnContinueShopping.setOnClickListener {
-            findNavController().navigate(R.id.home_dest)
+            findNavController().navigate(R.id.go_home_dest)
         }
     }
 

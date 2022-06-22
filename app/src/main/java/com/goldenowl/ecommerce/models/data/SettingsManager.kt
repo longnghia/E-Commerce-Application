@@ -50,12 +50,16 @@ class SettingsManager(context: Context) {
 
     fun setDefaultCheckOut(default: Map<String, Int?>) {
         default[Constants.DEFAULT_CARD]?.let { editor.putInt(Constants.DEFAULT_CARD, it) }
-        default[Constants.DEFAULT_CARD]?.let { editor.putInt(Constants.DEFAULT_CARD, it) }
+        default[Constants.DEFAULT_ADDRESS]?.let { editor.putInt(Constants.DEFAULT_ADDRESS, it) }
         editor.commit()
     }
 
-    fun getDefaultLocation(): Int {
-        return settingManager.getInt(Constants.DEFAULT_ADDRESS, 0)
+    fun getDefaultAddress(): Int {
+        return settingManager.getInt(Constants.DEFAULT_ADDRESS, -1)
+    }
+
+    fun getDefaultCard(): Int {
+        return settingManager.getInt(Constants.DEFAULT_ADDRESS, -1)
     }
 
     fun setLastNetwork(networkAvailable: Boolean) {

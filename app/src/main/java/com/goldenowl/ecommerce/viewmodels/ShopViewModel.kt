@@ -33,9 +33,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var curBag: MutableLiveData<Bag> = MutableLiveData<Bag>()
     var orderPrice: MutableLiveData<Float> = MutableLiveData<Float>()
     var defaultCardIndex: MutableLiveData<Int?> = MutableLiveData<Int?>()
-    var defaultCard: MutableLiveData<Card?> = MutableLiveData<Card?>()
     var defaultAddressIndex: MutableLiveData<Int?> = MutableLiveData<Int?>()
-    var defaultAddress: MutableLiveData<Address?> = MutableLiveData<Address?>()
     var deliveryMethod: MutableLiveData<Delivery?> = MutableLiveData<Delivery?>()
 
     val toastMessage: MutableLiveData<String> = MutableLiveData<String>()
@@ -55,7 +53,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         value = BaseLoadingStatus.NONE
     }
 
-    var isNetworkAvailable = false
+    private var isNetworkAvailable = false
 
 
     init {
@@ -73,6 +71,9 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         curBag.value = Bag()
+
+        defaultAddressIndex.value = settingsManager.getDefaultAddress()
+        defaultCardIndex.value = settingsManager.getDefaultCard()
     }
 
     private suspend fun local2remote() {
@@ -114,17 +115,16 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         if (resCard is MyResult.Success) {
             listCard.value = resCard.data
         }
-        if (defaultCheckOut is MyResult.Success) {
-            val data = defaultCheckOut.data
-            val cardIndex = data.getOrDefault(Constants.DEFAULT_CARD, -1)
-            defaultCardIndex.value = cardIndex
-            defaultCard.value = listCard.value?.get(cardIndex)
 
-            val addressIndex = data.getOrDefault(Constants.DEFAULT_ADDRESS, -1)
-            defaultAddressIndex.value = addressIndex
-            defaultAddress.value = allAddress.value?.get(addressIndex)
-            Log.d(TAG, "fetchData: defaultAddress=${defaultAddress.value}")
-        }
+        //todo restore user data
+//        if (defaultCheckOut is MyResult.Success) {
+//            val data = defaultCheckOut.data
+//            val cardIndex = data.getOrDefault(Constants.DEFAULT_CARD, -1)
+//            defaultCardIndex.value = cardIndex
+//
+//            val addressIndex = data.getOrDefault(Constants.DEFAULT_ADDRESS, -1)
+//            defaultAddressIndex.value = addressIndex
+//        }
     }
 
     private suspend fun getListPromo() {
@@ -193,7 +193,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     fun emptyCartTable() {
         viewModelScope.launch(Dispatchers.IO) {
             productsRepository.emptyCartTable().let {
-                Log.e(TAG, "emptyCartTable: $it")
+                Log.d(TAG, "emptyCartTable: $it")
                 if (it is MyResult.Success) {
                 } else if (it is MyResult.Error) {
                     toastMessage.postValue(it.exception.message)
@@ -274,7 +274,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun setDefaultCard(default: Int, card: Card) {
+    fun setDefaultCard(default: Int) {
         setDefaultCheckOut(
             mapOf(
                 Constants.DEFAULT_CARD to default,
@@ -282,10 +282,9 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             )
         )
         defaultCardIndex.value = default
-        defaultCard.value = card
     }
 
-    fun setDefaultAddress(default: Int, address: Address?) {
+    fun setDefaultAddress(default: Int) {
         setDefaultCheckOut(
             mapOf(
                 Constants.DEFAULT_CARD to defaultCardIndex.value,
@@ -293,7 +292,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             )
         )
         defaultAddressIndex.value = default
-        defaultAddress.value = address
     }
 
     private fun setDefaultCheckOut(default: Map<String, Int?>) {
@@ -345,7 +343,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     fun removeAddress(position: Int) {
         addAddressStatus.value = BaseLoadingStatus.LOADING
         if (position == defaultAddressIndex.value) {
-            setDefaultAddress(0, allAddress.value?.getOrNull(0))
+            setDefaultAddress(0)
         }
         val address = this.allAddress.value?.get(position)
         viewModelScope.launch(Dispatchers.IO) {

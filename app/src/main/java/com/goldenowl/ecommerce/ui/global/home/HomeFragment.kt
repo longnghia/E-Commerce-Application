@@ -8,6 +8,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
+import com.goldenowl.ecommerce.adapter.HomeViewPagerAdapter
 import com.goldenowl.ecommerce.databinding.FragmentHomeBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
@@ -89,12 +90,11 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         }
 
         // todo fetch list image and title
-        val imgs = listOf<String>(
-            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75",
-            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75",
-            "https://image.uniqlo.com/UQ/ST3/vn/imagesgoods/448970/item/vngoods_09_448970.jpg?width=1600&impolicy=quality_75"
+        val imgs = listOf(
+            R.drawable.carousel1, R.drawable.carousel2, R.drawable.carousel3, R.drawable.carousel4
         )
-        binding.topAppBar.viewPager.adapter = ImageProductDetailAdapter(imgs)
+        val titles= listOf("Street clothes","Sleep clothes","Sport clothes", "Inform clothes")
+        binding.topAppBar.viewPager.adapter = HomeViewPagerAdapter(imgs, titles)
         binding.topAppBar.viewPager.autoScroll(3500)
     }
 

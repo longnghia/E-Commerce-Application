@@ -71,8 +71,8 @@ class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBindin
         }
     }
 
-    override fun selectAddress(position: Int, address: Address) {
-        viewModel.setDefaultAddress(position, address)
+    override fun selectAddress(position: Int) {
+        viewModel.setDefaultAddress(position)
     }
 
     override fun removeAddress(position: Int) {

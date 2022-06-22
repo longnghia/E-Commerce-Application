@@ -18,7 +18,7 @@ class PaymentMethodAdapter(private val listener: ICheckListener) :
     private var listCard: List<Card> = emptyList()
 
     interface ICheckListener {
-        fun selectCard(position: Int, card: Card)
+        fun selectCard(position: Int)
         fun removeCard(position: Int)
         fun insertCard(card: Card)
     }
@@ -76,7 +76,7 @@ class PaymentMethodAdapter(private val listener: ICheckListener) :
         holder.checkDefault?.isSelected = position == checkedPosition
         holder.checkDefault?.setOnClickListener {
             setCheckPos(position)
-            listener.selectCard(position, card)
+            listener.selectCard(position)
         }
         holder.ivRemove?.setOnClickListener {
             listener.removeCard(position)

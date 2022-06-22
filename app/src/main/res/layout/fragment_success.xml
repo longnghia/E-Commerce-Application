@@ -49,6 +49,8 @@
         app:shapeAppearanceOverlay="@style/RoundedButtonShape"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="45dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

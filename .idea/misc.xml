@@ -121,6 +121,7 @@
         <entry key="app/src/main/res/layout/item_user_action.xml" value="0.19947916666666668" />
         <entry key="app/src/main/res/layout/layout_divider.xml" value="0.21" />
         <entry key="app/src/main/res/layout/layout_grey_out.xml" value="0.1814814814814815" />
+        <entry key="app/src/main/res/layout/layout_home_view_pager_image.xml" value="0.18488813845504432" />
         <entry key="app/src/main/res/layout/layout_loading.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_modal_pinner.xml" value="0.25" />
         <entry key="app/src/main/res/layout/layout_my_button.xml" value="0.184375" />

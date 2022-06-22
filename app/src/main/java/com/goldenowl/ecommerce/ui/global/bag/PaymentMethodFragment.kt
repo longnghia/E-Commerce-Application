@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce.ui.global.bag
 
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.PaymentMethodAdapter
@@ -22,10 +21,11 @@ class PaymentMethodFragment : BaseHomeFragment<FragmentPaymentMethodBinding>(), 
 
     override fun setObservers() {
         viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            showToast(it)
         }
 
         viewModel.listCard.observe(viewLifecycleOwner) {
+            Log.d(TAG, "setObservers: listCard=$it")
             listCard = it
             adapter.setData(listCard, defaultCard)
             if (it.isEmpty()) {
@@ -74,8 +74,8 @@ class PaymentMethodFragment : BaseHomeFragment<FragmentPaymentMethodBinding>(), 
         }
     }
 
-    override fun selectCard(position: Int, card: Card) {
-        viewModel.setDefaultCard(position, card)
+    override fun selectCard(position: Int) {
+        viewModel.setDefaultCard(position)
     }
 
     override fun removeCard(position: Int) {

@@ -120,7 +120,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
                 holder.discountPrice?.text =
                     holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
                 val text =
-                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getOriginPrice())
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
                 holder.originPrice?.strike(text)
             } else {
                 holder.tvDiscountPercent?.visibility = View.INVISIBLE
