@@ -1,117 +1,166 @@
 package com.goldenowl.ecommerce.ui.global.bag
 
-import android.app.SearchManager
-import android.content.Context
 import android.util.Log
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.core.view.isEmpty
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.CheckoutDeliveryAdapter
 import com.goldenowl.ecommerce.databinding.FragmentCheckoutBinding
-import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
-import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
-import com.goldenowl.ecommerce.viewmodels.BagProductListAdapter
-import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
-import kotlinx.coroutines.*
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Utils
+import java.util.*
 
 class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
     override fun getViewBinding(): FragmentCheckoutBinding {
         return FragmentCheckoutBinding.inflate(layoutInflater)
     }
 
-    private val sortViewModel = SortFilterViewModel()
-
-
-    private lateinit var adapterGrid: BagProductListAdapter
-    private lateinit var gridLayoutManager: GridLayoutManager
-
     private lateinit var listProductData: List<ProductData>
-    private lateinit var listCategory: Set<String>
-    private var searchTerm: String = ""
 
+    private var listCard: List<Card> = emptyList()
+    private var listAddress: List<Address> = emptyList()
 
-    private var searchView: SearchView? = null
-    private var queryTextListener: SearchView.OnQueryTextListener? = null
+    private var orderPrice = 0f
+    private var deliveryPrice = 0
+    private var summaryPrice = 0f
 
-    private var totalPrice = 0f
+    private lateinit var loadingView: FrameLayout
 
     override fun setObservers() {
 
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
+        viewModel.listCard.observe(viewLifecycleOwner) {
+            listCard = it
+            if (it.isNotEmpty()) {
+                binding.btnAddPayment.visibility = View.GONE
+                binding.layoutCard.visibility = View.VISIBLE
+                if (it.size == 1)
+                    viewModel.setDefaultCard(0, it[0])
+            } else {
+                binding.btnAddPayment.visibility = View.VISIBLE
+                binding.layoutCard.visibility = View.GONE
+            }
+        }
 
+        viewModel.defaultCard.observe(viewLifecycleOwner) { card ->
+            if (card != null) {
+                if (card != null) {
+                    binding.tvCardNumber.text = card.getHiddenNumber()
+                    if (card.cardNumber[0] == '4')
+                        binding.ivCardImg.setImageResource(R.drawable.ic_master_card_2)
+                    else if (card.cardNumber[0] == '5')
+                        binding.ivCardImg.setImageResource(R.drawable.ic_visa)
+                }
+            }
+        }
 
+        viewModel.allAddress.observe(viewLifecycleOwner) {
+            Log.d(TAG, "setObservers: allAddress=$it")
+            listAddress = it
+            if (it.isEmpty()) {
+                binding.btnAddAddress.visibility = View.VISIBLE
+                binding.cardViewAddress.visibility = View.GONE
+            } else {
+                if (it.size == 1)
+                    viewModel.setDefaultAddress(0, it[0])
+                binding.btnAddAddress.visibility = View.GONE
+                binding.cardViewAddress.visibility = View.VISIBLE
+            }
+        }
+
+        viewModel.defaultAddress.observe(viewLifecycleOwner) { address ->
+            Log.d(TAG, "setObservers: defaultAddress=$address")
+
+            if (address != null) {
+                Log.d(TAG, "setObservers: address=$address")
+                binding.tvFullName.text = address?.fullName
+                binding.tvAddress.text = address?.getAddressString()
+            }
+        }
+
+        viewModel.orderPrice.observe(viewLifecycleOwner) {
+            binding.tvOrderPrice.text = getString(R.string.money_unit_float, it)
+            orderPrice = it
+            summaryPrice = orderPrice + deliveryPrice
+            binding.tvSummaryPrice.text = getString(R.string.money_unit_float, summaryPrice)
+        }
+        viewModel.deliveryMethod.observe(viewLifecycleOwner) {
+            if (it != null) {
+                deliveryPrice = it.price
+                binding.tvDeliveryPrice.text = getString(R.string.money_unit_int, it.price)
+                summaryPrice = orderPrice + deliveryPrice
+                binding.tvSummaryPrice.text = getString(R.string.money_unit_float, summaryPrice)
+            }
+        }
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner) {
+            handleResult(it)
+        }
+    }
+
+    private fun handleResult(status: BaseLoadingStatus?) {
+        when (status) {
+            BaseLoadingStatus.LOADING -> loadingView.visibility = View.VISIBLE
+            BaseLoadingStatus.SUCCEEDED -> {
+                loadingView.visibility = View.INVISIBLE
+                findNavController().navigate(R.id.success_dest)
+            }
+            else -> loadingView.visibility = View.INVISIBLE
+
+        }
     }
 
 
     override fun init() {
-        listCategory = viewModel.categoryList
-        Log.d(TAG, "init: listCategory=$listCategory")
         listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
     override fun setViews() {
-        binding.rcvDelivery.adapter = CheckoutDeliveryAdapter()
-    }
+        loadingView = binding.layoutLoading.loadingFrameLayout
+        val adapter = CheckoutDeliveryAdapter(object : CheckoutDeliveryAdapter.IClickDelivery {
+            override fun onClickDelivery(delivery: Delivery) {
+                viewModel.deliveryMethod.value = delivery
+            }
+        })
+        binding.rcvDelivery.adapter = adapter
+        binding.btnAddPayment.setOnClickListener {
+            findNavController().navigate(R.id.payment_dest)
+        }
+        binding.tvChangePayment.setOnClickListener {
+            findNavController().navigate(R.id.payment_dest)
+        }
+        binding.btnAddAddress.setOnClickListener {
+            findNavController().navigate(R.id.add_address_dest)
+        }
+        binding.tvChangeAddress.setOnClickListener {
+            findNavController().navigate(R.id.address_dest)
+        }
+        binding.btnSubmitOrder.setOnClickListener {
+            if (deliveryPrice == 0) {
+                showToast(getString(R.string.please_select_delivery))
+                binding.tvDelivery.requestFocus()
+                return@setOnClickListener
+            }
+            val listCart = viewModel.allCart.value
+            if (listCart != null) {
 
-    private fun checkOut() {
-        val listCartProductData = adapterGrid.getBag()
-    }
-
-
-    private fun setAppBarMenu() {
-        binding.topAppBar.toolbar.apply {
-            if (menu.isEmpty()) {
-                inflateMenu(R.menu.menu_search)
-                val searchItem = menu.findItem(R.id.ic_search)
-                val searchManager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
-
-                if (searchItem != null) {
-                    searchView = searchItem.actionView as SearchView
-                }
-                if (searchView != null) {
-                    val debounceJob: Job? = null
-                    val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-                    var lastInput = ""
-
-                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-                    queryTextListener = object : SearchView.OnQueryTextListener {
-                        override fun onQueryTextChange(newText: String?): Boolean {
-                            debounceJob?.cancel()
-                            if (lastInput != newText) {
-                                lastInput = newText ?: ""
-                                uiScope.launch {
-                                    delay(500)
-                                    if (lastInput == newText) {
-                                        Log.i("onQueryTextChange", newText!!)
-                                        Log.d(CategoryFragment.TAG, "onQueryTextChange: uiScope")
-                                        sortViewModel.searchTerm.value = newText
-                                    }
-                                }
-                            }
-                            return true
-                        }
-
-                        override fun onQueryTextSubmit(query: String?): Boolean {
-                            Log.d("onQueryTextSubmit", query!!)
-                            hideKeyboard()
-                            return true
-                        }
-                    }
-                    searchView!!.setOnCloseListener {
-                        Log.d(TAG, "setAppBarMenu: closed")
-                        false
-                    }
-                    searchView!!.maxWidth = Integer.MAX_VALUE
-                    searchView!!.setOnQueryTextListener(queryTextListener)
-                } else {
-                    Log.d(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
-                }
+                val order = Order(
+                    trackingNumber = Utils.getRandomString(),
+                    date = Date(),
+                    listCart = listCart,
+                    promoCode = viewModel.curBag.value?.promo?.name ?: "",
+                    cardId = viewModel.defaultCard.value?.getHiddenNumber() ?: "",
+                    totalAmount = summaryPrice,
+                    shippingAddress = viewModel.defaultAddress.value?.getShippingAddress() ?: ""
+                )
+                viewModel.insertOrder(order)
+                viewModel.emptyCartTable()
             }
         }
     }
@@ -123,6 +172,8 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
     override fun setAppbar() {
         binding.topAppBar.collapsingToolbarLayout.title = getString(R.string.checkout)
-        setAppBarMenu()
+        binding.topAppBar.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 }

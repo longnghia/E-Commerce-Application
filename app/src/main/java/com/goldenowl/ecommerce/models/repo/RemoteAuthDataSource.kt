@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -70,7 +71,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         return withContext(Dispatchers.IO) {
             try {
                 val currentUserRef = userRef.document(getUserId()!!)
-                val userDataSnapshot = currentUserRef.get().await()
+                val userDataSnapshot = currentUserRef.get(Source.SERVER).await()
                 if (userDataSnapshot.exists()) {
                     val user = userDataSnapshot.toObject(User::class.java)
                     if (user != null) {
@@ -102,30 +103,24 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
     val googleCallbackManager = object : ICallback {
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?, listener: LoginListener) {
             if (requestCode != GOOGLE_SIGN_IN) {
-                Log.d(TAG, "onActivityResult: requestCode = $requestCode")
                 return
             }
+            if (data == null)
+                return
             val googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).result
             googleAccount?.let {
-                Log.d(
-                    TAG,
-                    "onCreateView: Google sign-in completed with ${it.email} and token ${it.idToken}"
-                )
                 if (it.email == null || it.idToken == null) {
-                    Log.w(TAG, "goolgeActivityResultLauncher: email or idtoken null")
                     listener.callback(MyResult.Error(java.lang.Exception("User not found")))
                 } else {
                     val firebaseCredential = GoogleAuthProvider.getCredential(it.idToken, null)
                     firebaseAuth.signInWithCredential(firebaseCredential)
                         .addOnCompleteListener {
-                            Log.d(TAG, "onActivityResult: signIn Google WithCredential success ")
                             currentUser = firebaseAuth.currentUser
                             listener.callback(MyResult.Success(true))
                             onLoginSuccess(currentUser, UserManager.TYPEGOOGLE)
 
                         }
                         .addOnFailureListener { e ->
-                            Log.d(TAG, "onActivityResult: ERROR", e)
                             listener.callback(MyResult.Error(e))
                         }
                 }
@@ -240,7 +235,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 //        check  if user exist,
         val userId = currentUser!!.uid
         val cUserRef = userRef.document(userId)
-        cUserRef?.get()?.addOnCompleteListener {
+        cUserRef?.get(Source.SERVER)?.addOnCompleteListener {
             val doc = it.result
             if (!doc.exists()) {
                 val user = User(
@@ -287,7 +282,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 
     private fun restoreUserData() {
         currentUser = firebaseAuth.currentUser
-        userRef.document(currentUser!!.uid).get().addOnCompleteListener {
+        userRef.document(currentUser!!.uid).get(Source.SERVER).addOnCompleteListener {
             val userDataSnapshot = it.result
             if (!userDataSnapshot.exists()) {
                 Log.d(TAG, "restoreUser: user ${currentUser!!.uid} not exist")

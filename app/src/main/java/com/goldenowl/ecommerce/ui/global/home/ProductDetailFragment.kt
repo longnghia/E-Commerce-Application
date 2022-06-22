@@ -16,7 +16,7 @@ import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
-import com.goldenowl.ecommerce.utils.Consts.listSize
+import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 
 
@@ -33,13 +33,11 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     override fun setObservers() {
         viewModel.listProductData.observe(viewLifecycleOwner) { it ->
-            Log.d(TAG, "setObservers: listProductData changed")
             listProductData = it
             listProductData.find {
                 it.product.id == product.id
             }.also {
                 favorite = it?.favorite
-                Log.d(TAG, "setObservers: current favorite = $favorite")
                 if (favorite != null)
                     binding.ivFavorite.setImageResource(R.drawable.ic_favorites_selected)
                 else
@@ -50,12 +48,10 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: allFavorite change")
             viewModel.reloadListProductData()
         }
 
         viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: toastMessage=${it}")
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
@@ -76,7 +72,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
             productRatingBar.rating = product.reviewStars.toFloat()
             tvNumberReviews.text = product.numberReviews.toString()
             productBrand.text = product.brandName
-            productPrice.text = product.getDiscountPrice().toString() + "$"
+            productPrice.text =
+                binding.root.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
             productTitle.text = product.title
         }
 

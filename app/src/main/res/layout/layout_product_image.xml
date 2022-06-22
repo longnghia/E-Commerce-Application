@@ -5,7 +5,8 @@
 
     <include
         android:id="@+id/layout_loading"
-        layout="@layout/layout_loading" />
+        layout="@layout/layout_loading"
+        />
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/product_img"

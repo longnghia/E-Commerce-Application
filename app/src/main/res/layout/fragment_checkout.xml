@@ -9,29 +9,36 @@
         android:id="@+id/top_app_bar"
         layout="@layout/app_bar_collapsible_nav" />
 
+    <include
+        layout="@layout/layout_loading"
+        android:id="@+id/layout_loading"/>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="280dp"
         android:background="@color/background_color"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="36dp"
             android:orientation="vertical">
 
-
             <TextView
                 android:id="@+id/tv_shipping_address"
+                style="@style/TextAppearance.MyApp.Text16.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="31dp"
+                android:layout_marginTop="18dp"
                 android:text="@string/shipping_address"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
 
             <LinearLayout
                 android:id="@+id/layout_address"
@@ -53,40 +60,52 @@
                 />
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_view_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cardCornerRadius="8dp">
+                    app:cardCornerRadius="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_shipping_address">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:layout_marginStart="28dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/tv_user_name"
+                            android:id="@+id/tv_full_name"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="18dp"
+                            style="@style/TextAppearance.MyApp.Text14.Black"
                             android:text="@string/shipping_address"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
-                            android:id="@+id/tv_user_address"
+                            android:id="@+id/tv_address"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:letterSpacing="-0.05"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="7dp"
+                            android:letterSpacing="-0.04"
                             android:text="@string/shipping_address"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tv_user_name" />
+                            style="@style/TextAppearance.MyApp.Text14.Black"
+                            app:layout_constraintStart_toStartOf="@id/tv_full_name"
+                            app:layout_constraintTop_toBottomOf="@id/tv_full_name" />
 
                         <TextView
                             android:id="@+id/tv_change_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="23dp"
                             android:text="@string/change"
                             android:textColor="@color/red_dark"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            app:layout_constraintTop_toTopOf="@id/tv_full_name" />
+
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
@@ -94,10 +113,12 @@
             <!--payment-->
             <TextView
                 android:id="@+id/tv_payment"
+                style="@style/TextAppearance.MyApp.Text16.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="57dp"
                 android:text="@string/payment"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_address" />
 
@@ -105,10 +126,11 @@
                 android:id="@+id/tv_change_payment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="23dp"
                 android:text="@string/change"
                 android:textColor="@color/red_dark"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_payment" />
+                app:layout_constraintTop_toTopOf="@id/tv_payment" />
 
             <LinearLayout
                 android:id="@+id/layout_payment"
@@ -118,7 +140,6 @@
                 android:orientation="vertical"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment">
-
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_add_payment"
@@ -130,57 +151,130 @@
 
                 />
 
-                <com.google.android.material.card.MaterialCardView
+
+                <LinearLayout
+                    android:id="@+id/layout_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:cardCornerRadius="8dp">
+                    android:orientation="horizontal">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/iv_card_img"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/bg_rounded_outline"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_master_card_2"
 
-                        <ImageView
-                            android:id="@+id/iv_card_img"
-                            android:layout_width="64dp"
-                            android:layout_height="38dp"
-                            android:background="@drawable/bg_rounded_outline"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/pexels_photo"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                        />
 
-                        <TextView
-                            android:id="@+id/tv_card_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="17dp"
-                            android:text="@string/shipping_address"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/iv_card_img"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/tv_card_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="17dp"
+                        android:text="@string/payment" />
+                </LinearLayout>
             </LinearLayout>
 
 
             <TextView
                 android:id="@+id/tv_delivery"
+                style="@style/TextAppearance.MyApp.Text16.Black"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="51dp"
                 android:text="@string/delivery"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_payment" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="21dp"
                 android:id="@+id/rcv_delivery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="21dp"
                 android:orientation="horizontal"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toBottomOf="@id/tv_delivery" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/tv_1"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/order"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_order_price"
+            style="@style/TextAppearance.MyApp.Text16.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/order"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_1" />
+
+        <TextView
+            android:id="@+id/tv_2"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="@string/delivery2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_1" />
+
+        <TextView
+            android:id="@+id/tv_delivery_price"
+            style="@style/TextAppearance.MyApp.Text16.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_2" />
+
+        <TextView
+            android:id="@+id/tv_3"
+            style="@style/TextAppearance.MyApp.Text16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="17dp"
+            android:text="@string/summary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_2" />
+
+        <TextView
+            android:id="@+id/tv_summary_price"
+            style="@style/TextAppearance.MyApp.Text18.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_3" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_submit_order"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="26dp"
+            android:backgroundTint="@color/red_dark"
+            android:text="@string/submit_order"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/tv_3"
+            app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

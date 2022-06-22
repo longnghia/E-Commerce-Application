@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -28,7 +29,6 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import java.text.SimpleDateFormat
 import java.util.*
@@ -193,5 +193,33 @@ object Utils {
         )
 
         handler.post(runnable)
+    }
+
+    /*https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin*/
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivityManager != null) {
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun getRandomString(): String {
+        val numset = "0123456789"
+        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZ"
+        val NUM_LENGTH = 2
+        val CHAR_LENGTH = 10
+        val num = (1..NUM_LENGTH)
+            .map { numset.random() }
+            .joinToString("")
+        val char = (1..CHAR_LENGTH)
+            .map { charset.random() }
+            .joinToString("")
+        return num + char
     }
 }

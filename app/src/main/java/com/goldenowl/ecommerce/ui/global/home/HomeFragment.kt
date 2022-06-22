@@ -41,18 +41,17 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             }
 
             viewModel.allFavorite.observe(viewLifecycleOwner) {
-                Log.d(CategoryFragment.TAG, "setObservers: allFavorite change")
                 viewModel.reloadListProductData()
             }
             viewModel.toastMessage.observe(viewLifecycleOwner) {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                if (!it.isNullOrBlank())
+                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
 
     override fun setViews() {
-        Log.d(TAG, "setViews: started")
         salesListAdapter = HomeProductListAdapter(this)
         newsListAdapter = HomeProductListAdapter(this)
         binding.rcvSales.adapter = salesListAdapter
@@ -98,4 +97,5 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         binding.topAppBar.viewPager.adapter = ImageProductDetailAdapter(imgs)
         binding.topAppBar.viewPager.autoScroll(3500)
     }
+
 }

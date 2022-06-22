@@ -83,7 +83,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:text="0$"
-                    android:textAppearance="@style/TextAppearance.MyApp.Text18" />
+                    android:textAppearance="@style/TextAppearance.MyApp.Text18.Black" />
 
             </RelativeLayout>
 

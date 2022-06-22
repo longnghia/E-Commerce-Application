@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.utils.Consts.listSize
+import com.goldenowl.ecommerce.utils.Constants.listSize
 
 class BottomSheetSizeAdapter : RecyclerView.Adapter<BottomSheetSizeAdapter.ViewHolder>() {
     private var checkItem = -1
