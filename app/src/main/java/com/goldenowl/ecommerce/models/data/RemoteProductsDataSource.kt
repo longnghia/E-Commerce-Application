@@ -61,11 +61,8 @@ class RemoteProductsDataSource : ProductDataSource {
 
             listFavorite.add(favorite)
 
-//            userOrderRef
-//                .update("favorites", FieldValue.arrayUnion(favorite))
             userOrderRef
                 .update("favorites", listFavorite)
-            Log.d(TAG, "added To list Favorite")
         }
     }
 
@@ -88,7 +85,6 @@ class RemoteProductsDataSource : ProductDataSource {
             listFavorite.add(favorite)
 
             userOrderRef.update("favorites", listFavorite).await()
-            Log.d(TAG, "removeFavorite")
         }
 
     }
@@ -157,7 +153,6 @@ class RemoteProductsDataSource : ProductDataSource {
             userOrderRef
                 .update("carts", listCart)
 
-            Log.d(TAG, "added To list Cart")
         }
     }
 

@@ -94,7 +94,6 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
 
     override fun init() {
         listCategory = viewModel.categoryList
-        Log.d(TAG, "init: listCategory=$listCategory")
         listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
@@ -174,13 +173,10 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
                 }
                 searchView!!.setOnCloseListener {
 //                    binding.topAppBar.collapsingToolbar.hide
-                    Log.d(TAG, "setAppBarMenu: closed")
                     false
                 }
                 searchView!!.maxWidth = Integer.MAX_VALUE
                 searchView!!.setOnQueryTextListener(queryTextListener)
-            } else {
-                Log.d(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
             }
         }
 
@@ -191,10 +187,8 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     }
 
     private fun onMenuClick(menuItem: MenuItem?): Boolean {
-        Log.d(TAG, "onMenuClick: ${menuItem?.itemId}")
         when (menuItem?.itemId) {
             R.id.ic_search -> {
-                Log.d(TAG, "onMenuClick: search clicked")
                 // todo
 //                binding.topAppBar.searchBar.searchBarFrameLayout.apply {
 //                    visibility = if (visibility == View.VISIBLE) View.INVISIBLE else View.INVISIBLE

@@ -23,7 +23,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     override fun setObservers() {
 
         textInputViewModel.errorSignUpEmail.observe(viewLifecycleOwner) { errorEmail ->
-            Log.d(TAG, "setObservers: erroremail=$errorEmail")
             validEmail(errorEmail)
         }
         textInputViewModel.errorSignUpPassword.observe(viewLifecycleOwner) { errorPassword ->
@@ -31,7 +30,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         }
 
         textInputViewModel.signUpFormValid.observe(viewLifecycleOwner) { signUpValid ->
-            Log.d(TAG, "setObservers: logInValid=$signUpValid ")
             binding.btnSignup.isEnabled = signUpValid
         }
 
@@ -48,7 +46,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     }
 
     private fun handleLogin(it: BaseLoadingStatus?) {
-        Log.d(TAG, "validSignup: $it")
         when (it) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
@@ -70,13 +67,11 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         if (it != null) {
             if (it.isNotEmpty()) {
                 binding.inputLayoutEmail.error = it
-                Log.d(TAG, "hasError: $it")
             }
         }
     }
 
     private fun handleSignUp(signUpStatus: BaseLoadingStatus) {
-        Log.d(TAG, "validSignup: $signUpStatus")
         when (signUpStatus) {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
@@ -100,7 +95,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
             if (errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.isErrorEnabled = false
-                Log.d(TAG, "setObservers: password valid")
             } else {
                 inputLayoutPassword.error = errorPassword
                 inputLayoutPassword.errorIconDrawable = null
@@ -114,7 +108,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
             if (errorEmail.isNullOrEmpty()) {
                 inputLayoutEmail.isErrorEnabled = false
                 inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
-                Log.d(TAG, "setObservers: email valid")
             } else {
                 inputLayoutEmail.error = errorEmail
             }
@@ -151,7 +144,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     override fun setViews() {
         with(binding) {
             btnSignup.setOnClickListener {
-                Log.d(TAG, "setViews: begin sign up")
                 hideKeyboard()
                 viewModel.signUpWithEmail(
                     edtEmail.text.toString(),

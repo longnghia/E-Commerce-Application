@@ -150,7 +150,6 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
                         }
                     }
                     searchView!!.setOnCloseListener {
-                        Log.d(TAG, "setAppBarMenu: closed")
                         false
                     }
                     searchView!!.maxWidth = Integer.MAX_VALUE

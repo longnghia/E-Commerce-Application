@@ -55,7 +55,6 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
         viewModel.facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
         viewModel.callbackManager().onActivityResult(requestCode, resultCode, data, object : LoginListener {
             override fun callback(result: MyResult<Boolean>) {
-                Log.d(TAG, "onActivityResult: google log in result : $result")
                 if (result is MyResult.Success) {
                     viewModel.logInStatus.value = BaseLoadingStatus.SUCCEEDED
                 } else if (result is MyResult.Error) {

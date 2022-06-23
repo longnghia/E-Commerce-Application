@@ -106,30 +106,14 @@ data class Product @JvmOverloads constructor(
     data class Color @JvmOverloads constructor(
         var color: String = "",
         var sizes: List<Size> = ArrayList()
-    ) : Parcelable {
-
-        fun toHashMap(): Map<String, Any> {
-            return mapOf(
-                "color" to color,
-                "size" to sizes
-            )
-        }
-    }
+    ) : Parcelable
 
     @Parcelize
     data class Size @JvmOverloads constructor(
         var price: Int = 0,
         var quantity: Int = 0,
         var size: String = ""
-    ) : Parcelable {
-        fun toHashMap(): Map<String, Any> {
-            return mapOf(
-                "price" to price,
-                "quantity" to quantity,
-                "size" to size
-            )
-        }
-    }
+    ) : Parcelable
 
     @Parcelize
     data class Tag @JvmOverloads constructor(

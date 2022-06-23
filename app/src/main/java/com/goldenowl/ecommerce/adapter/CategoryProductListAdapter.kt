@@ -83,8 +83,6 @@ class CategoryProductListAdapter(
             layoutLoading = itemView.findViewById(R.id.layout_loading)
             if (layoutLoading != null) {
                 layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
-            } else {
-                Log.d(TAG, "layoutLoading NULL!! ")
             }
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
@@ -116,7 +114,6 @@ class CategoryProductListAdapter(
 
 
         holder.ivFavorite?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickFavorite(product, favorite)
         }
 
@@ -125,7 +122,6 @@ class CategoryProductListAdapter(
         }
 
         holder.itemView?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickItem(mListProductData[position])
         }
 

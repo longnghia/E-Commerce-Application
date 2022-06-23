@@ -163,9 +163,6 @@ class BottomSheetInsertCard(private val viewModel: ShopViewModel) :
         inputViewModel.newCardValid.observe(viewLifecycleOwner) {
             handleCardValid(it)
         }
-        viewModel.curBag.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: curBag change=${it}")
-        }
     }
 
     private fun handleCardValid(valid: Boolean) {

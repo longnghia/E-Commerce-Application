@@ -25,7 +25,6 @@ class LoginSignupActivity : AppCompatActivity() {
 
 //        setWindow()
 
-        Log.d(TAG, "onCreate: ")
         binding = ActivityLoginSignupBinding.inflate(layoutInflater)
 
 
