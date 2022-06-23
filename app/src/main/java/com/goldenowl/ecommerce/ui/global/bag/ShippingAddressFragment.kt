@@ -85,6 +85,9 @@ class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBindin
 
     override fun editAddress(position: Int) {
         val address = listAddress[position]
-        findNavController().navigate(R.id.add_address_dest, bundleOf(Constants.KEY_ADDRESS to address, Constants.KEY_POSITION to position))
+        findNavController().navigate(
+            R.id.add_address_dest,
+            bundleOf(Constants.KEY_ADDRESS to address, Constants.KEY_POSITION to position)
+        )
     }
 }

@@ -104,8 +104,11 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
 
     private fun checkOut() {
         val listCartProductData = adapterGrid.getBag()
-        findNavController().navigate(R.id.checkout_dest, bundleOf(
-            "listCartProductData" to listCartProductData))
+        findNavController().navigate(
+            R.id.checkout_dest, bundleOf(
+                "listCartProductData" to listCartProductData
+            )
+        )
     }
 
 

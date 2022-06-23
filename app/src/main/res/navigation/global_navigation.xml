@@ -103,8 +103,7 @@
         android:id="@+id/success_dest"
         android:name="com.goldenowl.ecommerce.ui.global.bag.SuccessFragment"
         android:label="@string/success"
-        tools:layout="@layout/fragment_success"
-        >
+        tools:layout="@layout/fragment_success">
 
         <action
             android:id="@+id/go_home_dest"
@@ -127,8 +126,7 @@
         android:id="@+id/add_address_dest"
         android:name="com.goldenowl.ecommerce.ui.global.bag.AddAddressFragment"
         android:label="@string/adding_address"
-        tools:layout="@layout/fragment_add_address">
-    </fragment>
+        tools:layout="@layout/fragment_add_address"></fragment>
 
     <fragment
         android:id="@+id/settings_dest"

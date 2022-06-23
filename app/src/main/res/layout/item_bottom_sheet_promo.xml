@@ -6,11 +6,10 @@
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="80dp"
-    android:backgroundTint="@color/background_color"
-    app:cardCornerRadius="8dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="24dp"
-    >
+    android:backgroundTint="@color/background_color"
+    app:cardCornerRadius="8dp">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -30,9 +29,8 @@
                 android:id="@+id/iv_promo"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:scaleType="centerCrop"
                 android:background="@color/red_dark"
-                />
+                android:scaleType="centerCrop" />
 
             <include
                 android:id="@+id/layout_loading"
@@ -101,8 +99,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/checkout"
-                android:textSize="14sp"
                 android:textColor="@color/black_light"
+                android:textSize="14sp"
 
                 />
 
@@ -121,12 +119,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="14dp"
             android:gravity="center_horizontal"
-            >
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/tv_day_remain"
@@ -142,12 +139,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/red_dark"
-                android:text="@string/apply"
-                android:textColor="@color/white"
-                app:shapeAppearanceOverlay="@style/RoundedButtonShape"
                 android:elevation="2dp"
+                android:text="@string/apply"
                 android:textAllCaps="false"
-                />
+                android:textColor="@color/white"
+                app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

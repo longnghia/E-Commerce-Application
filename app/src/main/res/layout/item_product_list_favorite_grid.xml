@@ -51,20 +51,22 @@
         app:layout_anchorGravity="end|bottom"
         app:layout_constraintBottom_toBottomOf="@+id/product_img"
         app:layout_constraintEnd_toEndOf="@+id/product_img" />
+
     <TextView
         android:id="@+id/tv_sold_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
+        android:background="#A6DDDDDD"
         android:elevation="5dp"
+        android:gravity="center_horizontal"
         android:text="@string/sold_out"
         android:textColor="@color/black_light"
-        android:background="#A6DDDDDD"
         android:textSize="11sp"
         android:visibility="invisible"
-        android:gravity="center_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/product_img"
-        app:layout_constraintBottom_toBottomOf="@+id/product_img"  />
+        app:layout_constraintBottom_toBottomOf="@+id/product_img"
+        app:layout_constraintStart_toStartOf="@+id/product_img" />
+
     <TextView
         android:id="@+id/tv_discount_percent"
         android:layout_width="wrap_content"

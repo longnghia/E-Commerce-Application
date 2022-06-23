@@ -93,7 +93,7 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         val imgs = listOf(
             R.drawable.carousel1, R.drawable.carousel2, R.drawable.carousel3, R.drawable.carousel4
         )
-        val titles= listOf("Street clothes","Sleep clothes","Sport clothes", "Inform clothes")
+        val titles = listOf("Street clothes", "Sleep clothes", "Sport clothes", "Inform clothes")
         binding.topAppBar.viewPager.adapter = HomeViewPagerAdapter(imgs, titles)
         binding.topAppBar.viewPager.autoScroll(3500)
     }

@@ -12,7 +12,7 @@ data class Favorite @JvmOverloads constructor(
     val productId: String = "",
     val size: String = "",
     val color: String = ""
-): Parcelable {
+) : Parcelable {
     fun toMap() = mapOf(
         "productId" to productId,
         "size" to size,

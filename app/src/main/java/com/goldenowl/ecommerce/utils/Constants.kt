@@ -41,9 +41,9 @@ object Constants {
 
     val listSize = listOf("L", "M", "S", "XL", "XS")
     val listDelivery = listOf<Delivery>(
-        Delivery("fedex", " 2-3 days", R.drawable.ic_fedex,15),
-        Delivery("usps", " 2-3 days", R.drawable.ic_usps,10),
-        Delivery("dhl", " 2-3 days", R.drawable.ic_dhl,20),
+        Delivery("fedex", " 2-3 days", R.drawable.ic_fedex, 15),
+        Delivery("usps", " 2-3 days", R.drawable.ic_usps, 10),
+        Delivery("dhl", " 2-3 days", R.drawable.ic_dhl, 20),
     )
     val listCountry = listOf(
         "Afghanistan",

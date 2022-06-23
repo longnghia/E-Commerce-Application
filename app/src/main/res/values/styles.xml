@@ -58,10 +58,12 @@
         <item name="android:textColor">@color/text_subtitle_color</item>
         <item name="android:textSize">16sp</item>
     </style>
+
     <style name="TextAppearance.MyApp.Text14.Black" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">@color/black_light</item>
         <item name="android:textSize">14sp</item>
     </style>
+
     <style name="TextAppearance.MyApp.Text16.Black" parent="TextAppearance.MaterialComponents.Headline4">
         <item name="android:textColor">@color/black_light</item>
         <item name="android:textSize">16sp</item>
@@ -85,7 +87,7 @@
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="backgroundTint">@color/background_color</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
-<!--        <item name="background">@drawable/bg_rounded_bottom_sheet</item>-->
+        <!--        <item name="background">@drawable/bg_rounded_bottom_sheet</item>-->
     </style>
 
     <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.MaterialComponents.LargeComponent">

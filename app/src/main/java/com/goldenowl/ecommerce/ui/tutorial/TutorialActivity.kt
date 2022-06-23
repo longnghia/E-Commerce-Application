@@ -54,10 +54,10 @@ class TutorialActivity : AppCompatActivity() {
                 super.onPageSelected(position)
                 Log.d(TAG, "onPageSelected: $position")
 
-                if (position == 3){
+                if (position == 3) {
                     binding.tutNextLayout.visibility = View.INVISIBLE
                     binding.btnGetStarted.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.tutNextLayout.visibility = View.VISIBLE
                     binding.btnGetStarted.visibility = View.INVISIBLE
                 }

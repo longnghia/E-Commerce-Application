@@ -80,7 +80,7 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
         }
 
         /* todo: not work but refresh category array*/
-        if(searchView!=null){
+        if (searchView != null) {
             searchView!!.setQuery("", false);
         }
     }

@@ -42,15 +42,14 @@
         android:id="@+id/btn_continue_shopping"
         android:layout_width="match_parent"
         android:layout_height="48dp"
+        android:layout_marginStart="18dp"
         android:layout_marginTop="26dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginBottom="45dp"
         android:backgroundTint="@color/red_dark"
         android:text="@string/continue_shopping"
         android:textColor="@color/white"
-        app:shapeAppearanceOverlay="@style/RoundedButtonShape"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="45dp"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="18dp"
-        />
+        app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

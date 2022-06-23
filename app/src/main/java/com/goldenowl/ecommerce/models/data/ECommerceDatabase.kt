@@ -6,7 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = [Favorite::class, Cart::class,Product::class,Order::class, Address::class], version = 1, exportSchema = false)
+@Database(
+    entities = [Favorite::class, Cart::class, Product::class, Order::class, Address::class],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(ProductTypeConverters::class, OrderTypeConverters::class)
 abstract class ECommerceDatabase : RoomDatabase() {
     abstract fun favoriteDao(): FavoriteDao

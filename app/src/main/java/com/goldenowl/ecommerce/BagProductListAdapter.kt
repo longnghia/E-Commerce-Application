@@ -57,7 +57,7 @@ class BagProductListAdapter(private val listener: IClickListener) :
                 showMenu(binding.tvAnchor as View, product, favorite, cart)
             }
 
-            binding.layoutItem?.setOnClickListener {
+            binding.root?.setOnClickListener {
                 listener.onClickItem(productData)
             }
 

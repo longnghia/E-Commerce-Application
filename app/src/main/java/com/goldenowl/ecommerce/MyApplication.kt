@@ -18,7 +18,7 @@ import com.google.firebase.FirebaseApp
 class MyApplication : Application() {
 
     private val TAG = "MyApplication"
-    private val userManager by lazy {UserManager.getInstance(this)}
+    private val userManager by lazy { UserManager.getInstance(this) }
     private val database by lazy { ECommerceDatabase.getDatabase(this) }
 
     lateinit var productsRepository: ProductsRepository
@@ -33,7 +33,6 @@ class MyApplication : Application() {
         authRepository = AuthRepository(RemoteAuthDataSource(userManager, this), LocalAuthDataSource(userManager))
         productsRepository = ProductsRepository(RemoteProductsDataSource(), createLocalProductsDataSource(this))
     }
-
 
 
     private fun createLocalProductsDataSource(context: Context): LocalProductsDataSource {

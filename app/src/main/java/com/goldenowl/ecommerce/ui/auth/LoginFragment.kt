@@ -58,8 +58,12 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
             }
-            BaseLoadingStatus.SUCCEEDED->{
-                Toast.makeText(activity, getString(R.string.email_rs_password_sent, binding.edtEmail.text.toString()), Toast.LENGTH_SHORT).show()
+            BaseLoadingStatus.SUCCEEDED -> {
+                Toast.makeText(
+                    activity,
+                    getString(R.string.email_rs_password_sent, binding.edtEmail.text.toString()),
+                    Toast.LENGTH_SHORT
+                ).show()
                 binding.edtPassword.requestFocus()
                 setLoading(false)
             }
@@ -162,7 +166,8 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                 hideKeyboard()
                 viewModel.logInWithEmail(
                     binding.edtEmail.text.toString().trim(),
-                    binding.edtPassword.text.toString().trim())
+                    binding.edtPassword.text.toString().trim()
+                )
             }
 
             layoutForgotPassword.setOnClickListener {
@@ -184,7 +189,8 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
             ivGoogle.setOnClickListener {
                 hideKeyboard()
-                viewModel.logInWithGoogle(this@LoginFragment) }
+                viewModel.logInWithGoogle(this@LoginFragment)
+            }
         }
     }
 

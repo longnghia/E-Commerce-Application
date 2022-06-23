@@ -21,17 +21,18 @@
             android:layout_height="match_parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="36dp"
-            android:paddingBottom="36dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="36dp">
 
             <TextView
+                android:id="@+id/tv_your_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_your_address"
                 android:text="@string/no_address"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv_address"
                 android:layout_width="match_parent"
@@ -42,7 +43,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_your_address" />
 
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -50,10 +50,9 @@
         android:id="@+id/iv_add_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="33dp"
         android:elevation="4dp"
-        android:src="@drawable/ic_add"
-        android:layout_gravity="bottom|end"
-        />
+        android:src="@drawable/ic_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

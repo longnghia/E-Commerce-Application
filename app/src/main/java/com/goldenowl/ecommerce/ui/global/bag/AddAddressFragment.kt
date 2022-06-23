@@ -90,8 +90,8 @@ class AddAddressFragment : BaseHomeFragment<FragmentAddAddressBinding>() {
             }
         }
 
-        binding.edtCountry.setOnClickListener{
-            val modalBottomSheet = BottomSheetSelectCountry(object : BottomSheetSelectCountry.ISelectCountry{
+        binding.edtCountry.setOnClickListener {
+            val modalBottomSheet = BottomSheetSelectCountry(object : BottomSheetSelectCountry.ISelectCountry {
                 override fun onSelectCountry(country: String) {
                     binding.edtCountry.setText(country)
                 }

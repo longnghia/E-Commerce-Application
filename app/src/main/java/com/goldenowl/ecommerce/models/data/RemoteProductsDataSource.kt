@@ -213,12 +213,13 @@ class RemoteProductsDataSource : ProductDataSource {
                 .update("carts", listCart)
         }
     }
+
     suspend fun emptyCartTable() {
         val userId =
             firebaseAuth.currentUser?.uid ?: throw (Exception("[Firestore] User not logged in!"))
         var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
         val snapshot = userOrderRef.get(Source.SERVER).await()
-        if (snapshot.exists()){
+        if (snapshot.exists()) {
             userOrderRef
                 .update("carts", emptyList<Cart>())
         }
@@ -254,7 +255,7 @@ class RemoteProductsDataSource : ProductDataSource {
                 .set(UserOrder(userId, orders = listOf(order)))
         } else {
             val userOrder = snapshot.toObject(UserOrder::class.java)
-             var listOrder: MutableList<Order> =
+            var listOrder: MutableList<Order> =
                 userOrder?.orders?.toMutableList() ?: mutableListOf()
 
             val remoteOrder: Order? = listOrder.find {
@@ -436,7 +437,7 @@ class RemoteProductsDataSource : ProductDataSource {
                 userOrder?.addresss?.toMutableList() ?: mutableListOf()
 
             listAddress.removeAt(position)
-            listAddress.add(position ,address)
+            listAddress.add(position, address)
 
             userOrderRef
                 .update("addresss", listAddress)

@@ -100,12 +100,12 @@ class TextValidation {
             if (expireDate.isEmpty())
                 return "Field required"
             val date = expireDate.split("/")
-            if(date[0].isEmpty())
+            if (date[0].isEmpty())
                 return "Require month"
             val month = date[0].toInt()
-            if(date.size<2)
+            if (date.size < 2)
                 return "Require month and year"
-            if(date[1].isEmpty())
+            if (date[1].isEmpty())
                 return "Require year"
             val year = date[1].toInt()
             if (year <= 0 || month <= 0 || month > 12)

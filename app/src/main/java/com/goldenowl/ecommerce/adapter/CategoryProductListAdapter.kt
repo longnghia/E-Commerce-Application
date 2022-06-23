@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
@@ -73,7 +72,6 @@ class CategoryProductListAdapter(
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
         var layoutFrameLoading: FrameLayout? = null
-        var layoutItem: ConstraintLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -83,7 +81,6 @@ class CategoryProductListAdapter(
             tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
-            layoutItem = itemView.findViewById(R.id.layout_item)
             if (layoutLoading != null) {
                 layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
             } else {
@@ -127,7 +124,7 @@ class CategoryProductListAdapter(
 
         }
 
-        holder.layoutItem?.setOnClickListener {
+        holder.itemView?.setOnClickListener {
             Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickItem(mListProductData[position])
         }

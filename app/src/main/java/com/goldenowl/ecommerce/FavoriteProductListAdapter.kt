@@ -8,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
@@ -79,7 +78,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         var ivRemove: ImageView? = null
         var layoutLoading: FrameLayout? = null
         var layoutGreyOut: FrameLayout? = null
-        var layoutItem: ConstraintLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -91,7 +89,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             ivRemove = itemView.findViewById(R.id.iv_remove)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
             layoutGreyOut = itemView.findViewById(R.id.layout_grey_out)
-            layoutItem = itemView.findViewById(R.id.layout_item)
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
             tvSoldOut = itemView.findViewById(R.id.tv_sold_out)
@@ -141,7 +138,7 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             listener.onClickRemoveFavorite(product, favorite)
         }
 
-        holder.layoutItem?.setOnClickListener {
+        holder.itemView?.setOnClickListener {
             listener.onClickItem(productData)
         }
         holder.productBrand?.text = product.brandName
@@ -168,20 +165,21 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             } else {
                 holder.tvDiscoutPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
-                holder.originPrice?.text =                     holder.itemView.context.resources.getString(R.string.money_unit_int,  product.getOriginPrice())
+                holder.originPrice?.text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
         Log.d(TAG, "onBindViewHolder: product=${product.colors[0].sizes}")
         if (product.isAvailable(favorite!!)) {
             if (cart != null) {
-                holder.ivCart?.apply{
-                    backgroundTintList = this.resources.getColorStateList(R.color.red_dark , this.context.theme)
+                holder.ivCart?.apply {
+                    backgroundTintList = this.resources.getColorStateList(R.color.red_dark, this.context.theme)
                 }
 
             } else {
-                holder.ivCart?.apply{
-                    backgroundTintList = this.resources.getColorStateList(R.color.grey_text , this.context.theme)
+                holder.ivCart?.apply {
+                    backgroundTintList = this.resources.getColorStateList(R.color.grey_text, this.context.theme)
                 }
             }
         } else {

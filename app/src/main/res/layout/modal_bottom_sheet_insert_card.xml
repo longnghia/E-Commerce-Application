@@ -44,8 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/name_on_card"
-                    android:inputType="textPersonName"
-/>
+                    android:inputType="textPersonName" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- card number-->
@@ -89,9 +88,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:endIconMode="custom"
                 app:endIconDrawable="@drawable/ic_help"
-                >
+                app:endIconMode="custom">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edt_cvv"
@@ -130,11 +128,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:layout_marginBottom="48dp"
-                android:text="@string/add_card"
-                app:shapeAppearanceOverlay="@style/RoundedButtonShape"
                 android:backgroundTint="@color/red_dark"
+                android:text="@string/add_card"
                 android:textColor="@color/white"
-                />
+                app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
         </LinearLayout>
 
     </LinearLayout>

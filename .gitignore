@@ -17,3 +17,4 @@ local.properties
 keytool_signing
 keytool_hash
 log.txt
+build

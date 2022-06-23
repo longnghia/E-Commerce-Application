@@ -25,9 +25,9 @@ class BottomSheetPromoAdapter(private val listPromo: List<Promo>, private val li
             Utils.glide2View(binding.ivPromo, binding.layoutLoading.loadingFrameLayout, promo.backgroundImage)
 
             binding.tvDayRemain.text =
-               promo.getDayRemain().let {
+                promo.getDayRemain().let {
                     if (it > 1) "$it days left" else "$it day left"
-               }
+                }
 
         }
     }

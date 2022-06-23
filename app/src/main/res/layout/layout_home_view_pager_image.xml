@@ -10,12 +10,12 @@
         android:visibility="invisible" />
 
     <ImageView
-        android:contentDescription="@string/trending"
         android:id="@+id/product_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/trending"
         android:scaleType="centerCrop"
-        android:src="@drawable/carousel1"></ImageView>
+        android:src="@drawable/carousel1" />
 
     <TextView
         android:id="@+id/tv_title"

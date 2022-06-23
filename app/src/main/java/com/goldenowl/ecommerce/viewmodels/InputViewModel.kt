@@ -39,6 +39,7 @@ class InputViewModel {
         errorCardExpireDate.value = error
         setNewCardValid()
     }
+
     fun checkCardCvv(cvv: String) {
         val error = TextValidation.validateCardCvv(cvv)
         errorCardCVV.value = error

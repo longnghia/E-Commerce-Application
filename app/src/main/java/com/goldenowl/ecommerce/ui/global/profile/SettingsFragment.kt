@@ -209,7 +209,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
             })
             edtPassword.addTextChangedListener(object : FieldValidators.TextChange {
                 override fun onTextChanged(s: CharSequence?) {
-                    textInputViewModel.checkPassword(edtPassword.text.toString(),0)
+                    textInputViewModel.checkPassword(edtPassword.text.toString(), 0)
                     textInputViewModel.setLoginFormValid()
                 }
             })

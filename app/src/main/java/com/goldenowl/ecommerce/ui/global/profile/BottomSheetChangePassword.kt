@@ -16,7 +16,7 @@ import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.goldenowl.ecommerce.viewmodels.TextInputViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class BottomSheetChangePassword(private val userManager : UserManager) : BottomSheetDialogFragment() {
+class BottomSheetChangePassword(private val userManager: UserManager) : BottomSheetDialogFragment() {
     private lateinit var binding: ModalBottomSheetChangePasswordBinding
     private val textInputViewModel: TextInputViewModel by activityViewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
@@ -61,7 +61,7 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
         authViewModel.changePasswordStatus.observe(viewLifecycleOwner) { changePasswordStatus ->
             onChangePassword(changePasswordStatus)
         }
-        authViewModel.forgotPasswordStatus.observe(viewLifecycleOwner){
+        authViewModel.forgotPasswordStatus.observe(viewLifecycleOwner) {
             onForgotPassword(it)
         }
     }
@@ -69,21 +69,25 @@ class BottomSheetChangePassword(private val userManager : UserManager) : BottomS
     private fun onForgotPassword(forgotPwStatus: BaseLoadingStatus?) {
         when (forgotPwStatus) {
             BaseLoadingStatus.LOADING -> {
-                binding.layoutLoading.loadingFrameLayout.visibility  =View.VISIBLE
+                binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             }
 
             BaseLoadingStatus.SUCCEEDED -> {
-                Toast.makeText(activity, getString(R.string.email_rs_password_sent, userManager.email), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    activity,
+                    getString(R.string.email_rs_password_sent, userManager.email),
+                    Toast.LENGTH_SHORT
+                ).show()
                 this@BottomSheetChangePassword.dismiss()
             }
-            else -> binding.layoutLoading.loadingFrameLayout.visibility  =View.INVISIBLE
+            else -> binding.layoutLoading.loadingFrameLayout.visibility = View.INVISIBLE
         }
     }
 
     private fun onChangePassword(changePasswordStatus: BaseLoadingStatus) {
         when (changePasswordStatus) {
             BaseLoadingStatus.LOADING -> {
-                binding.layoutLoading.loadingFrameLayout.visibility  =View.VISIBLE
+                binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             }
             BaseLoadingStatus.SUCCEEDED -> {
                 Toast.makeText(activity, getText(R.string.change_password_success), Toast.LENGTH_SHORT).show()

@@ -121,9 +121,9 @@
         android:id="@+id/ic_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
-        android:elevation="5dp"
         android:layout_margin="2dp"
+        android:elevation="5dp"
+        android:includeFontPadding="false"
         android:src="@drawable/ic_remove"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/card_view" />

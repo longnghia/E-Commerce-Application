@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.appbar.AppBarLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="@dimen/tall_toolbar_height"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    android:elevation="4dp"
     android:background="@color/white"
-    >
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
     <com.google.android.material.appbar.CollapsingToolbarLayout
         android:id="@+id/collapsing_toolbar_layout"
         android:layout_width="match_parent"
 
-        android:fitsSystemWindows="true"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         app:collapsedTitleGravity="center_horizontal"
         app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
         app:expandedTitleMarginEnd="64dp"

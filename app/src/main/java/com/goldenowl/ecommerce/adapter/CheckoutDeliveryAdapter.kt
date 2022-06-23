@@ -30,7 +30,7 @@ class CheckoutDeliveryAdapter(private val listener: IClickDelivery) :
                 setSelected(position)
             }
             if (position == selected) {
-                    binding.cardViewDelivery.strokeWidth = 3
+                binding.cardViewDelivery.strokeWidth = 3
             } else
                 binding.cardViewDelivery.strokeWidth = 0
         }

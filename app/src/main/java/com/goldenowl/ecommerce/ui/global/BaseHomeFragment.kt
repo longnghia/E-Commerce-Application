@@ -53,7 +53,6 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
 
     override fun onClickRemoveFavorite(product: Product, favorite: Favorite?) {
         if (favorite != null) {
-            Log.d(TAG, "onClickRemoveFavorite: remove from favorite")
             viewModel.removeFavorite(favorite)
         }
     }
@@ -85,7 +84,7 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     protected fun showToast(msg: String) {
-        if(msg.isNullOrBlank())
+        if (msg.isNullOrBlank())
             return
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
@@ -94,7 +93,7 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
         super.onViewCreated(view, savedInstanceState)
     }
 
-    companion object{
+    companion object {
         val TAG = "BaseHomeFragment"
     }
 }

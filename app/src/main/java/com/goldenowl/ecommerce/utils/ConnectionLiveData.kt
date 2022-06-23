@@ -31,5 +31,6 @@ class ConnectionLiveData(private val context: Context) : LiveData<Boolean>() {
         }
     }
 }
+
 val Context.isConnected: Boolean
     get() = (getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager)?.activeNetworkInfo?.isConnected == true
