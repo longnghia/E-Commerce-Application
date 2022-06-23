@@ -36,7 +36,6 @@ class MyApplication : Application() {
 
 
     private fun createLocalProductsDataSource(context: Context): LocalProductsDataSource {
-        Log.d(TAG, "createLocalProductsDataSource: create database")
 
         val productDao = database.productDao()
         val favoriteDao = database.favoriteDao()

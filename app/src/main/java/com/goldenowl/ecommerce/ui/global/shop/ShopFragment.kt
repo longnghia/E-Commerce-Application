@@ -32,7 +32,6 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
 
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, list)
 //        adapter = ShopCategoryAdapter(requireContext(), list)
-        Log.d(TAG, "setViews: count=${adapter.count}")
         binding.listCategory.apply {
             adapter = this@ShopFragment.adapter
             setOnItemClickListener { _, _, position, _ ->
@@ -70,13 +69,10 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
         val toolBar = binding.topAppBar.toolbar
 
         if (toolBar.menu.isEmpty()) {
-            Log.d(TAG, "setAppBarMenu: menu empty, creating")
             toolBar.apply {
                 inflateMenu(R.menu.menu_search)
             }
             setSearchView()
-        } else {
-            Log.d(TAG, "setAppBarMenu: menu not empty")
         }
 
         /* todo: not work but refresh category array*/

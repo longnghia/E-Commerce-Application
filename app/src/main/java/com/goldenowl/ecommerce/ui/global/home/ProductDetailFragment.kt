@@ -90,13 +90,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
             binding.tvSize.setText(favorite!!.size, false)
         }
 
-        binding.menuSize.editText?.doAfterTextChanged {
-            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
-        }
-        binding.menuColor.editText?.doAfterTextChanged {
-            Log.d(TAG, "setViews: doAfterTextChanged=${it.toString()}")
-        }
-
         /* viewpager*/
         binding.viewPager.adapter = ImageProductDetailAdapter(product.images)
         binding.viewPager.autoScroll(3500)
@@ -113,9 +106,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         binding.btnAddToCart.setOnClickListener {
             val size = binding.menuSize.editText?.text.toString()
             val color = binding.menuColor.editText?.text.toString()
-            Log.d(TAG, "setViews: size = ${size}, color=$color")
             if (color.isNullOrBlank()) {
-                Toast.makeText(context, "Please select color!", Toast.LENGTH_SHORT).show()
+                showToast(getString(R.string.please_select_color))
                 binding.menuColor.requestFocus()
             } else {
                 toggleBottomSheetInsertCart(
@@ -125,12 +117,9 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
         /* insert favorite btn */
         binding.ivFavorite.setOnClickListener {
-            Log.d(TAG, "onClickFavorite: $favorite")
             if (favorite == null) {
-                Log.d(TAG, "onClickFavorite: insert favorite")
                 toggleBottomSheetInsertFavorite(product)
             } else {
-                Log.d(TAG, "onClickFavorite: remove favorite")
                 viewModel.removeFavorite(favorite!!)
             }
         }

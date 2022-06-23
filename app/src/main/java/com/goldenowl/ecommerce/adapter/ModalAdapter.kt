@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.utils.Utils
 
 class ModalAdapter : RecyclerView.Adapter<ModalAdapter.ViewHolder>() {
     private val listSize = listOf("L", "M", "S", "XL", "XS")
@@ -33,10 +34,10 @@ class ModalAdapter : RecyclerView.Adapter<ModalAdapter.ViewHolder>() {
             }
             if (position == checkItem) {
                 this.isSelected = true
-                this.setTextColor(R.color.white)
+                this.setTextColor(Utils.getColor(holder.itemView.context, R.color.black_light) ?: 0xFFFFFF)
             } else {
                 this.isSelected = false
-                this.setTextColor(R.color.black_light)
+                this.setTextColor(Utils.getColor(holder.itemView.context, R.color.black_light) ?: 0x222222)
             }
         }
 

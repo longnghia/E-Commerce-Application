@@ -53,7 +53,6 @@ class BagProductListAdapter(private val listener: IClickListener) :
             val favorite = productData.favorite
 
             binding.ivMore?.setOnClickListener {
-                Log.d(TAG, "onBindViewHolder: $position")
                 showMenu(binding.tvAnchor as View, product, favorite, cart)
             }
 
@@ -70,12 +69,10 @@ class BagProductListAdapter(private val listener: IClickListener) :
 
             binding.tvQuantity?.text = cart!!.quantity.toString()
 
-            val productPrice = product.getPriceByCart(cart).also {
+            product.getPriceByCart(cart).also {
                 if (it != null) {
                     val price = it * cart.quantity
                     binding.tvPrice?.text = binding.root.context.resources.getString(R.string.money_unit_float, price)
-                } else {
-                    Log.d(TAG, "bind: $cart ERROR")
                 }
             }
 
@@ -104,7 +101,7 @@ class BagProductListAdapter(private val listener: IClickListener) :
             val product = productData.product
             val cart = productData.cart
             if (cart == null) {
-                Log.d(TAG, "getPrice: ERROR CART NULL $productData")
+                return -1f
             } else
                 total += (product.getPriceByCart(cart) ?: 0f) * cart.quantity
         }
@@ -143,7 +140,6 @@ class BagProductListAdapter(private val listener: IClickListener) :
         val adapter = ArrayAdapter(anchor.context, R.layout.list_popup_window_item, items)
         listPopupWindow.setAdapter(adapter)
         listPopupWindow.setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
-            Log.d(TAG, "showMenu: $position")
             when (position) {
                 0 -> {
                     listener.onClickFavorite(product, favorite)

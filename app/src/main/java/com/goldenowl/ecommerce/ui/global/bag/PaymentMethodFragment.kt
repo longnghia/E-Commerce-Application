@@ -25,7 +25,6 @@ class PaymentMethodFragment : BaseHomeFragment<FragmentPaymentMethodBinding>(), 
         }
 
         viewModel.listCard.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: listCard=$it")
             listCard = it
             adapter.setData(listCard, defaultCard)
             if (it.isEmpty()) {
@@ -36,7 +35,6 @@ class PaymentMethodFragment : BaseHomeFragment<FragmentPaymentMethodBinding>(), 
         }
 
         viewModel.defaultCardIndex.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: defaultCard=$it")
             if (it != null) {
                 defaultCard = it
                 adapter.setData(listCard, defaultCard)
@@ -83,7 +81,6 @@ class PaymentMethodFragment : BaseHomeFragment<FragmentPaymentMethodBinding>(), 
     }
 
     override fun insertCard(card: Card) {
-        Log.d(TAG, "insertCard: $card")
         viewModel.insertCard(card)
     }
 }

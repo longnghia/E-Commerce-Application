@@ -61,7 +61,6 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         binding.rcvNew.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.tvViewAllSale.setOnClickListener {
-            Log.d(TAG, "setViews: View all clicked")
             findNavController().navigate(
                 R.id.action_view_all,
                 bundleOf("home_filter" to "Sales")
@@ -69,7 +68,6 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         }
 
         binding.tvViewAllNew.setOnClickListener {
-            Log.d(TAG, "setViews: View all clicked")
             findNavController().navigate(
                 R.id.action_view_all,
                 bundleOf("home_filter" to "News")

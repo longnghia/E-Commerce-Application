@@ -24,7 +24,6 @@ class ProductsRepository(
             localProductDataSource.insertMultipleProduct(products)
             products
         } else {
-            Log.d(TAG, "getAllProducts: localProductDataSource.getAllProducts")
             localProductDataSource.getAllProducts()
         }
     }
@@ -103,7 +102,6 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
@@ -146,7 +144,6 @@ class ProductsRepository(
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.d(TAG, "removeFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }

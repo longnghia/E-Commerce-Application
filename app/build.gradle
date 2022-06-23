@@ -54,6 +54,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    lint {
+        disable 'TypographyFractions', 'TypographyQuotes'
+        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
+        ignoreWarnings true
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -105,9 +112,6 @@ dependencies {
     // glide
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     kapt 'com.github.bumptech.glide:compiler:4.13.0'
-
-    // text style
-//    implementation("androidx.compose.material:material:1.2.0-beta02")
 
     // Room components
     implementation "androidx.room:room-ktx:2.4.2"

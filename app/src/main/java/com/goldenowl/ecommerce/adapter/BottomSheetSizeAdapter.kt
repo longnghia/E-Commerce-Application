@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.utils.Constants.listSize
+import com.goldenowl.ecommerce.utils.Utils
 
 class BottomSheetSizeAdapter : RecyclerView.Adapter<BottomSheetSizeAdapter.ViewHolder>() {
     private var checkItem = -1
@@ -32,12 +33,11 @@ class BottomSheetSizeAdapter : RecyclerView.Adapter<BottomSheetSizeAdapter.ViewH
                 refresh(position)
             }
             if (position == checkItem) {
-//                this.background.state = listOf(android.R.attr.state_selected).toIntArray()
                 this.isSelected = true
-                this.setTextColor(R.color.white) // todo not work
+                this.setTextColor(Utils.getColor(holder.itemView.context, R.color.white) ?: 0xFFFFFF) // todo not work
             } else {
                 this.isSelected = false
-                this.setTextColor(R.color.black_light)
+                this.setTextColor(Utils.getColor(holder.itemView.context, R.color.black_light) ?: 0x222222)
             }
         }
 

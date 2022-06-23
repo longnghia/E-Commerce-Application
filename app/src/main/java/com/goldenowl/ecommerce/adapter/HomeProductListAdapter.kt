@@ -57,8 +57,6 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             layoutLoading = itemView.findViewById(R.id.layout_loading)
             if (layoutLoading != null) {
                 layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
-            } else {
-                Log.d(TAG, "layoutLoading NULL!! ")
             }
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
@@ -84,12 +82,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
         val product = productData.product
         val favorite = productData.favorite
 
-        if (holder.ivFavorite == null) {
-            Log.d(TAG, "onBindViewHolder: not found icon")
-        }
-
         holder.ivFavorite?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickFavorite(product, favorite)
         }
         holder.itemView?.setOnClickListener {

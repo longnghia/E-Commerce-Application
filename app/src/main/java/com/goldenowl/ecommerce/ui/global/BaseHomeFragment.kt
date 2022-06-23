@@ -25,12 +25,9 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     protected val viewModel: ShopViewModel by activityViewModels()
 
     override fun onClickFavorite(product: Product, favorite: Favorite?) {
-        Log.d(TAG, "onClickFavorite: $favorite")
         if (favorite == null) {
-            Log.d(TAG, "onClickFavorite: insert favorite")
             toggleBottomSheetInsertFavorite(product)
         } else {
-            Log.d(TAG, "onClickFavorite: remove favorite")
             viewModel.removeFavorite(favorite!!)
         }
     }
@@ -43,7 +40,6 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     override fun onClickCart(product: Product, cart: Cart?) {
-        Log.d(TAG, "onClickCart: $cart")
         if (cart == null) {
             toggleBottomSheetInsertCart(product, null)
         } else {

@@ -50,7 +50,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
                 ) >= 0
             }
         }
-        Log.d(TAG, "setData: mListFavoriteProductData = $mListFavoriteProductData")
 
         notifyDataSetChanged()
     }
@@ -124,17 +123,11 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
         val cart = productData.cart
         val favorite = productData.favorite
 
-        if (holder.ivCart == null) {
-            Log.d(TAG, "onBindViewHolder: not found icon")
-        }
-
         holder.ivCart?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickCart(product, cart)
         }
 
         holder.ivRemove?.setOnClickListener {
-            Log.d(TAG, "onBindViewHolder: $position")
             listener.onClickRemoveFavorite(product, favorite)
         }
 
@@ -170,7 +163,6 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             }
         }
         holder.productRatingBar?.rating = product.reviewStars.toFloat()
-        Log.d(TAG, "onBindViewHolder: product=${product.colors[0].sizes}")
         if (product.isAvailable(favorite!!)) {
             if (cart != null) {
                 holder.ivCart?.apply {

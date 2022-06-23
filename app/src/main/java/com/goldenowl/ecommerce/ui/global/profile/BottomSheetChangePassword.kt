@@ -103,7 +103,6 @@ class BottomSheetChangePassword(private val userManager: UserManager) : BottomSh
                 inputLayoutRepeatPassword.errorIconDrawable = null
             } else {
                 inputLayoutRepeatPassword.isErrorEnabled = false
-                Log.d(TAG, "setObservers: repeat password valid")
             }
         }
     }
@@ -115,7 +114,6 @@ class BottomSheetChangePassword(private val userManager: UserManager) : BottomSh
                 inputLayoutNewPassword.errorIconDrawable = null
             } else {
                 inputLayoutNewPassword.isErrorEnabled = false
-                Log.d(TAG, "setObservers: new password valid")
             }
         }
     }
@@ -128,7 +126,6 @@ class BottomSheetChangePassword(private val userManager: UserManager) : BottomSh
                 inputLayoutOldPassword.errorIconDrawable = null
             } else {
                 inputLayoutOldPassword.isErrorEnabled = false
-                Log.d(TAG, "setObservers: old password valid")
             }
         }
     }
@@ -177,13 +174,11 @@ class BottomSheetChangePassword(private val userManager: UserManager) : BottomSh
 
 
     private fun forgotPassword() {
-        Log.d(TAG, "forgotPassword: forgot password")
         authViewModel.forgotPassword(userManager.email)
     }
 
     private fun changePassword() {
         val newPassword = binding.edtNewPassword.text.toString()
-        Log.d(TAG, "changePassword: new password = $newPassword")
     }
 
 

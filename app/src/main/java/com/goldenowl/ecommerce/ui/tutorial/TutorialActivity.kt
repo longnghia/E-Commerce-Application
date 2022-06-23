@@ -52,7 +52,6 @@ class TutorialActivity : AppCompatActivity() {
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                Log.d(TAG, "onPageSelected: $position")
 
                 if (position == 3) {
                     binding.tutNextLayout.visibility = View.INVISIBLE
@@ -73,7 +72,6 @@ class TutorialActivity : AppCompatActivity() {
     private fun skipTutorial() {
         setFirstLaunch(false)
 
-        Log.d(TAG, "skipTutorial: skipped")
         launchHome(this)
         finish()
     }

@@ -56,7 +56,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
         }
 
         viewModel.allAddress.observe(viewLifecycleOwner) {
-            Log.d(TAG, "setObservers: allAddress=$it")
             listAddress = it
             if (it.isEmpty()) {
                 binding.btnAddAddress.visibility = View.VISIBLE
@@ -79,7 +78,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
         viewModel.defaultAddressIndex.observe(viewLifecycleOwner) {
             defaultAddressIndex = it
-            Log.d(TAG, "setObservers: defaultAddressIndex=$it")
             setAddress()
         }
 
@@ -115,7 +113,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
     private fun setAddress() {
         address = defaultAddressIndex?.let { listAddress.getOrNull(it) }
-        Log.d(TAG, "setAddress: $address")
         if (address != null) {
             binding.tvFullName.text = address?.fullName
             binding.tvAddress.text = address?.getAddressString()
