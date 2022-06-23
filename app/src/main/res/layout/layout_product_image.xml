@@ -5,13 +5,15 @@
 
     <include
         android:id="@+id/layout_loading"
-        layout="@layout/layout_loading" />
+        layout="@layout/layout_loading"
+        />
 
     <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/product_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop">
+        android:scaleType="centerCrop"
+        >
 
     </ImageView>
 </FrameLayout>
