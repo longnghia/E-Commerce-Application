@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ class AppBarCategoryListAdapter(
     inner class CategoryViewHolder(val binding: ItemAppBarCategoryListBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        @SuppressLint("RestrictedApi")
         fun bind(category: String, position: Int, iClickListenerAppbar: IClickListenerAppbar) {
             binding.btnCategory.text = category
             binding.btnCategory.setOnClickListener {

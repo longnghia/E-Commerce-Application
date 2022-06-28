@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.viewmodels
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -83,7 +82,7 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
             productBrand = itemView.findViewById(R.id.product_brand)
             productImg = itemView.findViewById(R.id.product_img)
             productRatingBar = itemView.findViewById(R.id.product_rating_bar)
-            tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
+            tvNumberReviews = itemView.findViewById(R.id.tv_num_review)
             ivCart = itemView.findViewById(R.id.iv_cart)
             ivRemove = itemView.findViewById(R.id.iv_remove)
             layoutLoading = itemView.findViewById(R.id.layout_loading)

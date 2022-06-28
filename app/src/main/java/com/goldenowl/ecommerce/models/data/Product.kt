@@ -3,6 +3,7 @@ package com.goldenowl.ecommerce.models.data
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.Exclude
 import kotlinx.android.parcel.Parcelize
 import java.util.*
 
@@ -29,6 +30,7 @@ data class Product @JvmOverloads constructor(
         return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getOriginPrice()} , image=${getImage()}, isPopular=${isPopular}, date=$createdDate)"
     }
 
+    @Exclude
     fun getOriginPrice(): Int {
         if (this.colors.isNotEmpty())
             return colors[0].sizes[0].price
@@ -37,27 +39,27 @@ data class Product @JvmOverloads constructor(
         }
     }
 
-
+    @Exclude
     fun getDiscountPrice(): Float {
         return if (this.salePercent != null) {
             getOriginPrice() * (100 - this.salePercent!!) / 100f
         } else
             getOriginPrice().toFloat()
     }
-
+    @Exclude
     fun getImage(): String? {
         if (this.images != null && this.images.isNotEmpty() && this.images[0] != null) {
             return this.images[0]
         }
         return null
     }
-
+    @Exclude
     fun getListSize(): List<Size> {
         if (this.colors.isNullOrEmpty())
             return emptyList()
         return colors[0].sizes
     }
-
+    @Exclude
     fun isAvailable(favorite: Favorite): Boolean {
         val color = colors[0]
         val size = color?.sizes?.find {
@@ -66,11 +68,11 @@ data class Product @JvmOverloads constructor(
         val quantity = size?.quantity ?: 0
         return quantity != 0
     }
-
+    @Exclude
     fun getFirstColor(): String {
         return colors[0].color
     }
-
+    @Exclude
     fun getListColor(): List<String> {
         return colors.map {
             it.color
@@ -83,6 +85,7 @@ data class Product @JvmOverloads constructor(
      * @param pSize: product size
      * @return price: float
      */
+    @Exclude
     fun getPriceByColor(pColor: String, pSize: String): Float? {
         colors.find {
             it.color == pColor
@@ -97,7 +100,7 @@ data class Product @JvmOverloads constructor(
             }
         }
     }
-
+    @Exclude
     fun getPriceByCart(cart: Cart): Float? {
         return getPriceByColor(cart.color, cart.size)
     }

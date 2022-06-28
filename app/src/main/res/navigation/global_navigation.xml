@@ -139,7 +139,16 @@
         android:id="@+id/detail_dest"
         android:name="com.goldenowl.ecommerce.ui.global.home.ProductDetailFragment"
         android:label="@string/settings"
-        tools:layout="@layout/fragment_product_detail"></fragment>
+        tools:layout="@layout/fragment_product_detail">
+        <action
+            android:id="@+id/action_go_review"
+            app:destination="@id/review_dest" />
+    </fragment>
 
+    <fragment
+        android:id="@+id/review_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.home.RatingReviewFragment"
+        android:label="@string/rating_review"
+        tools:layout="@layout/fragment_rating_review"></fragment>
 
 </navigation>

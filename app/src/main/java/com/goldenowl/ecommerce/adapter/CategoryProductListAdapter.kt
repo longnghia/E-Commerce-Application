@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -78,7 +77,7 @@ class CategoryProductListAdapter(
             productBrand = itemView.findViewById(R.id.product_brand)
             productImg = itemView.findViewById(R.id.product_img)
             productRatingBar = itemView.findViewById(R.id.product_rating_bar)
-            tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
+            tvNumberReviews = itemView.findViewById(R.id.tv_num_review)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
             if (layoutLoading != null) {

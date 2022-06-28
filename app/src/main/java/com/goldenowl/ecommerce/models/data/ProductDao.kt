@@ -1,9 +1,6 @@
 package com.goldenowl.ecommerce.models.data
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface ProductDao {
@@ -19,5 +16,9 @@ interface ProductDao {
     @Query("DELETE FROM product_table")
     suspend fun deleteTable()
 
+    @Query("Select * from product_table where id= :productId")
+    suspend fun getProductById(productId: String): Product?
 
+    @Update
+    suspend fun updateProduct(product: Product)
 }

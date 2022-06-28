@@ -5,7 +5,7 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
-import androidx.core.widget.doAfterTextChanged
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
@@ -17,6 +17,7 @@ import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 
@@ -71,11 +72,14 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
             productDescription.text = product.description
             productRatingBar.rating = product.reviewStars.toFloat()
-            tvNumberReviews.text = product.numberReviews.toString()
+            tvNumReview.text = product.numberReviews.toString()
             productBrand.text = product.brandName
             productPrice.text =
                 binding.root.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
             productTitle.text = product.title
+            layoutRating.setOnClickListener {
+                findNavController().navigate(R.id.action_go_review, bundleOf(Constants.KEY_PRODUCT to productData))
+            }
         }
 
         /* drop down menu*/

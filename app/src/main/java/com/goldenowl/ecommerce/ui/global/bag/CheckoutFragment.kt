@@ -1,9 +1,7 @@
 package com.goldenowl.ecommerce.ui.global.bag
 
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.CheckoutDeliveryAdapter
@@ -12,6 +10,7 @@ import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Utils
+import kotlinx.coroutines.launch
 import java.util.*
 
 class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
@@ -38,9 +37,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
     override fun setObservers() {
 
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
         viewModel.listCard.observe(viewLifecycleOwner) {
             listCard = it
             if (it.isNotEmpty()) {
@@ -159,6 +155,9 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
         binding.btnSubmitOrder.setOnClickListener {
             if (deliveryPrice == 0) {
                 showToast(getString(R.string.please_select_delivery))
+                uiScope.launch {
+                    binding.scrollView.smoothScrollTo(0, binding.tvDelivery.bottom)
+                }
                 binding.tvDelivery.requestFocus()
                 return@setOnClickListener
             }
@@ -172,7 +171,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
                     promoCode = viewModel.curBag.value?.promo?.name ?: "",
                     cardId = card?.getHiddenNumber() ?: "",
                     totalAmount = summaryPrice,
-                    shippingAddress = address?.getShippingAddress() ?: ""
+                    shippingAddress = address?.getFormatAddress() ?: ""
                 )
                 viewModel.insertOrder(order)
                 viewModel.emptyCartTable()

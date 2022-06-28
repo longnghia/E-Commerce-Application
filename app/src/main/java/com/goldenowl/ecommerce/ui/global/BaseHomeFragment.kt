@@ -1,7 +1,6 @@
 package com.goldenowl.ecommerce.ui.global
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -17,12 +16,16 @@ import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetEnterPromo
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 
 
 abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>(),
     IClickListener {
 
     protected val viewModel: ShopViewModel by activityViewModels()
+    protected val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     override fun onClickFavorite(product: Product, favorite: Favorite?) {
         if (favorite == null) {
@@ -79,7 +82,7 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
         modalBottomSheet.show(parentFragmentManager, TAG)
     }
 
-    protected fun showToast(msg: String) {
+    protected fun showToast(msg: String?) {
         if (msg.isNullOrBlank())
             return
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
@@ -87,6 +90,9 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.toastMessage.observe(viewLifecycleOwner) {
+            showToast(it)
+        }
     }
 
     companion object {

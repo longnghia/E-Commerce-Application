@@ -156,11 +156,11 @@
                         android:rating="4.25"
                         android:secondaryProgressTint="#FFFFFF"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tv_number_reviews"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_num_review"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/tv_number_reviews"
+                        android:id="@+id/tv_num_review"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="60dp"

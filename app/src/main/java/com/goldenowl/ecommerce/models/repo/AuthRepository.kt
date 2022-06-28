@@ -3,6 +3,9 @@ package com.goldenowl.ecommerce.models.repo
 import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.goldenowl.ecommerce.models.data.User
+import com.goldenowl.ecommerce.utils.MyResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AuthRepository(
     private val remoteAuthDataSource: RemoteAuthDataSource,
@@ -63,6 +66,21 @@ class AuthRepository(
     suspend fun updateUserData(user: User): String? {
         localAuthDataSource.updateUserData(user)
         return remoteAuthDataSource.updateUserData(user)
+    }
+
+    suspend fun getUserById(userId: String): MyResult<User> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val user = remoteAuthDataSource.getUserById(userId)
+                return@withContext MyResult.Success(user)
+            } catch (e: Exception) {
+                return@withContext MyResult.Error(e)
+            }
+        }
+    }
+
+    fun getUser(): User? {
+        return localAuthDataSource.getUser()
     }
 
     companion object {

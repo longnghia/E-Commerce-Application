@@ -3,7 +3,6 @@ package com.goldenowl.ecommerce.ui.global.bag
 import android.app.SearchManager
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.core.view.isEmpty
@@ -13,6 +12,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentBagBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.BagProductListAdapter
@@ -59,10 +59,10 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
             setPrice()
         }
 
-
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
+//
+//        viewModel.toastMessage.observe(viewLifecycleOwner) {
+//            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+//        }
 
         sortViewModel.searchTerm.observe(viewLifecycleOwner) {
             searchTerm = it
@@ -104,6 +104,7 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
 
     private fun checkOut() {
         val listCartProductData = adapterGrid.getBag()
+        viewModel.loadingStatus.value = BaseLoadingStatus.NONE
         findNavController().navigate(
             R.id.checkout_dest, bundleOf(
                 "listCartProductData" to listCartProductData
