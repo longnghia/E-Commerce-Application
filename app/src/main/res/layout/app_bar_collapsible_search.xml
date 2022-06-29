@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:elevation="4dp"
+    android:fitsSystemWindows="true"
+    android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+    app:liftOnScroll="true">
+    <!--    app:statusBarForeground="@color/white"-->
+
+    <!--            app:contentScrim="?attr/colorPrimary"-->
+    <com.google.android.material.appbar.CollapsingToolbarLayout
+        android:id="@+id/collapsing_toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_collapsing_tool_bar"
+        android:fitsSystemWindows="true"
+        app:collapsedTitleGravity="center_horizontal"
+        app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
+        app:expandedTitleMarginEnd="64dp"
+        app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
+        app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
+        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Light"
+            app:contentInsetEnd="@dimen/icon_width"
+            app:contentInsetStartWithNavigation="0dp"
+            app:layout_collapseMode="pin"
+            app:navigationIcon="@drawable/ic_back"
+            app:titleCentered="true"
+            tools:title="@string/app_name">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_search"
+                style="@style/TextInputLayout_overlay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="50dp"
+                android:visibility="gone"
+                app:endIconDrawable="@drawable/ic_qr"
+                app:endIconMode="custom"
+                app:hintEnabled="false"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/search_hint"
+                    android:inputType="text"
+                    android:selectAllOnFocus="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+
+    </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+</com.google.android.material.appbar.AppBarLayout>
