@@ -427,21 +427,26 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     fun getReviewByProductId(productId: String) {
         loadingStatus.value = BaseLoadingStatus.LOADING
         viewModelScope.launch {
+            var helpfulList: List<String> = emptyList()
+            if (isLoggedIn()) {
+                val helpfulJob = async { productsRepository.getHelpfulReview() }
+                val helpfulRes = helpfulJob.await()
+                Log.d(TAG, "getReviewByProductId: helpfulRes=$helpfulRes")
+                if (helpfulRes is MyResult.Error) {
+                    showToast(helpfulRes.exception.message)
+                } else if (helpfulRes is MyResult.Success) {
+                    helpfulList = helpfulRes.data
+                }
+            }
             val reviewJob = async { productsRepository.getReviewByProductId(productId) }
-            val helpfulJob = async { productsRepository.getHelpfulReview() }
             val reviewRes = reviewJob.await()
-            val helpfulRes = helpfulJob.await()
-            Log.d(TAG, "getReviewByProductId: helpfulRes=$helpfulRes")
+
             if (reviewRes is MyResult.Error) {
                 showToast(reviewRes.exception.message)
                 loadingStatus.value = BaseLoadingStatus.FAILED
-            }
-            if (helpfulRes is MyResult.Error) {
-                showToast(helpfulRes.exception.message)
-                loadingStatus.value = BaseLoadingStatus.FAILED
-            } else if (reviewRes is MyResult.Success && helpfulRes is MyResult.Success) {
+            } else if (reviewRes is MyResult.Success) {
                 val listReview = reviewRes.data
-                getListReviewData(listReview, helpfulRes.data)
+                getListReviewData(listReview, helpfulList)
                 loadingStatus.value = BaseLoadingStatus.SUCCEEDED
             }
         }

@@ -65,7 +65,7 @@ class ReviewAdapter(private val listener: IClickListener) :
                 binding.tvReview.visibility = View.GONE
             } else {
                 binding.tvReview.text = review.review
-                binding.rcvImgs.visibility = View.VISIBLE
+                binding.tvReview.visibility = View.VISIBLE
             }
         }
     }
