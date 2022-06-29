@@ -167,6 +167,8 @@
     <string name="continue_shopping">Continue shopping</string>
     <string name="trending">Trending</string>
     <string name="please_select_color">Please select color!</string>
+    <string name="qr">QR Scan</string>
+    <string name="ok">OK</string>
     <string name="with_photo">With photo</string>
     <string name="write_a_review">Write a review</string>
     <string name="what_is_your_rate">What is your rate?</string>
