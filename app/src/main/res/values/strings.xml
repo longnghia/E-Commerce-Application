@@ -119,5 +119,7 @@
     <string name="shipping_info">Shipping info</string>
     <string name="support">Support</string>
     <string name="you_can_also_like">You can also like this</string>
+    <string name="qr">QR Scan</string>
+    <string name="ok">OK</string>
 
 </resources>
