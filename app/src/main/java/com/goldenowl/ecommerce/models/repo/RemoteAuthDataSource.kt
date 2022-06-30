@@ -41,6 +41,8 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
     private val storageRef = Firebase.storage.reference
     private val settingsManager = SettingsManager(context)
 
+    val defaultAvatarRef = storageRef.child("images/avatar/default")
+
     override fun isLogin(): Boolean {
         return currentUser != null
     }
@@ -82,7 +84,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 }
                 return@withContext null
             } catch (e: Exception) {
-                Log.e(TAG, "updateUserData: ERROR", e)
                 return@withContext e.message
             }
         }
@@ -122,10 +123,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                         }
                 }
             }
-
-            if (googleAccount == null) {
-                Log.e(TAG, "onCreateView: googleAccount null")
-            }
         }
     }
 
@@ -140,6 +137,11 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
             try {
                 firebaseAuth.createUserWithEmailAndPassword(email, password).await()
                 currentUser = firebaseAuth.currentUser
+                val avatar: String = if (currentUser?.photoUrl != null)
+                    currentUser?.photoUrl.toString()
+                else
+                    defaultAvatarRef.downloadUrl.await().toString()
+
                 if (currentUser != null) {
                     val user = User(
                         id = currentUser!!.uid,
@@ -147,7 +149,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                         email = currentUser!!.email!!,
                         dob = "",
                         password = md5(password),
-                        avatar = currentUser?.photoUrl.toString(),
+                        avatar = avatar,
                         logType = UserManager.TYPEEMAIL
                     )
                     onSignUpSuccess(user)
@@ -389,22 +391,15 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         }
     }
 
-    suspend fun updateAvatar(userId: String, file: Uri?): String? {
-        return withContext(dispatchers) {
-            try {
-                val avatarRef = storageRef.child("images/$userId/${file?.lastPathSegment}")
-                var task = file?.let { avatarRef.putFile(it) }?.await()
+    suspend fun uploadAvatar(userId: String, file: Uri?): String {
+        val avatarRef = storageRef.child("images/avatar/$userId")
+        file?.let { avatarRef.putFile(it) }?.await()
+        val url = avatarRef.downloadUrl.await()
+        return url.toString()
+    }
 
-                // todo update user info user ref
-//                avatarRef.child(it).downloadUrl
-
-
-                return@withContext null
-            } catch (e: Exception) {
-                Log.e(TAG, "updateAvatar: ERROR", e)
-                return@withContext e.message
-            }
-        }
+    suspend fun updateAvatar(userId: String, url: String) {
+        userRef.document(userId).update("avatar", url).await()
     }
 
     suspend fun getUserById(userId: String): User {

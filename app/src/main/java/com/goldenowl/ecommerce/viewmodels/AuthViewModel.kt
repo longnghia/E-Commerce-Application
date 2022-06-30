@@ -43,7 +43,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     var logInStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var changePasswordStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var forgotPasswordStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
-
+    var uploadAvatarStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var errorMessage: MutableLiveData<String?> = MutableLiveData<String?>()
 
     init {
@@ -51,6 +51,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         logInStatus.value = BaseLoadingStatus.NONE
         changePasswordStatus.value = BaseLoadingStatus.NONE
         forgotPasswordStatus.value = BaseLoadingStatus.NONE
+        uploadAvatarStatus.value = BaseLoadingStatus.NONE
     }
 
 
@@ -125,9 +126,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun updateAvatar(file: Uri?) {
+        uploadAvatarStatus.value = BaseLoadingStatus.LOADING
         viewModelScope.launch {
             val res = authRepository.updateAvatar(authRepository.getUserId(), file)
-//            onDone(res, uploadAvatarStatus) // todo add loading upload avatar
+            Log.d(TAG, "updateAvatar: $res")
+            if (res is MyResult.Success) {
+                uploadAvatarStatus.value = BaseLoadingStatus.SUCCEEDED
+            } else if(res is MyResult.Error){
+                uploadAvatarStatus.value = BaseLoadingStatus.FAILED
+                toastMessage.postValue(res.exception.message)
+            }
         }
     }
 
@@ -138,11 +146,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             toastMessage.value = if (err.isNullOrEmpty()) "Apply changes successfully" else err
         }
     }
-
-    fun clearMessage() {
-        errorMessage.value = ""
-    }
-
 
     companion object {
         const val TAG = "AuthViewModel"

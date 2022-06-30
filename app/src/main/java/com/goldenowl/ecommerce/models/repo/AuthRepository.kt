@@ -57,11 +57,19 @@ class AuthRepository(
         return remoteAuthDataSource.googleCallbackManager
     }
 
-    suspend fun updateAvatar(userId: String, file: Uri?): String? {
-        val err = remoteAuthDataSource.updateAvatar(userId, file)
-        if (err.isNullOrEmpty()) localAuthDataSource.updateAvatar(file)
-        return err
+    suspend fun updateAvatar(userId: String, file: Uri?): MyResult<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val url = remoteAuthDataSource.uploadAvatar(userId, file)
+                remoteAuthDataSource.updateAvatar(userId, url)
+                localAuthDataSource.updateAvatar(url)
+                MyResult.Success(url)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
     }
+
 
     suspend fun updateUserData(user: User): String? {
         localAuthDataSource.updateUserData(user)

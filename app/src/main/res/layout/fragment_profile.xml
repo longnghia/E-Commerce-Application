@@ -81,6 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -120,6 +121,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="18dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
 
                     android:orientation="horizontal">
 
@@ -160,6 +162,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="18dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -199,6 +202,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="18dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
                     android:orientation="horizontal"
 
                     >
@@ -240,6 +244,7 @@
                     android:layout_marginStart="15dp"
                     android:layout_marginTop="18dp"
                     android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
 
                     android:orientation="horizontal">
 
@@ -351,15 +356,20 @@
                     </FrameLayout>
                 </LinearLayout>
 
-
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_log_out"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="16dp"
                     android:layout_marginTop="54dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginBottom="27dp"
-                    android:text="@string/logout" />
+                    android:backgroundTint="@color/red_dark"
+                    android:contentDescription="@string/logout"
+                    android:text="@string/logout"
+                    android:textColor="@color/white"
+                    app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
+
             </LinearLayout>
 
         </LinearLayout>
