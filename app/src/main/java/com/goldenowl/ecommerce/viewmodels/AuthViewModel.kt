@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.facebook.CallbackManager
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.SettingsManager
@@ -37,7 +36,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
 
-    val facebookCallbackManager = CallbackManager.Factory.create() //facebook callback
+    val facebookCallbackManager = authRepository.facebookCallbackManager
 
     var signUpStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var logInStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
@@ -62,9 +61,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun logInWithFacebook(fragment: Fragment) {
+    fun logInWithFacebook() {
         logInStatus.value = BaseLoadingStatus.LOADING
-        authRepository.logInWithFacebook(fragment, object : LoginListener {
+        authRepository.logInWithFacebook(object : LoginListener {
             override fun callback(result: MyResult<Boolean>) {
                 if (result is MyResult.Success) {
                     logInStatus.value = BaseLoadingStatus.SUCCEEDED

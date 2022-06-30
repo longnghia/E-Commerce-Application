@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.facebook.login.LoginManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
@@ -185,8 +186,10 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
             ivFacebook.setOnClickListener {
                 hideKeyboard()
-                viewModel.logInWithFacebook(this@LoginFragment)
+                loginWithFacebook()
             }
+
+
             ivGoogle.setOnClickListener {
                 hideKeyboard()
                 viewModel.logInWithGoogle(this@LoginFragment)
@@ -198,5 +201,4 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
     override fun getViewBinding(): FragmentLoginBinding {
         return FragmentLoginBinding.inflate(layoutInflater)
     }
-
 }

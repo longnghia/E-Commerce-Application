@@ -156,11 +156,9 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
                 Navigation.createNavigateOnClickListener(R.id.login_dest)
             )
 
-//            layoutAlreadyHasAcc.setOnClickListener {
-//                findNavController().navigate(R.id.login_dest)
-//            }
-
-            ivFacebook.setOnClickListener { viewModel.logInWithFacebook(this@SignupFragment) }
+            ivFacebook.setOnClickListener {
+                loginWithFacebook()
+            }
             ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@SignupFragment) }
         }
 

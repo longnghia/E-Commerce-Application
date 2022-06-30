@@ -166,7 +166,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 "/me/permissions/",
                 null,
                 HttpMethod.DELETE,
-                GraphRequest.Callback {
+                {
                     AccessToken.setCurrentAccessToken(null)
                     LoginManager.getInstance().logOut()
 
@@ -175,12 +175,9 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
     }
 
 
-    fun logInWithFacebook(fragment: Fragment, listener: LoginListener) {
+    fun logInWithFacebook(listener: LoginListener) {
         val accessToken = AccessToken.getCurrentAccessToken()
         val isLoggedIn = accessToken != null && !accessToken.isExpired
-        LoginManager.getInstance()
-            .logInWithReadPermissions(fragment, listOf("public_profile", "email"))
-
         LoginManager.getInstance().registerCallback(facebookCallbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
@@ -227,7 +224,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 val user = User(
                     id = currentUser.uid,
                     name = currentUser.displayName ?: "",
-                    email = currentUser.email ?: "",
+                    email = currentUser.email ?: currentUser.phoneNumber ?: userId,
                     dob = "",
                     password = "",
                     avatar = currentUser?.photoUrl.let { it.toString() },
@@ -273,7 +270,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 val user = userDataSnapshot.toObject(User::class.java)
                 userManager.addAccount(user!!) // restore local
                 /* restore settings to Preference */
-                if (!user.settings.isNullOrEmpty())
+                if (user.settings.isNotEmpty())
                     settingsManager.saveUserSettings(user.settings)
 
                 /* restore database */
