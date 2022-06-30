@@ -138,12 +138,8 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun clearMessage() {
-        errorMessage.value = ""
-    }
-
-
     companion object {
         const val TAG = "AuthViewModel"
     }
 }
+

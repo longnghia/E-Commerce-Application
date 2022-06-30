@@ -1,10 +1,8 @@
 package com.goldenowl.ecommerce.ui.auth
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.facebook.login.LoginManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
@@ -15,7 +13,6 @@ import com.google.android.material.textfield.TextInputLayout
 
 
 class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
-    private val TAG = "LoginFragment"
 
     override fun setAppBar() {
         binding.topAppBar.toolbar.title = getString(R.string.login)
@@ -33,7 +30,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
 
             logInFormValid.observe(viewLifecycleOwner) { logInValid ->
-                Log.d(TAG, "setObservers: logInValid=$logInValid ")
                 binding.btnLogin.isEnabled = logInValid
             }
         }
@@ -100,7 +96,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             BaseLoadingStatus.LOADING -> {
                 setLoading(true)
                 binding.btnLogin.isEnabled = false
-                // todo loading icon
             }
             BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
@@ -120,7 +115,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                 inputLayoutPassword.errorIconDrawable = null
             } else {
                 inputLayoutPassword.isErrorEnabled = false
-                android.util.Log.d(TAG, "setObservers: password valid")
             }
         }
     }
@@ -133,7 +127,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             } else {
                 inputLayoutEmail.isErrorEnabled = false
                 inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
-                Log.d(TAG, "setObservers: email valid")
             }
         }
     }
@@ -176,9 +169,9 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                 if (inputLayoutEmail.endIconMode != TextInputLayout.END_ICON_CUSTOM &&
                     binding.edtEmail.text.toString().isNotBlank()
                 ) {
-                    Log.d(TAG, "setViews: email valid")
                     viewModel.forgotPassword(binding.edtEmail.text.toString().trim())
                 } else {
+                    // todo add screen forgot password
                     Toast.makeText(context, "Please input your email first!", Toast.LENGTH_SHORT).show()
                     edtEmail.requestFocus()
                 }

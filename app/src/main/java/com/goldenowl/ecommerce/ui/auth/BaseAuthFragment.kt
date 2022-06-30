@@ -39,6 +39,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
         userManager = UserManager.getInstance(requireContext())
         binding = getViewBinding()
 
+        resetValue()
         setAppBar()
         setViews()
         setObservers()
@@ -52,6 +53,11 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
     abstract fun setObservers()
     abstract fun setupListeners()
     abstract fun setViews()
+
+    private fun resetValue() {
+        viewModel.errorMessage.value = ""
+        viewModel.toastMessage.value = ""
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
