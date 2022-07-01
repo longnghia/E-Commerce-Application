@@ -10,7 +10,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +23,7 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
+import com.goldenowl.ecommerce.utils.Utils
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -51,10 +51,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         with(binding) {
             btnLogOut.setOnClickListener {
-
-//                when (userManager.logInType) {
-//                    TYPEEMAIL -> viewModel.logOutFacebook()
-//                }
                 val loginIntent = Intent(activity, MainActivity::class.java)
                 logOut()
                 context?.startActivity(loginIntent)
@@ -109,7 +105,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             tvEmail.movementMethod = LinkMovementMethod.getInstance()
             tvEmail.highlightColor = Color.RED
 
-//            tvEmail.text = getString(com.goldenowl.ecommerce.R.string.guest_email)
             layoutUserActions.visibility = View.GONE
             layoutGuessActions.visibility = View.VISIBLE
         }
@@ -143,6 +138,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setAppbar() {
+        binding.topAppBar.appBarLayout.setBackgroundColor(
+            Utils.getColor(requireContext(), R.color.background_color) ?: 0xf9f9f9
+        )
         binding.topAppBar.collapsingToolbarLayout.title = getString(com.goldenowl.ecommerce.R.string.profile)
     }
 
