@@ -1,17 +1,27 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.ECommerce" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_dark</item>
         <item name="colorPrimaryVariant">@color/background_color</item>
-        <item name="colorSecondary">@color/red_dark_second</item>
+        <item name="colorSecondary">@color/red_light</item>
         <item name="colorSecondaryVariant">@color/black_light</item>
         <item name="colorOnSecondary">@color/white</item>
 
-        <item name="android:windowTranslucentStatus">true</item>
-        <!--        <item name="android:windowTranslucentNavigation">true</item>-->
+        <!--transparent-->
+        <item name="android:statusBarColor">@color/transparent</item>
+        <item name="android:navigationBarColor">@color/transparent</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
         <!--        BottomSheetDialog-->
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+
+        <!--        dropdown menu-->
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.Subtitle1</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.Subtitle1</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="android:textViewStyle">@style/MetropolisStyle</item>
     </style>
 
 
@@ -22,13 +32,27 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.ECommerce.TranslucentStatus">
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
     <style name="TextInputLayout_overlay" parent="Base.Widget.MaterialComponents.TextInputLayout">
         <item name="materialThemeOverlay">
             @style/ThemeOverlay.MaterialComponents.TextInputEditText.OutlinedBox
+        </item>
+        <item name="colorOnSurface">@android:color/holo_blue_dark</item>
+        <item name="colorPrimary">@color/grey_text</item>
+        <item name="boxStrokeColor">@color/grey_text</item>
+        <item name="boxBackgroundColor">@color/white</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+
+        <item name="hintTextColor">@color/grey_text</item>
+        <item name="android:textColorHint">@color/grey_text</item>
+        <item name="android:textColor">@color/black_light</item>
+
+        <item name="elevation">5dp</item>
+    </style>
+
+    <style name="TextInputLayout_overlay_filled_box" parent="Base.Widget.MaterialComponents.TextInputLayout">
+        <item name="materialThemeOverlay">
+            @style/ThemeOverlay.MaterialComponents.TextInputEditText.FilledBox
         </item>
         <item name="colorOnSurface">@android:color/holo_blue_dark</item>
         <item name="colorPrimary">@color/grey_text</item>

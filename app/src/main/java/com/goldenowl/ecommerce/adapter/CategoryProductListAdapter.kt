@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,13 +8,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.IClickListener
-import com.goldenowl.ecommerce.utils.Consts
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
@@ -53,6 +53,7 @@ class CategoryProductListAdapter(
                 ) >= 0
             }
         }
+
         notifyDataSetChanged()
     }
 
@@ -70,7 +71,7 @@ class CategoryProductListAdapter(
         var productRatingBar: RatingBar? = null
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
-        var layoutItem: ConstraintLayout? = null
+        var layoutFrameLoading: FrameLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -80,8 +81,9 @@ class CategoryProductListAdapter(
             tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
-            layoutItem = itemView.findViewById(R.id.layout_item)
-
+            if (layoutLoading != null) {
+                layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
+            }
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
             originPrice = itemView.findViewById(R.id.product_origin_price)
@@ -96,7 +98,7 @@ class CategoryProductListAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryProductViewHolder {
-        if (viewType == Consts.GRID_VIEW) {
+        if (viewType == Constants.GRID_VIEW) {
             return CategoryProductViewHolder(
                 (LayoutInflater.from(parent.context)).inflate(R.layout.item_product_list_category_grid, parent, false)
             )
@@ -116,6 +118,10 @@ class CategoryProductListAdapter(
         }
 
         holder.itemView.setOnClickListener {
+
+        }
+
+        holder.itemView?.setOnClickListener {
             listener.onClickItem(mListProductData[position])
         }
 
@@ -138,13 +144,17 @@ class CategoryProductListAdapter(
                 }
                 holder.discountPrice?.visibility = View.VISIBLE
                 holder.discountPrice?.text =
-                    product.getDiscountPrice().toString() + "$"
-                val text = product.getOriginPrice().toString() + "$"
+                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
+                val text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
+
                 holder.originPrice?.strike(text)
             } else {
                 holder.tvDiscountPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
-                holder.originPrice?.text = product.getOriginPrice().toString() + "$"
+                holder.originPrice?.text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
+
             }
         }
 
@@ -155,10 +165,10 @@ class CategoryProductListAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val spanCount = mLayoutManager.spanCount
-        return if (spanCount == Consts.SPAN_COUNT_ONE) {
-            Consts.LIST_VIEW
+        return if (spanCount == Constants.SPAN_COUNT_ONE) {
+            Constants.LIST_VIEW
         } else {
-            Consts.GRID_VIEW
+            Constants.GRID_VIEW
         }
     }
 

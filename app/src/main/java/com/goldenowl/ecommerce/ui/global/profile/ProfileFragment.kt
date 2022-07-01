@@ -88,11 +88,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             tvName.text = userName
             val userEmail = userManager.email
             tvEmail.text = userEmail
-            Log.d(TAG, "setUpUserUI: $userManager")
             userManager.avatar.let {
                 val uri = Uri.parse(it)
                 if (!it.isNullOrBlank()) {
-                    Log.d(TAG, "setUpUserUI: sett avatar ${uri.path}")
                     Glide.with(this@ProfileFragment)
                         .load(uri)
                         .placeholder(R.drawable.ic_user)
@@ -105,7 +103,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     private fun setUpGuessUI() {
-        Log.d(TAG, "setUpGuessUI: start")
         with(binding) {
             setSpannableString(tvEmail)
 

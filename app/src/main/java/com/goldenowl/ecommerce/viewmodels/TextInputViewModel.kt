@@ -1,6 +1,7 @@
 package com.goldenowl.ecommerce.viewmodels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.goldenowl.ecommerce.utils.PasswordUtils.md5
@@ -70,6 +71,7 @@ class TextInputViewModel(application: Application) : AndroidViewModel(applicatio
     fun checkOldPassword(password: String, oldPasswordHash: String) {
         val error = if (md5(password) == oldPasswordHash) "" else "Wrong password"
         errorOldPassword.value = error
+        Log.d(TAG, "checkOldPassword: $oldPasswordHash, ${md5(password)} $password ")
     }
 
     fun checkDoB(dob: String) {

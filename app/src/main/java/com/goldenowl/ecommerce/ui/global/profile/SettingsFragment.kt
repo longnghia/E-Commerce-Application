@@ -50,7 +50,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 return@ActivityResultCallback
             val data: Intent = result.data ?: return@ActivityResultCallback
 
-            Log.d(TAG, "imageActivityResultLauncher: ${data.data}")
             val file: Uri? = data.data
             file.let {
                 if (it != null) {
@@ -115,7 +114,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private fun restoreViews(
         settingsManager: SettingsManager,
     ) {
-        Log.d(TAG, "restoreViews:  userManager: $userManager")
         val fullName: String = userManager.name
         val dob: String = userManager.dob
 
@@ -130,9 +128,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     private fun changeAvatar() {
-        Log.d(TAG, "changeAvatar: start")
-//        val openGalleryIntent =
-//            Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         imageActivityResultLauncher.launch(intent)
@@ -144,7 +139,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     private fun openBottomSheet() {
-        Log.d(TAG, "openBottomSheet: open change password")
         val bottomSheetChangePassword = BottomSheetChangePassword(userManager)
         bottomSheetChangePassword.enterTransition = View.GONE
         bottomSheetChangePassword.show(
@@ -175,7 +169,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 inputLayoutDob.isErrorEnabled = false
                 inputLayoutDob.endIconMode =
                     TextInputLayout.END_ICON_CUSTOM
-                Log.d(TAG, "setObservers: DoB valid")
             }
         }
     }
@@ -188,7 +181,6 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
                 inputLayoutName.isErrorEnabled = false
                 inputLayoutName.endIconMode =
                     TextInputLayout.END_ICON_CUSTOM
-                Log.d(TAG, "setObservers: name valid")
             }
         }
     }
@@ -226,9 +218,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     }
 
     private fun onMenuClick(item: MenuItem): Boolean {
-        Log.d(TAG, "onOptionsItemSelected:  $item")
         return if (item.itemId == R.id.ic_check) {
-            Log.d(TAG, "onOptionsItemSelected: ic_check clicked")
 
             if (binding.edtName.text.toString().isEmpty()) {
                 textInputViewModel.errorName.value = "Required field"

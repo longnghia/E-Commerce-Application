@@ -95,7 +95,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
             if (errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.isErrorEnabled = false
-                Log.d(TAG, "setObservers: password valid")
             } else {
                 inputLayoutPassword.error = errorPassword
                 inputLayoutPassword.errorIconDrawable = null
@@ -109,7 +108,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
             if (errorEmail.isNullOrEmpty()) {
                 inputLayoutEmail.isErrorEnabled = false
                 inputLayoutEmail.endIconMode = TextInputLayout.END_ICON_CUSTOM
-                Log.d(TAG, "setObservers: email valid")
             } else {
                 inputLayoutEmail.error = errorEmail
             }
@@ -146,7 +144,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
     override fun setViews() {
         with(binding) {
             btnSignup.setOnClickListener {
-                Log.d(TAG, "setViews: begin sign up")
                 hideKeyboard()
                 viewModel.signUpWithEmail(
                     edtEmail.text.toString(),

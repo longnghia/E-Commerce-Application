@@ -71,6 +71,37 @@ data class Product @JvmOverloads constructor(
         return colors[0].color
     }
 
+    fun getListColor(): List<String> {
+        return colors.map {
+            it.color
+        }
+    }
+
+    /**
+     * get price by color and size, included discount
+     * @param pColor: product color
+     * @param pSize: product size
+     * @return price: float
+     */
+    fun getPriceByColor(pColor: String, pSize: String): Float? {
+        colors.find {
+            it.color == pColor
+        }.also { color ->
+            color?.sizes?.find { size ->
+                size.size == pSize
+            }.also {
+                if (it?.price == null)
+                    return null
+                val price = if (salePercent == null) it?.price else (it?.price?.times((100 - salePercent!!))) / 100f
+                return price.toFloat()
+            }
+        }
+    }
+
+    fun getPriceByCart(cart: Cart): Float? {
+        return getPriceByColor(cart.color, cart.size)
+    }
+
     @Parcelize
     data class Color @JvmOverloads constructor(
         var color: String = "",
@@ -89,5 +120,6 @@ data class Product @JvmOverloads constructor(
         var id: String = "",
         var name: String = ""
     ) : Parcelable
+
 }
 

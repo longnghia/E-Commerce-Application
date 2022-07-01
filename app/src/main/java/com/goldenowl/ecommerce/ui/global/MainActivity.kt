@@ -16,22 +16,19 @@
 
 package com.goldenowl.ecommerce.ui.global
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.*
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.navigateUp
+import androidx.navigation.ui.setupWithNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ActivityMainBinding
-import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 
 /*todo
 * change password
@@ -53,6 +50,14 @@ import com.google.firebase.ktx.Firebase
 * email forgot password custom
 *
 * delete database when logout
+*
+* image avatar, icon in reviews
+*
+* check user upload image size
+* check dark theme
+* check times login fail and wait 2minute
+*
+* center collapsed title bag fragment
 * */
 
 
@@ -63,7 +68,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate: create")
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -82,11 +86,6 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { controller, destination, _ ->
 
-//            val dest: String = try {
-//                resources.getResourceName(destination.id)
-//            } catch (e: Resources.NotFoundException) {
-//                destination.id.toString()
-//            }
             Log.d(
                 "NavigationActivity",
                 "Navigated to=${destination.label} , from= ${navController.previousBackStackEntry?.destination?.label}"
@@ -100,54 +99,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-//        callFirestore()
-
         setContentView(binding.root)
 
-    }
-
-    private fun setWindow() {
-        window.apply {
-            clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            statusBarColor = Color.TRANSPARENT
-        }
     }
 
     private fun showNavBar(b: Boolean) {
         binding.bottomNavView?.visibility = if (b) View.VISIBLE else View.GONE
     }
 
-    private fun callFirestore() {
-        Log.d(TAG, "callFirestore: firestore")
-        val db = Firebase.firestore
-
-        val user = hashMapOf(
-            "first" to "Ada",
-            "last" to "Lovelace",
-            "born" to 1815
-        )
-
-// Add a new document with a generated ID
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-    }
-
-    private fun setupToolBarLayout(
-        toolbar: Toolbar,
-        toolbarLayout: CollapsingToolbarLayout,
-        navController: NavController,
-        appBarConfiguration: AppBarConfiguration
-    ) {
-        toolbarLayout?.setupWithNavController(toolbar, navController, appBarConfiguration)
-    }
 
     private fun setupBottomNavMenu(navController: NavController) {
         binding.bottomNavView?.apply {
@@ -159,10 +118,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-    }
-
-    private fun setupActionBar(navController: NavController, appBarConfiguration: AppBarConfiguration) {
-        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun onSupportNavigateUp(): Boolean {

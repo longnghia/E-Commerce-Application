@@ -52,8 +52,9 @@
         tools:layout="@layout/fragment_bag">
 
         <action
-            android:id="@+id/next_action"
+            android:id="@+id/action_go_checkout"
             app:destination="@id/checkout_dest" />
+
     </fragment>
     <fragment
         android:id="@+id/favorites_dest"
@@ -80,8 +81,52 @@
         android:name="com.goldenowl.ecommerce.ui.global.bag.CheckoutFragment"
         android:label="@string/checkout"
         tools:layout="@layout/fragment_checkout">
-
+        <action
+            android:id="@+id/action_checkout_dest_to_payment_dest"
+            app:destination="@id/payment_dest" />
+        <action
+            android:id="@+id/action_checkout_dest_to_address_dest"
+            app:destination="@id/address_dest" />
     </fragment>
+
+    <fragment
+        android:id="@+id/payment_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.bag.PaymentMethodFragment"
+        android:label="@string/payment"
+        tools:layout="@layout/fragment_payment_method">
+        <action
+            android:id="@+id/action_payment_dest_to_success_dest"
+            app:destination="@id/success_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/success_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.bag.SuccessFragment"
+        android:label="@string/success"
+        tools:layout="@layout/fragment_success">
+
+        <action
+            android:id="@+id/go_home_dest"
+            app:destination="@id/home_dest"
+            app:popUpTo="@id/home_dest"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/address_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.bag.ShippingAddressFragment"
+        android:label="@string/address"
+        tools:layout="@layout/fragment_shipping_addresses">
+        <action
+            android:id="@+id/action_address_dest_to_add_address_dest"
+            app:destination="@id/add_address_dest" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/add_address_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.bag.AddAddressFragment"
+        android:label="@string/adding_address"
+        tools:layout="@layout/fragment_add_address"></fragment>
 
     <fragment
         android:id="@+id/settings_dest"

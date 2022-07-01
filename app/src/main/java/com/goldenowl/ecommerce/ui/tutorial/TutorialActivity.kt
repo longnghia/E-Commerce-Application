@@ -1,6 +1,7 @@
 package com.goldenowl.ecommerce.ui.tutorial
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
@@ -43,6 +44,9 @@ class TutorialActivity : AppCompatActivity() {
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+//            tab.text = "OBJECT ${(position + 1)}"
+//            Log.d(TAG, "onCreate: position = $position")
+
         }.attach()
 
         viewPager.registerOnPageChangeCallback(object : OnPageChangeCallback() {
@@ -67,6 +71,7 @@ class TutorialActivity : AppCompatActivity() {
 
     private fun skipTutorial() {
         setFirstLaunch(false)
+
         launchHome(this)
         finish()
     }

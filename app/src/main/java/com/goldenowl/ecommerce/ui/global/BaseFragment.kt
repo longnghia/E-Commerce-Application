@@ -14,6 +14,7 @@ abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = getViewBinding()
         init()
     }

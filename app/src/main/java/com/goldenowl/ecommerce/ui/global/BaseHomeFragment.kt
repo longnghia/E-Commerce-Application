@@ -1,41 +1,33 @@
 package com.goldenowl.ecommerce.ui.global
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetEnterPromo
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
-import com.goldenowl.ecommerce.ui.global.favorites.FavoritesFragment
-import com.goldenowl.ecommerce.ui.global.home.ProductDetailFragment
-import com.goldenowl.ecommerce.viewmodels.ProductViewModelFactory
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
+
 
 abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>(),
     IClickListener {
 
-    protected val viewModel: ShopViewModel by activityViewModels {
-        ProductViewModelFactory(
-            (requireActivity().application as MyApplication).productsRepository,
-            (requireActivity().application as MyApplication).authRepository
-        )
-    }
+    protected val viewModel: ShopViewModel by activityViewModels()
 
     override fun onClickFavorite(product: Product, favorite: Favorite?) {
-        Log.d(ProductDetailFragment.TAG, "onClickFavorite: $favorite")
         if (favorite == null) {
-            Log.d(ProductDetailFragment.TAG, "onClickFavorite: insert favorite")
             toggleBottomSheetInsertFavorite(product)
         } else {
-            Log.d(ProductDetailFragment.TAG, "onClickFavorite: remove favorite")
             viewModel.removeFavorite(favorite!!)
         }
     }
@@ -48,20 +40,21 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     override fun onClickCart(product: Product, cart: Cart?) {
-        Log.d(FavoritesFragment.TAG, "onClickCart: $cart")
         if (cart == null) {
-            toggleBottomSheetInsertCart(product)
+            toggleBottomSheetInsertCart(product, null)
         } else {
             viewModel.removeCart(cart)
         }
-
     }
 
     override fun onClickRemoveFavorite(product: Product, favorite: Favorite?) {
         if (favorite != null) {
-            Log.d(FavoritesFragment.TAG, "onClickRemoveFavorite: remove from favorite")
             viewModel.removeFavorite(favorite)
         }
+    }
+
+    override fun updateCartQuantity(cart: Cart, position: Int) {
+        viewModel.updateCart(cart, position)
     }
 
     protected fun toggleBottomSheetInsertFavorite(product: Product) {
@@ -70,10 +63,34 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
         modalBottomSheet.show(parentFragmentManager, BottomSheetInsertCart.TAG)
     }
 
-    protected fun toggleBottomSheetInsertCart(product: Product) {
-        val modalBottomSheet = BottomSheetInsertCart(product, viewModel)
+    /**
+     * Open model bottom sheet to select size
+     * @param cart if cart not null, mean user has chosen color and size in product detail screen
+     */
+    protected fun toggleBottomSheetInsertCart(product: Product, cart: Cart?) {
+        val modalBottomSheet = BottomSheetInsertCart(product, cart, viewModel)
         modalBottomSheet.enterTransition = View.GONE
-        modalBottomSheet.show(parentFragmentManager, ProductDetailFragment.TAG)
+        modalBottomSheet.show(parentFragmentManager, TAG)
+    }
+
+    protected fun toggleBottomSheetEnterPromo() {
+        val modalBottomSheet = BottomSheetEnterPromo(viewModel)
+        modalBottomSheet.enterTransition = View.GONE
+        modalBottomSheet.show(parentFragmentManager, TAG)
+    }
+
+    protected fun showToast(msg: String) {
+        if (msg.isNullOrBlank())
+            return
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    companion object {
+        val TAG = "BaseHomeFragment"
     }
 }
 
@@ -82,5 +99,5 @@ interface IClickListener {
     fun onClickItem(productData: ProductData)
     fun onClickCart(product: Product, cart: Cart?)
     fun onClickRemoveFavorite(product: Product, favorite: Favorite?)
+    fun updateCartQuantity(cart: Cart, position: Int)
 }
-

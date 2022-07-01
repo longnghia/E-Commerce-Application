@@ -1,4 +1,4 @@
 <resources>
-    <!-- Base application theme. -->
+
     <style name="Theme.ECommerce" parent="Theme.MaterialComponents.DayNight.NoActionBar"></style>
 </resources>

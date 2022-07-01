@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.models.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.goldenowl.ecommerce.utils.Constants
 
 class SettingsManager(context: Context) {
 
@@ -47,8 +48,32 @@ class SettingsManager(context: Context) {
         editor.commit()
     }
 
+    fun setDefaultCheckOut(default: Map<String, Int?>) {
+        default[Constants.DEFAULT_CARD]?.let { editor.putInt(Constants.DEFAULT_CARD, it) }
+        default[Constants.DEFAULT_ADDRESS]?.let { editor.putInt(Constants.DEFAULT_ADDRESS, it) }
+        editor.commit()
+    }
+
+    fun getDefaultAddress(): Int {
+        return settingManager.getInt(Constants.DEFAULT_ADDRESS, -1)
+    }
+
+    fun getDefaultCard(): Int {
+        return settingManager.getInt(Constants.DEFAULT_ADDRESS, -1)
+    }
+
+    fun setLastNetwork(networkAvailable: Boolean) {
+        editor.putBoolean(KEY_LAST_NETWORK, networkAvailable)
+        editor.commit()
+    }
+
+    fun getLastNetwork(): Boolean {
+        return settingManager.getBoolean(KEY_LAST_NETWORK, true)
+    }
+
     companion object {
         const val KEY_FIRST_LAUNCH = "firstLaunch"
+        const val KEY_LAST_NETWORK = "lastNetwork"
         const val KEY_DARK_MODE = "darkMode"
         const val KEY_NOTIFICATION_SALE = "notification_sales"
         const val KEY_NOTIFICATION_ARRIVES = "notification_arrives"

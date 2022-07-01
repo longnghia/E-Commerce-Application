@@ -20,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -68,7 +69,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         return withContext(Dispatchers.IO) {
             try {
                 val currentUserRef = userRef.document(getUserId()!!)
-                val userDataSnapshot = currentUserRef.get().await()
+                val userDataSnapshot = currentUserRef.get(Source.SERVER).await()
                 if (userDataSnapshot.exists()) {
                     val user = userDataSnapshot.toObject(User::class.java)
                     if (user != null) {
@@ -81,6 +82,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 }
                 return@withContext null
             } catch (e: Exception) {
+                Log.e(TAG, "updateUserData: ERROR", e)
                 return@withContext e.message
             }
         }
@@ -100,14 +102,11 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
             if (requestCode != GOOGLE_SIGN_IN) {
                 return
             }
+            if (data == null)
+                return
             val googleAccount = GoogleSignIn.getSignedInAccountFromIntent(data).result
             googleAccount?.let {
-                Log.d(
-                    TAG,
-                    "onCreateView: Google sign-in completed with ${it.email} and token ${it.idToken}"
-                )
                 if (it.email == null || it.idToken == null) {
-                    Log.w(TAG, "goolgeActivityResultLauncher: email or idtoken null")
                     listener.callback(MyResult.Error(java.lang.Exception("User not found")))
                 } else {
                     val firebaseCredential = GoogleAuthProvider.getCredential(it.idToken, null)
@@ -154,7 +153,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                     onSignUpSuccess(user)
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "signUpWithEmail: ERROR", e)
                 return@withContext e.message
             }
             return@withContext null
@@ -186,8 +184,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         LoginManager.getInstance().registerCallback(facebookCallbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
-                    Log.d(TAG, "Facebook token: " + loginResult.accessToken.token)
-                    Log.d(TAG, "Facebook id: " + loginResult.accessToken.userId)
                     handleFacebookAccessToken(loginResult.accessToken, listener)
                     listener.callback(MyResult.Success(true))
                 }
@@ -206,13 +202,10 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 
 
     private fun handleFacebookAccessToken(token: AccessToken, listener: LoginListener) {
-        Log.d(TAG, "handleFacebookAccessToken:$token")
-
         val credential = FacebookAuthProvider.getCredential(token.token)
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Log.d(TAG, "signInWithCredential:success")
                     currentUser = firebaseAuth.currentUser
                     listener.callback(MyResult.Success(true))
                     onLoginSuccess(currentUser, TYPEFACEBOOK)
@@ -228,7 +221,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 //        check  if user exist,
         val userId = currentUser!!.uid
         val cUserRef = userRef.document(userId)
-        cUserRef?.get()?.addOnCompleteListener {
+        cUserRef?.get(Source.SERVER)?.addOnCompleteListener {
             val doc = it.result
             if (!doc.exists()) {
                 val user = User(
@@ -240,13 +233,11 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                     avatar = currentUser?.photoUrl.let { it.toString() },
                     logType = logType
                 )
-                Log.d(TAG, "onLoginSuccess: saving new user")
                 cUserRef.set(user).addOnCompleteListener {
                     Log.d(TAG, "onLoginSuccess: add new user successfully")
                 }
                 userManager.addAccount(user)
             } else {
-                Log.d(TAG, "onLoginSuccess: user existed: ${doc.data}")
                 restoreUserData()
             }
         }
@@ -268,28 +259,23 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 avatar = currentUser?.photoUrl.let { it.toString() },
                 logType = logType
             )
-            Log.d(TAG, "onSignUpEmailSuccess: user = $user")
             addNewUserToFireStore(user)
         }
     }
 
     private fun restoreUserData() {
         currentUser = firebaseAuth.currentUser
-        userRef.document(currentUser!!.uid).get().addOnCompleteListener {
+        userRef.document(currentUser!!.uid).get(Source.SERVER).addOnCompleteListener {
             val userDataSnapshot = it.result
             if (!userDataSnapshot.exists()) {
                 Log.d(TAG, "restoreUser: user ${currentUser!!.uid} not exist")
             } else {
                 val user = userDataSnapshot.toObject(User::class.java)
-                Log.d(TAG, "restoreUser: $user")
-                Log.d(TAG, "restoreUserData: userManager isloggin:${userManager.isLoggedIn()}")
                 userManager.addAccount(user!!) // restore local
                 /* restore settings to Preference */
                 if (!user.settings.isNullOrEmpty())
                     settingsManager.saveUserSettings(user.settings)
-                else {
-                    Log.d(TAG, "restoreUserData: no settings found")
-                }
+
                 /* restore database */
 //                restoreDatabase(user.id)
             }
@@ -312,30 +298,24 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                 val email = profile.email
                 val photoUrl = profile.photoUrl
 
-                Log.d(TAG, "logCurrentUser: provider=$providerId uid=$uid name=$name email=$email photo=$photoUrl")
             }
         }
     }
 
     private fun addNewUserToFireStore(user: User) {
-        Log.d(TAG, "addNewUserToFireStore: add user $user")
         val cUserRef = user.id.let { userRef.document(it) }
         cUserRef?.get()?.addOnCompleteListener {
             val doc = it.result
             if (!doc.exists()) {
-                Log.d(TAG, "addNewUserToFireStore: saving new user")
                 cUserRef.set(user).addOnCompleteListener {
                     Log.d(TAG, "addNewUserToFireStore: add new user successfully")
                 }
                 userManager.addAccount(user)
-            } else {
-                Log.d(TAG, "addNewUserToFireStore: ERROR exitst user!")
             }
         }
     }
 
     suspend fun logInWithEmail(email: String, password: String): String? {
-        Log.d(TAG, "signInWithEmailPassword: $email : $password")
         return withContext(dispatchers) {
             try {
                 val authResult = firebaseAuth.signInWithEmailAndPassword(email, password).await()
@@ -352,7 +332,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 
     private fun onSignUpSuccess(user: User) {
         if (currentUser == null)
-            Log.d(TAG, "onSignUpSuccess: firebaseAuth.currentUser NULL ")
+            return // todo return result
         else {
             userManager.addAccount(user)
             addNewUserToFireStore(user)
@@ -399,7 +379,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 
     private fun updateFirestore() {
         val user = userManager.getUser()
-        Log.d(TAG, "updateFirestore: $user")
         user.id?.let {
             userRef.document(it).set(user).addOnCompleteListener {
                 Log.d(TAG, "updateFirestore: successful")
@@ -415,7 +394,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
             try {
                 val avatarRef = storageRef.child("images/$userId/${file?.lastPathSegment}")
                 var task = file?.let { avatarRef.putFile(it) }?.await()
-                Log.d(TAG, "init: upload successfull ${task?.metadata?.path}")
 
                 // todo update user info user ref
 //                avatarRef.child(it).downloadUrl

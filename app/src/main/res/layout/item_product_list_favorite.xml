@@ -78,22 +78,40 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="3">
+                    android:layout_marginTop="6dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/color"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/tv_color"
-                        android:layout_width="0dp"
+                        android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/color" />
+                        android:paddingStart="2dp"
+                        android:text="black"
+                        android:textColor="@color/black_light"
+                        android:textSize="11sp"
+
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/size"
+                        android:textSize="11sp" />
 
                     <TextView
                         android:id="@+id/tv_size"
-                        android:layout_width="0dp"
+                        android:layout_width="48dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/size" />
+                        android:paddingStart="2dp"
+                        android:text="XL"
+                        android:textColor="@color/black_light"
+                        android:textSize="11sp" />
                 </LinearLayout>
 
 

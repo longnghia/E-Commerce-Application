@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.goldenowl.ecommerce.models.auth.UserManager
@@ -35,10 +36,13 @@ class MyApplication : Application() {
 
 
     private fun createLocalProductsDataSource(context: Context): LocalProductsDataSource {
+
         val productDao = database.productDao()
         val favoriteDao = database.favoriteDao()
+        val cartDao = database.cartDao()
         val orderDao = database.orderDao()
+        val addressDao = database.addressDao()
 
-        return LocalProductsDataSource(productDao, favoriteDao, orderDao)
+        return LocalProductsDataSource(productDao, favoriteDao, cartDao, orderDao, addressDao)
     }
 }

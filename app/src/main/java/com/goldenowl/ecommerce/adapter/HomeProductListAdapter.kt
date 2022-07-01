@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,7 +8,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.ProductData
@@ -45,7 +45,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
         var productRatingBar: RatingBar? = null
         var ivFavorite: ImageView? = null
         var layoutLoading: FrameLayout? = null
-        var layoutItem: ConstraintLayout? = null
+        var layoutFrameLoading: FrameLayout? = null
 
         init {
             productName = itemView.findViewById(R.id.product_name)
@@ -55,8 +55,9 @@ class HomeProductListAdapter(private val listener: IClickListener) :
             tvNumberReviews = itemView.findViewById(R.id.tv_number_reviews)
             ivFavorite = itemView.findViewById(R.id.iv_favorite)
             layoutLoading = itemView.findViewById(R.id.layout_loading)
-            layoutItem = itemView.findViewById(R.id.layout_item)
-
+            if (layoutLoading != null) {
+                layoutFrameLoading = layoutLoading!!.findViewById(R.id.loading_frame_layout) ?: null
+            }
             tvColor = itemView.findViewById(R.id.tv_color)
             tvSize = itemView.findViewById(R.id.tv_size)
             originPrice = itemView.findViewById(R.id.product_origin_price)
@@ -84,8 +85,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
         holder.ivFavorite?.setOnClickListener {
             listener.onClickFavorite(product, favorite)
         }
-
-        holder.itemView.setOnClickListener {
+        holder.itemView?.setOnClickListener {
             listener.onClickItem(productData)
         }
 
@@ -108,13 +108,15 @@ class HomeProductListAdapter(private val listener: IClickListener) :
                 }
                 holder.discountPrice?.visibility = View.VISIBLE
                 holder.discountPrice?.text =
-                    product.getDiscountPrice().toString() + "$"
-                val text = product.getOriginPrice().toString() + "$"
+                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
+                val text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
                 holder.originPrice?.strike(text)
             } else {
                 holder.tvDiscountPercent?.visibility = View.INVISIBLE
                 holder.discountPrice?.visibility = View.INVISIBLE
-                holder.originPrice?.text = product.getOriginPrice().toString() + "$"
+                holder.originPrice?.text =
+                    holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
             }
         }
 

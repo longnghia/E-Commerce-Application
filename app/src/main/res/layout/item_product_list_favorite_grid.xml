@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--    android:layout_height="260dp"-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="164dp"
-    android:layout_height="260dp"
+    android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="20dp">
 
@@ -50,6 +51,21 @@
         app:layout_anchorGravity="end|bottom"
         app:layout_constraintBottom_toBottomOf="@+id/product_img"
         app:layout_constraintEnd_toEndOf="@+id/product_img" />
+
+    <TextView
+        android:id="@+id/tv_sold_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:background="#A6DDDDDD"
+        android:elevation="5dp"
+        android:gravity="center_horizontal"
+        android:text="@string/sold_out"
+        android:textColor="@color/black_light"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/product_img"
+        app:layout_constraintStart_toStartOf="@+id/product_img" />
 
     <TextView
         android:id="@+id/tv_discount_percent"
@@ -133,25 +149,40 @@
         android:layout_width="148dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_name">
 
+
         <TextView
-            android:id="@+id/tv_color"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/color"
             android:textSize="11sp" />
 
         <TextView
-            android:id="@+id/tv_size"
-            android:layout_width="0dp"
+            android:id="@+id/tv_color"
+            android:layout_width="48dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/size"
+            android:paddingStart="2dp"
+            android:text="black"
+            android:textColor="@color/black_light"
+            android:textSize="11sp"
 
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/size"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tv_size"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="2dp"
+            android:text="XL"
+            android:textColor="@color/black_light"
             android:textSize="11sp" />
     </LinearLayout>
 
@@ -163,7 +194,7 @@
         app:layout_constraintTop_toBottomOf="@+id/layout_color_size">
 
         <TextView
-            android:id="@+id/product_old_price"
+            android:id="@+id/product_origin_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="15$"
@@ -171,7 +202,7 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/product_origin_price"
+            android:id="@+id/product_discount_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"

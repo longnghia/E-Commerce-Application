@@ -16,7 +16,7 @@ import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
-import com.goldenowl.ecommerce.utils.Consts
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
@@ -62,7 +62,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         sortViewModel.sortType.observe(viewLifecycleOwner) {
             sortType = it
-            binding.topAppBar.tvSort.text = getString(Consts.sortMap[it] ?: R.string.none)
+            binding.topAppBar.tvSort.text = getString(Constants.sortMap[it] ?: R.string.none)
             refreshList()
         }
 
@@ -87,7 +87,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         /*list view*/
 
 
-        gridLayoutManager = GridLayoutManager(context, Consts.SPAN_COUNT_ONE)
+        gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
         val homeFilter = arguments?.getString("home_filter")
         sortViewModel.filterType.value = homeFilter
@@ -109,12 +109,12 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
     private fun switchLayout() {
         gridLayoutManager.apply {
-            spanCount = if (spanCount == Consts.SPAN_COUNT_ONE) {
+            spanCount = if (spanCount == Constants.SPAN_COUNT_ONE) {
                 binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_list)
-                Consts.SPAN_COUNT_TWO
+                Constants.SPAN_COUNT_TWO
             } else {
                 binding.topAppBar.ivViewType.setImageResource(R.drawable.ic_grid)
-                Consts.SPAN_COUNT_ONE
+                Constants.SPAN_COUNT_ONE
             }
         }
         adapterGrid.notifyDataSetChanged()
@@ -192,8 +192,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 }
                 searchView!!.maxWidth = Integer.MAX_VALUE
                 searchView!!.setOnQueryTextListener(queryTextListener)
-            } else {
-                Log.e(TAG, "onCreateOptionsMenu: SEARCH VIEW NULL")
             }
         }
     }
