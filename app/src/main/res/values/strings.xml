@@ -121,5 +121,10 @@
     <string name="you_can_also_like">You can also like this</string>
     <string name="qr">QR Scan</string>
     <string name="ok">OK</string>
+    <string name="dont_allow">Don\'t allow</string>
+    <string name="access_camera">Ecommerce need camera access for scanning</string>
+    <string name="camera_qr">QR Scan use device camera. Allow?</string>
+    <string name="scan_to_find">Scan QR Code\n to find products faster</string>
+    <string name="scan_error">Some error occurs!</string>
 
 </resources>
