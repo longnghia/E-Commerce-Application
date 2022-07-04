@@ -44,6 +44,7 @@
     <string name="have_promocode">You have special promocodes</string>
     <string name="my_review">My reviews</string>
     <string name="no_review">No reviews</string>
+    <string name="no_review_yet">There aren\'t any reviews for this product yet!</string>
     <string name="settings">Settings</string>
     <string name="setting_notification">Notifications, password</string>
     <string name="policy">Policy</string>
@@ -166,9 +167,34 @@
     <string name="continue_shopping">Continue shopping</string>
     <string name="trending">Trending</string>
     <string name="please_select_color">Please select color!</string>
+    <string name="with_photo">With photo</string>
+    <string name="write_a_review">Write a review</string>
+    <string name="what_is_your_rate">What is your rate?</string>
+    <string name="share_your_opinion">Please share your opinion \nabout the product</string>
+    <string name="add_your_photo">Add your photos</string>
+    <string name="rating_review">Rating and reviews</string>
+    <string name="send_review">Send review</string>
+    <string name="helpful">Helpful</string>
+    <string name="maximum_5_pic">Maximum 5 pictures!</string>
+    <string name="pls_select_rating">Please select rating</string>
+    <string name="pls_comment">Please write a comment</string>
+    <string name="log_in_to_review">Log in to review</string>
+    <string name="your_review">Your review</string>
 
     <plurals name="num_item">
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
+    </plurals>
+
+    <plurals name="num_review">
+        <item quantity="one">%d review</item>
+        <item quantity="zero">No review</item>
+        <item quantity="other">%d reviews</item>
+    </plurals>
+
+    <plurals name="num_rating">
+        <item quantity="one">%d rating</item>
+        <item quantity="zero">No rating</item>
+        <item quantity="other">%d ratings</item>
     </plurals>
 </resources>

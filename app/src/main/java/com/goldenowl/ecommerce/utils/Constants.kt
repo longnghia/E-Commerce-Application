@@ -4,16 +4,14 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val KEY_PRODUCT = "KEY_PRODUCT"
     const val KEY_POSITION = "KEY_POSITION"
     const val KEY_ADDRESS = "KEY_ADDRESS"
 
     const val PRODUCTS_COLLECTION = "products"
     const val USER_ORDER_COLLECTION = "user_orders"
-    const val USER_DATA_COLLECTION = "users"
+    const val REVIEW_COLLECTION = "reviews"
     const val PROMOTIONS_COLLECTION = "promotions"
-    const val TAGS_COLLECTION = "tags"
-    const val FAVORITE_COLLECTION = "favorites"
-
     const val GRID_VIEW = 1
     const val LIST_VIEW = 0
     const val SPAN_COUNT_ONE = 1

@@ -21,6 +21,10 @@ class LocalProductsDataSource(
         return productDao.getListProduct()
     }
 
+    suspend fun updateProduct(product: Product) {
+        return productDao.updateProduct(product)
+    }
+
     override suspend fun insertFavorite(favorite: Favorite) {
         favoriteDao.insertFavorite(favorite)
     }
@@ -69,4 +73,9 @@ class LocalProductsDataSource(
     suspend fun removeAddress(address: Address) {
         addressDao.removeAddress(address)
     }
+
+    suspend fun getProductById(productId: String): Product? {
+        return productDao.getProductById(productId)
+    }
+
 }
