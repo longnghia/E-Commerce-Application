@@ -174,6 +174,11 @@
     <string name="camera_qr">QR Scan use device camera. Allow?</string>
     <string name="scan_to_find">Scan QR Code\n to find products faster</string>
     <string name="scan_error">Some error occurs!</string>
+    <string name="timeout">Time out</string>
+    <string name="ask_continue_scanning">Do you want to continue scanning the product QR code?</string>
+    <string name="cancel">Cancel</string>
+    <string name="invalid_qr_code">Invalid QR code</string>
+    <string name="product_found">Found product: %s</string>
     <string name="with_photo">With photo</string>
     <string name="write_a_review">Write a review</string>
     <string name="what_is_your_rate">What is your rate?</string>

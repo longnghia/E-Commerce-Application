@@ -60,7 +60,19 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     }
 
     override fun init() {
-        productData = arguments?.get("product_data") as ProductData
+        val data = arguments?.get("product_data")
+        val productId = arguments?.get(Constants.KEY_PRODUCT_ID)
+        if (data != null) {
+            productData = data as ProductData
+
+        } else if (productId != null) {
+            Log.d(TAG, "init: $productId")
+            val pData = viewModel.listProductData.value?.find {
+                it.product.id == productId as String
+            }
+            if (pData != null)
+                productData = pData
+        }
         product = productData.product
         favorite = productData.favorite
     }
@@ -176,24 +188,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     override fun getViewBinding(): FragmentProductDetailBinding {
         return FragmentProductDetailBinding.inflate(layoutInflater)
     }
-
-//    override fun onClickFavorite(product: Product, favorite: Favorite?) {
-//        Log.d(TAG, "onClickFavorite: $favorite")
-//        if (favorite == null) {
-//            Log.d(TAG, "onClickFavorite: insert favorite")
-//            toggleBottomSheetInsertFavorite(product)
-//        } else {
-//            Log.d(TAG, "onClickFavorite: remove favorite")
-//            viewModel.removeFavorite(favorite!!)
-//        }
-//    }
-//
-//    override fun onClickItem(productData: ProductData) {
-//        findNavController().navigate(
-//            R.id.detail_dest,
-//            bundleOf("product_data" to productData)
-//        )
-//    }
 }
 
 

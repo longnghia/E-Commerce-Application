@@ -1,23 +1,30 @@
 package com.goldenowl.ecommerce.ui.global.shop
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Point
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentQrBinding
 import com.goldenowl.ecommerce.ui.customview.MessageDialogFragment
+import com.goldenowl.ecommerce.ui.global.profile.QrViewModel
+import com.goldenowl.ecommerce.utils.Constants
 import com.google.zxing.Result
 import me.dm7.barcodescanner.zxing.ZXingScannerView
 
@@ -26,6 +33,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
 
     private lateinit var mScannerView: ZXingScannerView
     private lateinit var binding: FragmentQrBinding
+    private val qrViewModel: QrViewModel by activityViewModels()
     private var mFlash = false
     private var mAutoFocus = false
     private var permissionGranted = false
@@ -34,20 +42,30 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
             if (isGranted) {
                 permissionGranted = true
             } else {
-                findNavController().navigateUp()
+                requestPermission()
             }
+        }
+
+    private val settingLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            checkPermission()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissionGranted = ContextCompat.checkSelfPermission(
+
+        permissionGranted = checkPermission()
+
+        if (!permissionGranted) {
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun checkPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.CAMERA
         ) == PackageManager.PERMISSION_GRANTED
-
-        if (!permissionGranted) {
-            requestPermission()
-        }
     }
 
     private fun requestPermission() {
@@ -57,7 +75,13 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
             getString(R.string.camera_qr),
             object : MessageDialogFragment.MessageDialogListener {
                 override fun onDialogPositiveClick(dialog: DialogFragment?) {
-                    requestPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                    val uri = Uri.fromParts("package", requireActivity().packageName, null)
+                    intent.data = uri
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                    settingLauncher.launch(intent)
                     dialog?.dismiss()
                 }
 
@@ -80,11 +104,34 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
             mAutoFocus = true;
         }
         setViews()
+        setObservers()
         return binding.root
+    }
+
+    private fun setObservers() {
+        qrViewModel.timeOut.observe(viewLifecycleOwner) {
+            if (it) {
+                Toast.makeText(requireContext(), "Time out", Toast.LENGTH_SHORT).show()
+                AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.timeout))
+                    .setMessage(getString(R.string.ask_continue_scanning))
+                    .setNegativeButton(R.string.cancel) { _, _ ->
+                        findNavController().navigateUp()
+                    }
+                    .setPositiveButton(R.string.ok) { dialog, _ ->
+                        dialog.dismiss()
+                        qrViewModel.setTimeout()
+                    }
+                    .show()
+            }
+        }
     }
 
 
     private fun setViews() {
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
         mScannerView.setSquareViewFinder(true)
         binding.ivFlash.setOnClickListener {
             if (!permissionGranted) {
@@ -106,7 +153,6 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
         val width: Int = size.x
         val height: Int = size.y
 
-        Log.d(TAG, "setViews: width =$width")
         params.setMargins(0, -width * 6 / 8, 0, 0)
         params.gravity = Gravity.CENTER
         binding.tvStatus.apply {
@@ -118,15 +164,18 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
     override fun onResume() {
         super.onResume()
         mScannerView.setResultHandler(this);
-        mScannerView.startCamera();
+        mScannerView.startCamera()
+        mScannerView.isActivated
+        if (permissionGranted) qrViewModel.setTimeout()
         mScannerView.flash = mFlash;
-        mScannerView.setAutoFocus(mAutoFocus);
+        mScannerView.setAutoFocus(mAutoFocus)
     }
 
     override fun onPause() {
         super.onPause()
-        mScannerView.stopCamera();
-        closeMessageDialog();
+        mScannerView.stopCamera()
+        qrViewModel.cancelTimeout()
+        closeMessageDialog()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -149,12 +198,12 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
             val res = rawResult.text
             if (validQR(res)) {
                 val productId = res.split('=')[1]
-                showMessageDialog("Found $productId")
+                showMessageDialog(getString(R.string.product_found, productId), productId)
             } else {
-                showMessageDialog("Invalid QR code")
+                showMessageDialog(getString(R.string.invalid_qr_code), null)
             }
         } catch (e: Exception) {
-            showMessageDialog(getString(R.string.scan_error))
+            showMessageDialog(getString(R.string.scan_error), null)
         }
     }
 
@@ -163,15 +212,19 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
         return text.indexOf("Product=") == 0
     }
 
-    private fun showMessageDialog(message: String?) {
+    private fun showMessageDialog(message: String?, result: String?) {
         val fragment: DialogFragment = MessageDialogFragment.newInstance(
             MessageDialogFragment.Companion.DialogType.MESSAGE,
             "Scan Results",
             message,
             object : MessageDialogFragment.MessageDialogListener {
                 override fun onDialogPositiveClick(dialog: DialogFragment?) {
-                    mScannerView.resumeCameraPreview(this@QRFragment)
-                    findNavController().navigate(R.id.home_dest)
+                    if (result != null)
+                        findNavController().navigate(
+                            R.id.action_go_detail, bundleOf(Constants.KEY_PRODUCT_ID to result)
+                        )
+                    else
+                        dialog?.dismiss()
                 }
 
                 override fun onDialogNegativeClick(dialog: DialogFragment?) {
@@ -189,9 +242,9 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
     private fun closeDialog(dialogName: String?) {
         val fragmentManager: FragmentManager = activity!!.supportFragmentManager
         val fragment = fragmentManager.findFragmentByTag(dialogName) ?: return
-        val diaglog = fragment as DialogFragment
-        if (diaglog != null) {
-            diaglog.dismiss()
+        val dialog = fragment as DialogFragment
+        if (dialog != null) {
+            dialog.dismiss()
         }
     }
 }
