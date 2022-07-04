@@ -78,7 +78,7 @@ class RatingReviewFragment : BaseHomeFragment<FragmentRatingReviewBinding>() {
             list = mListReviewData.filter { it.review.images.isNotEmpty() }
         }
         adapter.setData(list)
-        binding.tvNumReview.text =
+        binding.tvNumberReviews.text =
             resources.getQuantityString(R.plurals.num_review, list.size, list.size)
         binding.tvNumRating.text =
             resources.getQuantityString(R.plurals.num_rating, mListReviewData.size, mListReviewData.size)
