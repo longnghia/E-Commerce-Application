@@ -10,7 +10,6 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -51,10 +50,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
         with(binding) {
             btnLogOut.setOnClickListener {
-
-//                when (userManager.logInType) {
-//                    TYPEEMAIL -> viewModel.logOutFacebook()
-//                }
                 val loginIntent = Intent(activity, MainActivity::class.java)
                 logOut()
                 context?.startActivity(loginIntent)
@@ -109,7 +104,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             tvEmail.movementMethod = LinkMovementMethod.getInstance()
             tvEmail.highlightColor = Color.RED
 
-//            tvEmail.text = getString(com.goldenowl.ecommerce.R.string.guest_email)
             layoutUserActions.visibility = View.GONE
             layoutGuessActions.visibility = View.VISIBLE
         }

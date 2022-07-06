@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
@@ -130,12 +131,11 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
     private fun changeAvatar() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        imageActivityResultLauncher.launch(intent)
-        // todo check picker
-//        if (requireActivity().packageManager.resolveActivity(intent, 0) != null)
-//        else {
-//            Toast.makeText(activity, getString(R.string.no_image_picker), Toast.LENGTH_SHORT).show()
-//        }
+        if (requireActivity().packageManager.resolveActivity(intent, 0) != null) {
+            imageActivityResultLauncher.launch(intent)
+        } else {
+            Toast.makeText(activity, getString(R.string.no_image_picker), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun openBottomSheet() {
