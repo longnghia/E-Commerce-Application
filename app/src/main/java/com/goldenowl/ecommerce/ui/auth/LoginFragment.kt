@@ -170,10 +170,6 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
                     binding.edtEmail.text.toString().isNotBlank()
                 ) {
                     viewModel.forgotPassword(binding.edtEmail.text.toString().trim())
-                } else {
-                    // todo add screen forgot password
-                    Toast.makeText(context, "Please input your email first!", Toast.LENGTH_SHORT).show()
-                    edtEmail.requestFocus()
                 }
             }
 
