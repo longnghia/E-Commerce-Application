@@ -210,6 +210,12 @@
     <string name="channel_change_password">Change Password</string>
     <string name="channel_change_password_description">Notification when password changed successfully.</string>
 
+    <plurals name="num_order">
+        <item quantity="zero">No orders</item>
+        <item quantity="one">Already has 1 order</item>
+        <item quantity="other">Already has %d orders</item>
+    </plurals>
+
     <plurals name="num_review">
         <item quantity="one">%d review</item>
         <item quantity="zero">No review</item>
