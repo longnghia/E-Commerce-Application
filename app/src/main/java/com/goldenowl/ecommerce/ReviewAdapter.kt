@@ -8,9 +8,9 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.ReviewImagesAdapter
 import com.goldenowl.ecommerce.databinding.ItemReviewBinding
 import com.goldenowl.ecommerce.models.data.ReviewData
+import com.goldenowl.ecommerce.utils.SimpleDateFormatHelper
 import com.goldenowl.ecommerce.utils.Utils
 import com.goldenowl.ecommerce.utils.Utils.setColor
-import java.text.SimpleDateFormat
 
 
 class ReviewAdapter(private val listener: IClickListener) :
@@ -48,7 +48,7 @@ class ReviewAdapter(private val listener: IClickListener) :
                 listener.onHelpfulClick(reviewData)
             }
             binding.productRatingBar.rating = review.rating.toFloat()
-            binding.tvRatingDate.text = SimpleDateFormat("MMMM dd, YYYY").format(review.date)
+            binding.tvRatingDate.text = SimpleDateFormatHelper.formatDate(review.date)
             binding.tvUserName.text = user?.name ?: ""
             Utils.glide2View(binding.ivUserAvatar, binding.layoutLoading.loadingFrameLayout, user?.avatar ?: "")
 
