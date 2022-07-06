@@ -32,4 +32,11 @@ class LocalAuthDataSource(private val userManager: UserManager) : AuthDataSource
     fun updateAvatar(url: String) {
         userManager.avatar = url
     }
+
+    fun getUser(): User? {
+        return if (userManager.isLoggedIn())
+            userManager.getUser()
+        else
+            null
+    }
 }

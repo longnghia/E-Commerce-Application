@@ -23,7 +23,6 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
-import com.goldenowl.ecommerce.utils.Utils
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -138,9 +137,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setAppbar() {
-        binding.topAppBar.appBarLayout.setBackgroundColor(
-            Utils.getColor(requireContext(), R.color.background_color) ?: 0xf9f9f9
-        )
         binding.topAppBar.collapsingToolbarLayout.title = getString(com.goldenowl.ecommerce.R.string.profile)
     }
 

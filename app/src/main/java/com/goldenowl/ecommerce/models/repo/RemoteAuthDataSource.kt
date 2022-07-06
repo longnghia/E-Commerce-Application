@@ -223,7 +223,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 //        check  if user exist,
         val userId = currentUser!!.uid
         val cUserRef = userRef.document(userId)
-        cUserRef?.get(Source.SERVER)?.addOnCompleteListener {
+        cUserRef.get(Source.SERVER).addOnCompleteListener {
             val doc = it.result
             if (!doc.exists()) {
                 val user = User(
@@ -381,7 +381,7 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
 
     private fun updateFirestore() {
         val user = userManager.getUser()
-        user.id?.let {
+        user.id.let {
             userRef.document(it).set(user).addOnCompleteListener {
                 Log.d(TAG, "updateFirestore: successful")
             }
