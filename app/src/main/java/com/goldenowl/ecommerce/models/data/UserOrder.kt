@@ -7,6 +7,8 @@ data class UserOrder @JvmOverloads constructor(
     var orders: List<Order> = ArrayList(),
     var cards: List<Card> = ArrayList(),
     var addresss: List<Address> = ArrayList(),
+    var reviews: List<String> = ArrayList(),
+    var usefulReviews: List<String> = ArrayList(),
     var defaultCheckout: Map<String, Int> = mapOf()
 )
 

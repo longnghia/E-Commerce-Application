@@ -35,6 +35,12 @@ class LocalAuthDataSource(private val userManager: UserManager) : AuthDataSource
 
     fun updateAvatar(file: Uri?) {
         userManager.avatar = file.toString()
-        // todo cache image
+    }
+
+    fun getUser(): User? {
+        return if (userManager.isLoggedIn())
+            userManager.getUser()
+        else
+            null
     }
 }

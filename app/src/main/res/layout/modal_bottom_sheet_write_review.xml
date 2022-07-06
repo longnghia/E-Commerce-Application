@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/layout_loading"
+            layout="@layout/layout_loading" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <include layout="@layout/layout_modal_pinner" />
+
+            <TextView
+                style="@style/TextAppearance.MyApp.Text18.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:text="@string/what_is_your_rate"
+                android:textStyle="bold" />
+
+            <RatingBar
+                android:id="@+id/rating_bar"
+                style="@style/Widget.AppCompat.RatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="18dp"
+                android:layout_weight="1"
+                android:progressTint="@color/gold"
+                android:rating="0"
+                android:secondaryProgressTint="#FFFFFF"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/sort_by_newest"
+                style="@style/TextAppearance.MyApp.Text18.Black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:gravity="center"
+                android:text="@string/share_your_opinion"
+                android:textStyle="bold"
+
+                />
+
+            <EditText
+                android:id="@+id/edt_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="39dp"
+                android:background="@drawable/bg_rounded_stroke"
+                android:gravity="top"
+                android:hint="@string/your_review"
+                android:minHeight="154dp"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="16dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_imgs"
+                android:layout_width="match_parent"
+                android:layout_height="104dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="42dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_send_review"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="48dp"
+                android:backgroundTint="@color/red_dark"
+                android:text="@string/send_review"
+                android:textColor="@color/white"
+                app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
+        </LinearLayout>
+    </FrameLayout>
+</androidx.core.widget.NestedScrollView>

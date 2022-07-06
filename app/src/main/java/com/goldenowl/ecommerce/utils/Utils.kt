@@ -22,6 +22,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -57,6 +58,10 @@ object Utils {
             return context.getColor(id)
         }
         return null
+    }
+
+    fun TextView.setColor(id: Int, default: Int) {
+        setTextColor(getColor(this.context, id) ?: default)
     }
 
     fun searchMatch(inputString: String, query: String) {
@@ -105,7 +110,7 @@ object Utils {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun glideListener(loadingLayout: View): RequestListener<Drawable> {
+    private fun glideListener(loadingLayout: View): RequestListener<Drawable> {
         return object : RequestListener<Drawable> {
             override fun onLoadFailed(
                 e: GlideException?,
@@ -128,7 +133,6 @@ object Utils {
                 loadingLayout.visibility = View.GONE
                 return false
             }
-
         }
     }
 
@@ -149,6 +153,7 @@ object Utils {
                 )
                 .into(imageView)
         } else {
+            loadingLayout.visibility = View.GONE
             imageView.setImageURI(Uri.parse(uri))
         }
     }
@@ -196,6 +201,7 @@ object Utils {
     }
 
     /*https://stackoverflow.com/questions/51141970/check-internet-connectivity-android-in-kotlin*/
+    @RequiresApi(Build.VERSION_CODES.M)
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

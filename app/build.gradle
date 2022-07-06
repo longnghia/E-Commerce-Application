@@ -56,9 +56,6 @@ android {
     }
 
     lint {
-        disable 'TypographyFractions', 'TypographyQuotes'
-        enable 'RtlHardcoded', 'RtlCompat', 'RtlEnabled'
-        ignoreWarnings true
         abortOnError false
     }
 }

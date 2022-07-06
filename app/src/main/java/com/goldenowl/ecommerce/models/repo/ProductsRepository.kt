@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.models.repo
 
+import android.net.Uri
 import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
@@ -166,6 +167,15 @@ class ProductsRepository(
         }
     }
 
+    suspend fun getListReview(): MyResult<List<Review>> {
+        return try {
+            val data = remoteProductDataSource.getListReview()
+            MyResult.Success(data)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
     suspend fun insertCard(card: Card): MyResult<Boolean> {
         return try {
             remoteProductDataSource.insertCard(card)
@@ -259,6 +269,82 @@ class ProductsRepository(
 //            remoteProductDataSource.insertMutipleFavorite(localFavorites)
 //            remoteProductDataSource.insertMutipleFavorite(localCarts)
 //            remoteProductDataSource.insertMutipleFavorite(localCarts)
+        }
+    }
+
+    suspend fun uploadReviewImages(list: List<String>): MyResult<List<String>> {
+        if (list.isEmpty())
+            return MyResult.Success(emptyList())
+        return supervisorScope {
+            val listUrl: MutableList<String> = ArrayList()
+            try {
+                for (file in list) {
+                    val link = async { remoteProductDataSource.uploadReviewImage(Uri.parse(file)) }
+                    listUrl.add(link.await())
+                }
+                MyResult.Success(listUrl)
+
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    suspend fun sendReview(rating: Review): MyResult<String> {
+        return try {
+            val reviewId = remoteProductDataSource.sendReview(rating)
+            MyResult.Success(reviewId)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun getProductById(productId: String): MyResult<Product?> {
+        return try {
+            MyResult.Success(localProductDataSource.getProductById(productId))
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun updateHelpful(reviewId: String, helpful: Boolean): MyResult<Boolean> {
+        return try {
+            remoteProductDataSource.updateHelpful(reviewId, helpful)
+            MyResult.Success(true)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun getReviewByProductId(productId: String): MyResult<List<ReviewData>> {
+        return try {
+            val listReview = remoteProductDataSource.getReviewByProductId(productId)
+            MyResult.Success(listReview)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun getHelpfulReview(): MyResult<List<String>> {
+        return try {
+            val listReview: List<String> = remoteProductDataSource.getHelpfulReview()
+            MyResult.Success(listReview)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun updateProduct(product: Product): MyResult<Boolean> {
+        return supervisorScope {
+            try {
+                val remoteSource = async { remoteProductDataSource.updateProduct(product) }
+                val localSource = async { localProductDataSource.updateProduct(product) }
+                remoteSource.await()
+                localSource.await()
+                MyResult.Success(true)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
         }
     }
 

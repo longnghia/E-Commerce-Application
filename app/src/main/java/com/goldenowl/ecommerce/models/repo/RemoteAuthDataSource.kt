@@ -407,6 +407,11 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         }
     }
 
+    suspend fun getUserById(userId: String): User {
+        val user = userRef.document(userId).get(Source.SERVER).await()
+        return user.toObject(User::class.java) ?: throw Exception("User $userId not found")
+    }
+
 
     companion object {
         const val TAG = "RemoteAuthDataSource"

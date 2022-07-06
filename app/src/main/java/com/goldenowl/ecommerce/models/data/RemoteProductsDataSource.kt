@@ -1,19 +1,22 @@
 package com.goldenowl.ecommerce.models.data
 
+import android.net.Uri
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.utils.Constants.PRODUCTS_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.PROMOTIONS_COLLECTION
+import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -24,9 +27,9 @@ class RemoteProductsDataSource : ProductDataSource {
     private val dispatcherIO: CoroutineContext = Dispatchers.IO
     private val db: FirebaseFirestore = Firebase.firestore
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private var currentUser = firebaseAuth.currentUser
     private val userOrderRef = db.collection(USER_ORDER_COLLECTION)
-    private val observableProducts = MutableLiveData<Result<List<Product>>?>()
+    private val reviewRef = db.collection(REVIEW_COLLECTION)
+    private val storageRef = Firebase.storage.reference
 
     override suspend fun getAllProducts(): List<Product> {
         val listProducts = mutableListOf<Product>()
@@ -42,6 +45,11 @@ class RemoteProductsDataSource : ProductDataSource {
         return listProducts
     }
 
+    suspend fun updateProduct(product: Product) {
+        db.collection(PRODUCTS_COLLECTION).document(product.id)
+            .set(product)
+            .await()
+    }
 
     override suspend fun insertFavorite(favorite: Favorite) {
         val userId =
@@ -355,6 +363,21 @@ class RemoteProductsDataSource : ProductDataSource {
         }
     }
 
+    suspend fun getListReview(): List<Review> {
+        firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+        firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+
+        val listReviews = mutableListOf<Review>()
+        val documents = db.collection(PRODUCTS_COLLECTION).get().await()
+        if (documents != null) {
+            for (d in documents) {
+                val review = d.toObject<Review>()
+                listReviews.add(review)
+            }
+        }
+        return listReviews
+    }
+
     suspend fun setDefaultCheckOut(default: Map<String, Int?>) {
         val userId =
             firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
@@ -437,6 +460,70 @@ class RemoteProductsDataSource : ProductDataSource {
             userOrderRef
                 .update("addresss", listAddress)
         }
+    }
+
+    suspend fun sendReview(rating: Review): String {
+        val userId =
+            firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        var reviewRef = db.collection(REVIEW_COLLECTION)
+
+        /* review document */
+        val addedReviewRef = reviewRef.add(rating).await()
+        return addedReviewRef.id
+    }
+
+    suspend fun uploadReviewImage(file: Uri): String {
+        if (firebaseAuth.currentUser == null) throw Exception("[Firebase] Please login first!")
+
+        val reviewRef = storageRef.child("images/reviews/${file?.lastPathSegment}")
+        file?.let { reviewRef.putFile(it) }?.await()
+        return reviewRef.downloadUrl.await().toString()
+    }
+
+    suspend fun updateHelpful(reviewId: String, helpful: Boolean) {
+        val userId =
+            firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        val snapshot = userOrderRef.get(Source.SERVER).await()
+
+        val userOrder = snapshot.toObject(UserOrder::class.java)
+
+        var setUsefulReview: MutableSet<String> = userOrder?.usefulReviews?.toMutableSet() ?: mutableSetOf()
+        if (helpful)
+            setUsefulReview.add(reviewId)
+        else
+            setUsefulReview.remove(reviewId)
+        userOrderRef
+            .update("usefulReviews", setUsefulReview.toList())
+    }
+
+    suspend fun getReviewByProductId(productId: String): List<ReviewData> {
+        val listReviews = mutableListOf<ReviewData>()
+        val documents = reviewRef
+            .whereEqualTo("productId", productId)
+            .orderBy("date", Query.Direction.DESCENDING)
+            .get().await()
+        if (documents != null) {
+            for (d in documents) {
+                val review = d.toObject<Review>()
+                listReviews.add(
+                    ReviewData(reviewId = d.id, review = review)
+                )
+            }
+        }
+        return listReviews
+    }
+
+    suspend fun getHelpfulReview(): List<String> {
+        val userId =
+            firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        val snapshot = userOrderRef.get().await()
+
+        val userOrder = snapshot.toObject(UserOrder::class.java) ?: return emptyList()
+        return userOrder.usefulReviews
     }
 
     companion object {
