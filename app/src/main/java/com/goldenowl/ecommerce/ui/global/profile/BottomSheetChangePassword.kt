@@ -1,16 +1,18 @@
 package com.goldenowl.ecommerce.ui.global.profile
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.activityViewModels
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetChangePasswordBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.goldenowl.ecommerce.viewmodels.TextInputViewModel
@@ -90,9 +92,23 @@ class BottomSheetChangePassword(private val userManager: UserManager) : BottomSh
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             }
             BaseLoadingStatus.SUCCEEDED -> {
-                Toast.makeText(activity, getText(R.string.change_password_success), Toast.LENGTH_SHORT).show()
+                notifyChangePwSuccess()
                 this@BottomSheetChangePassword.dismiss()
             }
+        }
+    }
+
+    private fun notifyChangePwSuccess() {
+        val notificationId = 200
+        var builder = NotificationCompat.Builder(requireContext(), Constants.CHANNEL_CHANGE_PASSWORD_ID)
+            .setSmallIcon(R.mipmap.ic_ecommerce_launcher_round)
+            .setContentTitle(requireContext().getString(R.string.app_name))
+            .setContentText(requireContext().getString(R.string.change_password_success))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(requireContext())) {
+            notify(notificationId, builder.build())
         }
     }
 

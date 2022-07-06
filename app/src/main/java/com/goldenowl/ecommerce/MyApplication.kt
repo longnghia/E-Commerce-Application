@@ -1,8 +1,10 @@
 package com.goldenowl.ecommerce
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import android.util.Log
+import android.os.Build
 import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.goldenowl.ecommerce.models.auth.UserManager
@@ -13,6 +15,7 @@ import com.goldenowl.ecommerce.models.repo.AuthRepository
 import com.goldenowl.ecommerce.models.repo.LocalAuthDataSource
 import com.goldenowl.ecommerce.models.repo.ProductsRepository
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
+import com.goldenowl.ecommerce.utils.Constants
 import com.google.firebase.FirebaseApp
 
 class MyApplication : Application() {
@@ -30,13 +33,14 @@ class MyApplication : Application() {
         AppEventsLogger.activateApp(this)
         FirebaseApp.initializeApp(this)
 
+        createNotificationChannel()
+
         authRepository = AuthRepository(RemoteAuthDataSource(userManager, this), LocalAuthDataSource(userManager))
         productsRepository = ProductsRepository(RemoteProductsDataSource(), createLocalProductsDataSource(this))
     }
 
 
     private fun createLocalProductsDataSource(context: Context): LocalProductsDataSource {
-
         val productDao = database.productDao()
         val favoriteDao = database.favoriteDao()
         val cartDao = database.cartDao()
@@ -44,5 +48,19 @@ class MyApplication : Application() {
         val addressDao = database.addressDao()
 
         return LocalProductsDataSource(productDao, favoriteDao, cartDao, orderDao, addressDao)
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = getString(R.string.channel_change_password)
+            val descriptionText = getString(R.string.channel_change_password_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(Constants.CHANNEL_CHANGE_PASSWORD_ID, name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }

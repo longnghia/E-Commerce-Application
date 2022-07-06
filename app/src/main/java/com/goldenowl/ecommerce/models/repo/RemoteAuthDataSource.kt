@@ -383,8 +383,8 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
             userRef.document(it).set(user).addOnCompleteListener {
                 Log.d(TAG, "updateFirestore: successful")
             }
-                .addOnCompleteListener {
-                    Log.d(TAG, "updateFirestore: ERROR", it.exception)
+                .addOnFailureListener {
+                    Log.d(TAG, "updateFirestore: ERROR", it)
                 }
         }
     }
