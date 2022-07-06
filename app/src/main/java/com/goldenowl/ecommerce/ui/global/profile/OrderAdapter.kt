@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ItemOrderBinding
 import com.goldenowl.ecommerce.models.data.Order
-import java.text.SimpleDateFormat
+import com.goldenowl.ecommerce.utils.SimpleDateFormatHelper
 
 
 class OrderAdapter(private val listener: OrderClickListener) :
@@ -30,7 +30,7 @@ class OrderAdapter(private val listener: OrderClickListener) :
 
         fun bind(order: Order) {
             binding.orderId.text = order.orderId
-            binding.orderDate.text = SimpleDateFormat("MMMM dd, YYYY").format(order.date)
+            binding.orderDate.text = SimpleDateFormatHelper.formatDate(order.date)
             binding.orderTrackingNumber.text = order.trackingNumber
             binding.orderTotal.text =
                 binding.root.context.resources.getString(R.string.money_unit_float, order.totalAmount)

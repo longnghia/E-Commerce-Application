@@ -201,6 +201,7 @@
     <string name="leave_feedback">Leave feedback</string>
     <string name="no_discount">No discount</string>
     <string name="order_delivery_method">Delivery method:</string>
+    <string name="order_delivery">%1$s, %2$s, %3$d$</string>
     <string name="image_not_found">Image not found!</string>
 
     <plurals name="num_item">

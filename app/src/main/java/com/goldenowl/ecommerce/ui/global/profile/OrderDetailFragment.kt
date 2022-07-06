@@ -9,15 +9,16 @@ import androidx.core.view.isEmpty
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentOrderDetailBinding
+import com.goldenowl.ecommerce.models.data.Card
 import com.goldenowl.ecommerce.models.data.CartData
 import com.goldenowl.ecommerce.models.data.Order
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
+import com.goldenowl.ecommerce.utils.SimpleDateFormatHelper
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
-import java.text.SimpleDateFormat
 
 class OrderDetailFragment : BaseHomeFragment<FragmentOrderDetailBinding>() {
     private lateinit var mOrder: Order
@@ -50,7 +51,7 @@ class OrderDetailFragment : BaseHomeFragment<FragmentOrderDetailBinding>() {
 
     override fun setViews() {
         binding.orderId.text = mOrder.orderId
-        binding.orderDate.text = SimpleDateFormat("MMMM dd, YYYY").format(mOrder.date)
+        binding.orderDate.text = SimpleDateFormatHelper.formatDate(mOrder.date)
         binding.orderTrackingNumber.text = mOrder.trackingNumber
         binding.orderTotalAmount.text =
             getString(R.string.money_unit_float, mOrder.totalAmount)
@@ -68,7 +69,6 @@ class OrderDetailFragment : BaseHomeFragment<FragmentOrderDetailBinding>() {
         adapter.setData(listCartData)
 
         binding.orderShippingAddress.text = mOrder.shippingAddress
-        binding.orderPaymentMethod.text = mOrder.cardId
         binding.orderDiscount.text = mOrder.promoCode
 
         binding.btnReorder.setOnClickListener {
@@ -79,11 +79,14 @@ class OrderDetailFragment : BaseHomeFragment<FragmentOrderDetailBinding>() {
             val promo = viewModel.listPromo.value?.find {
                 it.id == mOrder.promoCode
             }
+            Log.d(TAG, "setViews: $promo ${mOrder.promoCode}")
             if (promo != null)
                 binding.orderDiscount.text = "${promo.salePercent}%, ${promo.name}"
         } else {
             binding.orderDiscount.text = getString(R.string.no_discount)
         }
+
+        binding.orderPaymentMethod.text = Card.getHiddenNumber(mOrder.cardId)
 
         val cardImg = when ((mOrder.cardId)[0]) {
             '4' -> (R.drawable.ic_master_card_2)
@@ -93,7 +96,8 @@ class OrderDetailFragment : BaseHomeFragment<FragmentOrderDetailBinding>() {
         binding.ivCardImg.setImageResource(cardImg)
         val delivery = Constants.listDelivery.find { it.id == mOrder.delivery }
         if (delivery != null)
-            binding.orderDeliveryMethod.text = "${delivery.id}, ${delivery.time}, ${delivery.price}"
+            binding.orderDeliveryMethod.text =
+                getString(R.string.order_delivery, delivery.id, delivery.time, delivery.price)
     }
 
     override fun init() {

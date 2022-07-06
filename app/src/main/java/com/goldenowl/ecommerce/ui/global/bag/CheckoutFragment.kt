@@ -10,6 +10,7 @@ import com.goldenowl.ecommerce.databinding.FragmentCheckoutBinding
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Constants
 import java.util.*
 
 class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
@@ -101,7 +102,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
     private fun setCard() {
         card = defaultCardIndex?.let { listCard.getOrNull(it) }
         if (card != null) {
-            binding.tvCardNumber.text = card!!.getHiddenNumber()
+            binding.tvCardNumber.text = Card.getHiddenNumber(card!!.cardNumber)
             if (card!!.cardNumber[0] == '4')
                 binding.ivCardImg.setImageResource(R.drawable.ic_master_card_2)
             else if (card!!.cardNumber[0] == '5')
@@ -131,6 +132,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
 
     override fun init() {
+        super.init()
         listProductData = viewModel.listProductData.value ?: emptyList()
     }
 
@@ -168,9 +170,10 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
                     trackingNumber = Order.generateTrackingNumber(),
                     date = Date(),
                     listCart = listCart,
-                    promoCode = viewModel.curBag.value?.promo?.name ?: "",
+                    promoCode = viewModel.curBag.value?.promo?.id ?: "",
                     cardId = card?.cardNumber ?: "",
                     totalAmount = summaryPrice,
+                    delivery = viewModel.deliveryMethod.value?.id ?: Constants.listDelivery[0].id,
                     shippingAddress = address?.getShippingAddress() ?: ""
                 )
                 viewModel.insertOrder(order)
