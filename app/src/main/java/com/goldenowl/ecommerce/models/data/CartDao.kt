@@ -19,4 +19,7 @@ interface CartDao {
 
     @Query("Delete from cart_table")
     suspend fun deleteTable()
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMultipleCart(listCart: List<Cart>)
 }

@@ -16,6 +16,7 @@ class LocalProductsDataSource(
     val allFavorite = favoriteDao.getListFavorite()
     val allCart = cartDao.getListCart()
     val allAddress = addressDao.getListAddress()
+    val allOrder = orderDao.getListOrder()
 
     override suspend fun getAllProducts(): List<Product> {
         return productDao.getListProduct()
@@ -78,4 +79,8 @@ class LocalProductsDataSource(
         return productDao.getProductById(productId)
     }
 
+
+    suspend fun insertMutipleCart(listCart: List<Cart>) {
+        cartDao.insertMultipleCart(listCart)
+    }
 }

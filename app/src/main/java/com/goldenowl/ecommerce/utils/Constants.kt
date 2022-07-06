@@ -4,6 +4,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val KEY_ORDER = "KEY_ORDER"
     const val HISTORY_SIZE = 12
 
     const val KEY_CATEGORY = "KEY_CATEGORY"

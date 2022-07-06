@@ -87,9 +87,26 @@
         <action
             android:id="@+id/next_action"
             app:destination="@id/settings_dest" />
+        <action
+            android:id="@+id/action_profile_dest_to_my_order_dest"
+            app:destination="@id/my_order_dest" />
         />
     </fragment>
+    <fragment
+        android:id="@+id/my_order_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.profile.MyOrderFragment"
+        android:label="@string/my_order"
+        tools:layout="@layout/fragment_my_order">
 
+        <action
+            android:id="@+id/action_go_detail"
+            app:destination="@id/order_detail_dest" />
+    </fragment>
+    <fragment
+        android:id="@+id/order_detail_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.profile.OrderDetailFragment"
+        android:label="@string/order_details"
+        tools:layout="@layout/fragment_order_detail" />
     <fragment
         android:id="@+id/checkout_dest"
         android:name="com.goldenowl.ecommerce.ui.global.bag.CheckoutFragment"

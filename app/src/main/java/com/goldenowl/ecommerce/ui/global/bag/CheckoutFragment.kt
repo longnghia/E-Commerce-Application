@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.ui.global.bag
 
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -11,7 +10,6 @@ import com.goldenowl.ecommerce.databinding.FragmentCheckoutBinding
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
-import com.goldenowl.ecommerce.utils.Utils
 import java.util.*
 
 class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
@@ -166,11 +164,12 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
             if (listCart != null) {
 
                 val order = Order(
-                    trackingNumber = Utils.getRandomString(),
+                    orderId = Order.generateOrderId(),
+                    trackingNumber = Order.generateTrackingNumber(),
                     date = Date(),
                     listCart = listCart,
                     promoCode = viewModel.curBag.value?.promo?.name ?: "",
-                    cardId = card?.getHiddenNumber() ?: "",
+                    cardId = card?.cardNumber ?: "",
                     totalAmount = summaryPrice,
                     shippingAddress = address?.getShippingAddress() ?: ""
                 )

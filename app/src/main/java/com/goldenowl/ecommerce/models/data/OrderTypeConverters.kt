@@ -22,4 +22,14 @@ class OrderTypeConverters {
         val type = object : TypeToken<List<Cart>>() {}.type
         return gson.fromJson(listCart, type)
     }
+
+    @TypeConverter
+    fun statusToJson(status: Order.Companion.OrderStatus): String {
+        return status.name
+    }
+
+    @TypeConverter
+    fun statusFromJson(status: String): Order.Companion.OrderStatus {
+        return enumValueOf(status)
+    }
 }

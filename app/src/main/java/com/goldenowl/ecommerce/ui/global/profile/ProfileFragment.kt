@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.goldenowl.ecommerce.R
@@ -54,6 +55,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 logOut()
                 context?.startActivity(loginIntent)
                 activity?.finish()
+            }
+
+            actionOrders.setOnClickListener {
+                findNavController().navigate(R.id.my_order_dest)
             }
 
             actionSettings.setOnClickListener(

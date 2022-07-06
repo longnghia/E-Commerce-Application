@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="26dp"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/layout_grey_out"
+        layout="@layout/layout_grey_out"
+        android:visibility="invisible" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/material_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/grey_text"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/layout_loading"
+                    layout="@layout/layout_loading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+
+                <ImageView
+                    android:id="@+id/product_img"
+                    android:layout_width="104dp"
+                    android:layout_height="104dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pexels_photo" />
+            </FrameLayout>
+
+
+            <LinearLayout
+                android:id="@+id/product_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="11dp"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/product_brand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Evening Dress"
+                    android:textColor="@color/text_title_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/product_name"
+                    style="@style/TextAppearance.MyApp.Text11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Evening Dress" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/color"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_color"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="2dp"
+                        android:text="black"
+                        android:textColor="@color/black_light"
+                        android:textSize="11sp"
+
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/size"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/tv_size"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="2dp"
+                        android:text="XL"
+                        android:textColor="@color/black_light"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/unit"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/cart_quantity"
+                        android:layout_width="48dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="2dp"
+                        android:text="0"
+                        android:textColor="@color/black_light"
+                        android:textSize="11sp"
+
+                        />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <ImageView
+        android:id="@+id/iv_more"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:elevation="2dp"
+        android:padding="8dp"
+        android:src="@drawable/ic_more"
+        app:layout_constraintEnd_toEndOf="@id/layout_item"
+        app:layout_constraintTop_toTopOf="@id/layout_item" />
+
+    <TextView
+        android:id="@+id/tv_anchor"
+        android:layout_width="190dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="48dp"
+        app:layout_constraintEnd_toEndOf="@id/layout_item"
+        app:layout_constraintTop_toTopOf="@id/layout_item" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="11dp"
+        android:elevation="5dp"
+        android:includeFontPadding="false"
+        android:text="0$"
+        android:textColor="@color/black_light"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="@+id/layout_item"
+        app:layout_constraintEnd_toEndOf="@+id/layout_item" />
+
+    <TextView
+        android:id="@+id/tv_discount_percent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:background="@drawable/bg_rounded_button_red"
+        android:elevation="5dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:text="-20%"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="@+id/layout_item"
+        app:layout_constraintTop_toTopOf="@+id/layout_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
