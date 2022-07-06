@@ -12,6 +12,8 @@ class AuthRepository(
     private val localAuthDataSource: LocalAuthDataSource
 ) {
 
+    val facebookCallbackManager = remoteAuthDataSource.facebookCallbackManager
+
     fun isUserLoggedIn(): Boolean {
         return localAuthDataSource.isLogin()
     }
@@ -30,8 +32,8 @@ class AuthRepository(
         return remoteAuthDataSource.signUpWithEmail(email, password, name)
     }
 
-    fun logInWithFacebook(fragment: Fragment, listener: LoginListener) {
-        remoteAuthDataSource.logInWithFacebook(fragment, listener)
+    fun logInWithFacebook(listener: LoginListener) {
+        remoteAuthDataSource.logInWithFacebook(listener)
     }
 
     suspend fun logInWithEmail(email: String, password: String): String? {

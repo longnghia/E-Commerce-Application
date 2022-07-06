@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.ui.auth
 
-import android.util.Log
 import android.view.View
 import androidx.navigation.Navigation
 import com.goldenowl.ecommerce.R
@@ -13,8 +12,6 @@ import com.google.android.material.textfield.TextInputLayout
 
 
 class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
-    private val TAG = "SignupFragment"
-
 
     override fun setAppBar() {
         binding.topAppBar.toolbar.title = getString(R.string.signup)
@@ -92,7 +89,6 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
     private fun validPassword(errorPassword: String?) {
         with(binding) {
-
             if (errorPassword.isNullOrEmpty()) {
                 inputLayoutPassword.isErrorEnabled = false
             } else {
@@ -156,11 +152,9 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
                 Navigation.createNavigateOnClickListener(R.id.login_dest)
             )
 
-//            layoutAlreadyHasAcc.setOnClickListener {
-//                findNavController().navigate(R.id.login_dest)
-//            }
-
-            ivFacebook.setOnClickListener { viewModel.logInWithFacebook(this@SignupFragment) }
+            ivFacebook.setOnClickListener {
+                loginWithFacebook()
+            }
             ivGoogle.setOnClickListener { viewModel.logInWithGoogle(this@SignupFragment) }
         }
 
