@@ -436,7 +436,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         productId: String,
         rating: Int,
         review: String,
-        listImages: MutableList<String>,
+        listImages: List<String>,
         date: Date
     ) {
         loadingStatus.value = BaseLoadingStatus.LOADING

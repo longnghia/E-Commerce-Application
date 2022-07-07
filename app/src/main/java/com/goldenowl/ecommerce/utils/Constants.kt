@@ -4,6 +4,9 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val UPLOAD_QUALITY: Int = 80
+    const val UPLOAD_MAX_SIZE: Long = 1_048_576
+
     const val KEY_PRODUCT = "KEY_PRODUCT"
     const val KEY_POSITION = "KEY_POSITION"
     const val KEY_ADDRESS = "KEY_ADDRESS"

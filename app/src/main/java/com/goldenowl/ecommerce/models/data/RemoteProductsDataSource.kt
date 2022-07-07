@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.models.data
 
-import android.net.Uri
 import android.util.Log
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
@@ -20,6 +19,9 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 
@@ -473,11 +475,11 @@ class RemoteProductsDataSource : ProductDataSource {
         return addedReviewRef.id
     }
 
-    suspend fun uploadReviewImage(file: Uri): String {
+    suspend fun uploadReviewImage(file: String): String {
         if (firebaseAuth.currentUser == null) throw Exception("[Firebase] Please login first!")
-
-        val reviewRef = storageRef.child("images/reviews/${file?.lastPathSegment}")
-        file?.let { reviewRef.putFile(it) }?.await()
+        val stream = FileInputStream(File(file))
+        val reviewRef = storageRef.child("images/reviews/${Date().time}")
+        stream.let { reviewRef.putStream(it) }?.await()
         return reviewRef.downloadUrl.await().toString()
     }
 
