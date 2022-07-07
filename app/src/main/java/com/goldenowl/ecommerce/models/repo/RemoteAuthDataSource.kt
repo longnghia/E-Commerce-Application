@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce.models.repo
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.facebook.*
@@ -27,6 +26,8 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileInputStream
 import kotlin.coroutines.CoroutineContext
 
 
@@ -388,9 +389,10 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         }
     }
 
-    suspend fun uploadAvatar(userId: String, file: Uri?): String {
+    suspend fun uploadAvatar(userId: String, file: File): String {
+        val stream = FileInputStream(file)
         val avatarRef = storageRef.child("images/avatar/$userId")
-        file?.let { avatarRef.putFile(it) }?.await()
+        avatarRef.putStream(stream).await()
         val url = avatarRef.downloadUrl.await()
         return url.toString()
     }

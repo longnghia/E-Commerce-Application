@@ -1,6 +1,7 @@
 package com.goldenowl.ecommerce.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import android.os.Build
 import android.util.Log
 import android.widget.Toast
@@ -12,12 +13,10 @@ import androidx.lifecycle.viewModelScope
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.*
-import com.goldenowl.ecommerce.utils.BaseLoadingStatus
-import com.goldenowl.ecommerce.utils.Constants
-import com.goldenowl.ecommerce.utils.MyResult
-import com.goldenowl.ecommerce.utils.Utils
+import com.goldenowl.ecommerce.utils.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -436,12 +435,19 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         productId: String,
         rating: Int,
         review: String,
-        listImages: List<String>,
+        listUri: List<Uri>,
         date: Date
     ) {
         loadingStatus.value = BaseLoadingStatus.LOADING
         viewModelScope.launch {
-            val uploadResult = productsRepository.uploadReviewImages(listImages)
+
+            val listCompressedImages = listUri.map {
+                async {
+                    ImageHelper.compressImageUri(getApplication<Application>().applicationContext, it).toString()
+                }
+            }.awaitAll()
+
+            val uploadResult = productsRepository.uploadReviewImages(listCompressedImages)
             Log.d(TAG, "sendReview: uploadImages: $uploadResult")
             if (uploadResult is MyResult.Error) {
                 showToast(uploadResult.exception.message)

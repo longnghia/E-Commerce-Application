@@ -9,7 +9,7 @@ import id.zelory.compressor.constraint.size
 import java.io.File
 
 object ImageHelper {
-    suspend fun compressImageFile(context: Context, file: File): File {
+    private suspend fun compressImageFile(context: Context, file: File): File {
         val compressedImageFile = Compressor.compress(context, file) {
             quality(Constants.UPLOAD_QUALITY)
             size(Constants.UPLOAD_MAX_SIZE)
@@ -23,6 +23,8 @@ object ImageHelper {
 
     suspend fun compressImageUri(context: Context, uri: Uri): File {
         val file = FileHelper.from(context, uri)
-        return compressImageFile(context, file)
+        return if (file.length() > Constants.UPLOAD_MAX_SIZE)
+            compressImageFile(context, file)
+        else file
     }
 }

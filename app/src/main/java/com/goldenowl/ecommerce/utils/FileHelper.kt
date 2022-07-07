@@ -37,7 +37,7 @@ object FileHelper {
         var extension: String? = ""
         val i = fileName!!.lastIndexOf(".")
         if (i != -1) {
-            name = fileName.substring(0, i)
+            name = "compressed_" + fileName.substring(0, i)
             extension = fileName.substring(i)
         }
         return arrayOf(name, extension)

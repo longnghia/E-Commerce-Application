@@ -9,16 +9,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.BottomSheetWriteReviewAdapter
 import com.goldenowl.ecommerce.databinding.ModalBottomSheetWriteReviewBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
-import com.goldenowl.ecommerce.utils.ImageHelper
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
 import java.util.*
 
 class BottomSheetWriteReview(private val productData: ProductData) :
@@ -59,16 +54,7 @@ class BottomSheetWriteReview(private val productData: ProductData) :
                 Toast.makeText(context, getString(R.string.pls_select_rating), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            lifecycleScope.launch {
-                viewModel.loadingStatus.value = BaseLoadingStatus.LOADING
-                val listCompressedImages = listUri.map {
-                    async {
-                        ImageHelper.compressImageUri(requireContext(), it).toString()
-                    }
-                }.awaitAll()
-                viewModel.sendReview(userId, product.id, rating, review, listCompressedImages, date)
-            }
+            viewModel.sendReview(userId, product.id, rating, review, listUri, date)
         }
     }
 
