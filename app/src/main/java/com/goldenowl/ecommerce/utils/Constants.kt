@@ -4,6 +4,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val CHANNEL_CHANGE_PASSWORD_ID = "CHANNEL_CHANGE_PASSWORD_ID"
     const val UPLOAD_QUALITY: Int = 80
     const val UPLOAD_MAX_SIZE: Long = 1_048_576
 

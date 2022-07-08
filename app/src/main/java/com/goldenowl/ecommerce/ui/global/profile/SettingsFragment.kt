@@ -20,6 +20,7 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.auth.UserManager.Companion.TYPEEMAIL
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.ui.global.BaseFragment
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.utils.Utils.getDateTime
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
@@ -90,6 +91,7 @@ class SettingsFragment : BaseFragment<FragmentSettingsBinding>() {
         with(binding) {
 
             tvChangePassword.setOnClickListener {
+                authViewModel.changePasswordStatus.value = BaseLoadingStatus.NONE
                 openBottomSheet()
             }
 

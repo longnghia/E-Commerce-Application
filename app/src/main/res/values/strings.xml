@@ -111,8 +111,8 @@
     <string name="add_to_favorite">ADD TO FAVORITES</string>
     <string name="no_image_picker">No image picker found</string>
     <string name="apply_change">Apply changes</string>
-    <string name="color">Color:</string>
-    <string name="size">Size:</string>
+    <string name="color">Color</string>
+    <string name="size">Size</string>
     <string name="none">None</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="sold_out">Sorry, this item is currently sold out</string>
@@ -186,6 +186,8 @@
         <item quantity="one">%d item</item>
         <item quantity="other">%d items</item>
     </plurals>
+    <string name="channel_change_password">Change Password</string>
+    <string name="channel_change_password_description">Notification when password changed successfully.</string>
 
     <plurals name="num_review">
         <item quantity="one">%d review</item>
