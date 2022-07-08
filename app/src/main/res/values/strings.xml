@@ -60,6 +60,7 @@
     <string name="password_change">Password Change</string>
     <string name="old_password">Old Password</string>
     <string name="forgot_password">Forgot Password?</string>
+    <string name="forgot_password_2">Forgot Password</string>
     <string name="new_password">New Password</string>
     <string name="repeat_new_password">Repeat New Password</string>
     <string name="save_password">SAVE PASSWORD</string>
@@ -91,7 +92,7 @@
     <string name="new_products">New</string>
     <string name="never_seen_before">You\'ve never seen it before!</string>
     <string name="category">Categories</string>
-    <string name="email_rs_password_sent">Email reset password sent to %s</string>
+    <string name="email_rs_password_sent">Email reset password sent to \n%s</string>
     <string name="email_rs_password_failed">Failed to send reset password email!</string>
     <string name="filters">Filters</string>
     <string name="item_category">Item Category</string>
@@ -210,6 +211,10 @@
     </plurals>
     <string name="channel_change_password">Change Password</string>
     <string name="channel_change_password_description">Notification when password changed successfully.</string>
+    <string name="pls_enter_email">Please, enter your email address. You will receive a link to create a new password via email.</string>
+    <string name="not_valid_email">Not a valid email address. Should be your@email.com</string>
+    <string name="send">Send</string>
+    <string name="ok">OK</string>
 
     <plurals name="num_order">
         <item quantity="zero">No orders</item>
