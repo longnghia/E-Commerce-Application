@@ -111,8 +111,8 @@
     <string name="add_to_favorite">ADD TO FAVORITES</string>
     <string name="no_image_picker">No image picker found</string>
     <string name="apply_change">Apply changes</string>
-    <string name="color">Color</string>
-    <string name="size">Size</string>
+    <string name="color">Color:</string>
+    <string name="size">Size:</string>
     <string name="none">None</string>
     <string name="add_to_cart">Add to cart</string>
     <string name="sold_out">Sorry, this item is currently sold out</string>
@@ -180,6 +180,7 @@
     <string name="pls_comment">Please write a comment</string>
     <string name="log_in_to_review">Log in to review</string>
     <string name="your_review">Your review</string>
+    <string name="history">History</string>
     <string name="image_not_found">Image not found!</string>
 
     <plurals name="num_item">

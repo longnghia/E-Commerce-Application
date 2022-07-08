@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.IClickListener
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
 import java.util.*
@@ -24,9 +24,9 @@ class HomeProductListAdapter(private val listener: IClickListener) :
 
     fun setData(listProductData: List<ProductData>, filterType: String?) {
         mListProductData = listProductData
-        if (filterType == "Sales")
+        if (filterType == Constants.KEY_SALE)
             mListProductData = mListProductData.filter { it.product.salePercent != null }
-        else if (filterType == "News")
+        else if (filterType == Constants.KEY_NEW)
             mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
         notifyDataSetChanged()
     }

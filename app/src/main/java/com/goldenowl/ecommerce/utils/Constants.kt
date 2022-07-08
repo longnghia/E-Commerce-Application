@@ -4,6 +4,12 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val HISTORY_SIZE = 12
+
+    const val KEY_CATEGORY = "KEY_CATEGORY"
+    const val KEY_NEW = "KEY_NEW"
+    const val KEY_SALE = "KEY_SALE"
+    const val KEY_SEARCH = "KEY_SEARCH"
     const val CHANNEL_CHANGE_PASSWORD_ID = "CHANNEL_CHANGE_PASSWORD_ID"
     const val UPLOAD_QUALITY: Int = 80
     const val UPLOAD_MAX_SIZE: Long = 1_048_576

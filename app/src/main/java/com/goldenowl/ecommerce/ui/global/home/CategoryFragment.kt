@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce.ui.global.home
 
 import android.app.SearchManager
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -80,6 +79,11 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     override fun init() {
         listCategory = viewModel.categoryList
         listProductData = viewModel.listProductData.value ?: emptyList()
+        arguments?.apply {
+            getString(Constants.KEY_SEARCH)?.let {
+                sortViewModel.searchTerm.value = it
+            }
+        }
     }
 
 
@@ -89,7 +93,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
-        val homeFilter = arguments?.getString("home_filter")
+        val homeFilter = arguments?.getString(Constants.KEY_CATEGORY)
         sortViewModel.filterType.value = homeFilter
 
         binding.rcvCategoryGrid.adapter = adapterGrid

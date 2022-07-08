@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.ui.global.home
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -14,6 +13,7 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 import com.goldenowl.ecommerce.utils.Utils.getColor
 
@@ -37,8 +37,8 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
 
             viewModel.listProductData.observe(viewLifecycleOwner) {
                 listProductData = it
-                salesListAdapter.setData(listProductData, "Sales")
-                newsListAdapter.setData(listProductData, "News")
+                salesListAdapter.setData(listProductData, Constants.KEY_SALE)
+                newsListAdapter.setData(listProductData, Constants.KEY_NEW)
             }
 
             viewModel.allFavorite.observe(viewLifecycleOwner) {
@@ -63,14 +63,14 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         binding.tvViewAllSale.setOnClickListener {
             findNavController().navigate(
                 R.id.action_view_all,
-                bundleOf("home_filter" to "Sales")
+                bundleOf(Constants.KEY_CATEGORY to Constants.KEY_SALE)
             )
         }
 
         binding.tvViewAllNew.setOnClickListener {
             findNavController().navigate(
                 R.id.action_view_all,
-                bundleOf("home_filter" to "News")
+                bundleOf(Constants.KEY_CATEGORY to Constants.KEY_NEW)
             )
         }
     }

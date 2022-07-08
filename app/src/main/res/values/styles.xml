@@ -130,4 +130,16 @@
     <style name="MetropolisStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">@font/metropolis_regular</item>
     </style>
+
+
+    <style name="TextAppearance.MyApp.Text16.Roboto" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/grey_65</item>
+    </style>
+
+    <style name="searchInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearanceOverlay">@style/roundedCorners</item>
+    </style>
+
 </resources>
