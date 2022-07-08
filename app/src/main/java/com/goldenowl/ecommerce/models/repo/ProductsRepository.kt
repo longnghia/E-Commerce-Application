@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.models.repo
 
-import android.net.Uri
 import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
@@ -279,7 +278,7 @@ class ProductsRepository(
             val listUrl: MutableList<String> = ArrayList()
             try {
                 for (file in list) {
-                    val link = async { remoteProductDataSource.uploadReviewImage(Uri.parse(file)) }
+                    val link = async { remoteProductDataSource.uploadReviewImage(file) }
                     listUrl.add(link.await())
                 }
                 MyResult.Success(listUrl)

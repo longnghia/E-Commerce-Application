@@ -116,4 +116,7 @@ dependencies {
 
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    // compressor
+    implementation 'id.zelory:compressor:3.0.1'
 }

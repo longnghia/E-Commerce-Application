@@ -3,6 +3,7 @@ package com.goldenowl.ecommerce.viewmodels
 import android.app.Application
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -14,6 +15,7 @@ import com.goldenowl.ecommerce.models.data.User
 import com.goldenowl.ecommerce.models.repo.ICallback
 import com.goldenowl.ecommerce.models.repo.LoginListener
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.ImageHelper
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
@@ -124,14 +126,23 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         return authRepository.callBackManager()
     }
 
-    fun updateAvatar(file: Uri?) {
+    fun updateAvatar(uri: Uri?) {
+        if (uri == null) {
+            Toast.makeText(
+                getApplication<Application>().applicationContext,
+                getApplication<Application>().applicationContext.resources.getString(R.string.image_not_found),
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
         uploadAvatarStatus.value = BaseLoadingStatus.LOADING
         viewModelScope.launch {
+            val file = ImageHelper.compressImageUri(getApplication<Application>().applicationContext, uri)
             val res = authRepository.updateAvatar(authRepository.getUserId(), file)
             Log.d(TAG, "updateAvatar: $res")
             if (res is MyResult.Success) {
                 uploadAvatarStatus.value = BaseLoadingStatus.SUCCEEDED
-            } else if(res is MyResult.Error){
+            } else if (res is MyResult.Error) {
                 uploadAvatarStatus.value = BaseLoadingStatus.FAILED
                 toastMessage.postValue(res.exception.message)
             }

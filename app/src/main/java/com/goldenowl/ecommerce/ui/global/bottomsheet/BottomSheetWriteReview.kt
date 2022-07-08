@@ -20,6 +20,8 @@ class BottomSheetWriteReview(private val productData: ProductData) :
     BaseBottomSheet<ModalBottomSheetWriteReviewBinding>() {
 
     private val listImages: MutableList<String> = mutableListOf()
+    private val listUri: MutableList<Uri> = mutableListOf()
+
     private lateinit var imageActivityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var bottomSheetAdapter: BottomSheetWriteReviewAdapter
 
@@ -52,7 +54,7 @@ class BottomSheetWriteReview(private val productData: ProductData) :
                 Toast.makeText(context, getString(R.string.pls_select_rating), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            viewModel.sendReview(userId, product.id, rating, review, listImages, date)
+            viewModel.sendReview(userId, product.id, rating, review, listUri, date)
         }
     }
 
@@ -81,9 +83,10 @@ class BottomSheetWriteReview(private val productData: ProductData) :
                 return@ActivityResultCallback
             val data: Intent = result.data ?: return@ActivityResultCallback
 
-            val file: Uri? = data.data
-            file?.let {
-                listImages.add(file.toString())
+            val uri: Uri? = data.data
+            uri?.let {
+                listUri.add(it)
+                listImages.add(it.toString())
                 bottomSheetAdapter.setData(listImages)
                 binding.rcvImgs.scrollToPosition(listImages.size)
             }

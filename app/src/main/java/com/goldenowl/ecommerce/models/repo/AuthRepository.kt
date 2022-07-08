@@ -1,11 +1,11 @@
 package com.goldenowl.ecommerce.models.repo
 
-import android.net.Uri
 import androidx.fragment.app.Fragment
 import com.goldenowl.ecommerce.models.data.User
 import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 
 class AuthRepository(
     private val remoteAuthDataSource: RemoteAuthDataSource,
@@ -59,7 +59,7 @@ class AuthRepository(
         return remoteAuthDataSource.googleCallbackManager
     }
 
-    suspend fun updateAvatar(userId: String, file: Uri?): MyResult<String> {
+    suspend fun updateAvatar(userId: String, file: File): MyResult<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val url = remoteAuthDataSource.uploadAvatar(userId, file)
