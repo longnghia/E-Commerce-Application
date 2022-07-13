@@ -14,10 +14,7 @@ import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -384,10 +381,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun showToast(msg: String?) {
-        if (msg.isNullOrBlank())
-            return
-        Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT).show()
+    private suspend fun showToast(msg: String?) {
+        withContext(Dispatchers.Main) {
+            if (!msg.isNullOrBlank())
+                Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getString(resId: Int): String {
@@ -465,13 +463,14 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
     }
+
     fun restoreCart(mOrder: Order) {
         loadingStatus.value = BaseLoadingStatus.LOADING
         viewModelScope.launch {
             val res: MyResult<Boolean> = productsRepository.restoreCart(mOrder)
             Log.d(TAG, "restoreCart: $res")
             if (res is MyResult.Success) loadingStatus.value = BaseLoadingStatus.SUCCEEDED
-            else if (res is MyResult.Error){
+            else if (res is MyResult.Error) {
                 loadingStatus.value = BaseLoadingStatus.FAILED
                 Log.e(TAG, "restoreCart: ERR", res.exception)
             }
