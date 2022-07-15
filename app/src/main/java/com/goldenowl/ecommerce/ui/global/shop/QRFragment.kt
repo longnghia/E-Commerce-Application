@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -90,7 +89,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
                 }
             }
         )
-        fragment.show(activity!!.supportFragmentManager, "request_permission")
+        fragment.show(requireActivity().supportFragmentManager, "request_permission")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,7 +110,6 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
     private fun setObservers() {
         qrViewModel.timeOut.observe(viewLifecycleOwner) {
             if (it) {
-                Toast.makeText(requireContext(), "Time out", Toast.LENGTH_SHORT).show()
                 AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.timeout))
                     .setMessage(getString(R.string.ask_continue_scanning))
@@ -153,7 +151,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
         val width: Int = size.x
         val height: Int = size.y
 
-        params.setMargins(0, -width * 6 / 8, 0, 0)
+        params.setMargins(0, -width * 7 / 8, 0, 0)
         params.gravity = Gravity.CENTER
         binding.tvStatus.apply {
             elevation = 50f
@@ -200,7 +198,17 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
                 val productId = res.split('=')[1]
                 showMessageDialog(getString(R.string.product_found, productId), productId)
             } else {
-                showMessageDialog(getString(R.string.invalid_qr_code), null)
+                AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.invalid_qr_code))
+                    .setMessage(getString(R.string.ask_continue_scanning))
+                    .setNegativeButton(R.string.cancel) { _, _ ->
+                        findNavController().navigateUp()
+                    }
+                    .setPositiveButton(R.string.ok) { dialog, _ ->
+                        dialog.dismiss()
+                        qrViewModel.setTimeout()
+                    }
+                    .show()
             }
         } catch (e: Exception) {
             showMessageDialog(getString(R.string.scan_error), null)
@@ -231,7 +239,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
                 }
             }
         )
-        fragment.show(activity!!.supportFragmentManager, "scan_results")
+        fragment.show(requireActivity().supportFragmentManager, "scan_results")
     }
 
     private fun closeMessageDialog() {
@@ -240,7 +248,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
 
 
     private fun closeDialog(dialogName: String?) {
-        val fragmentManager: FragmentManager = activity!!.supportFragmentManager
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         val fragment = fragmentManager.findFragmentByTag(dialogName) ?: return
         val dialog = fragment as DialogFragment
         if (dialog != null) {
