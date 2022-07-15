@@ -44,7 +44,21 @@
             android:id="@+id/action_view_all"
 
             app:destination="@id/category_dest" />
+        <action
+            android:id="@+id/action_shop_dest_to_search_dest"
+            app:destination="@id/search_dest" />
     </fragment>
+
+    <fragment
+        android:id="@+id/search_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.shop.SearchFragment"
+        android:label="@string/search"
+        tools:layout="@layout/fragment_search">
+        <action
+            android:id="@+id/action_go_category"
+            app:destination="@id/category_dest" />
+    </fragment>
+
     <fragment
         android:id="@+id/bag_dest"
         android:name="com.goldenowl.ecommerce.ui.global.bag.BagFragment"

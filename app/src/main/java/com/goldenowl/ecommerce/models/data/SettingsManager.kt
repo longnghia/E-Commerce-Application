@@ -71,6 +71,15 @@ class SettingsManager(context: Context) {
         return settingManager.getBoolean(KEY_LAST_NETWORK, true)
     }
 
+    fun getListHistory(): MutableSet<String>? {
+        return settingManager.getStringSet(KEY_HISTORY, emptySet())
+    }
+
+    fun setListHistory(stack: MutableList<String>) {
+        editor.putStringSet(KEY_HISTORY, stack.toSet())
+        editor.commit()
+    }
+
     companion object {
         const val KEY_FIRST_LAUNCH = "firstLaunch"
         const val KEY_LAST_NETWORK = "lastNetwork"
@@ -78,5 +87,6 @@ class SettingsManager(context: Context) {
         const val KEY_NOTIFICATION_SALE = "notification_sales"
         const val KEY_NOTIFICATION_ARRIVES = "notification_arrives"
         const val KEY_NOTIFICATION_DELIVERY_STATUS_CHANGE = "notification_delivery_stt_change"
+        const val KEY_HISTORY = "history"
     }
 }

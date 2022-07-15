@@ -25,6 +25,7 @@ import kotlinx.coroutines.*
 
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
+    private lateinit var listCategoryAdapter: AppBarCategoryListAdapter
     private lateinit var adapterGrid: CategoryProductListAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
 
@@ -56,6 +57,13 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             else {
                 filterType = it
                 binding.topAppBar.collapsingToolbar.title = it
+                binding.tvProductForQuery.visibility = View.GONE
+                listCategory.indexOf(it).let { index ->
+                    if (index > -1){
+                        listCategoryAdapter.setPosition(index)
+                        binding.topAppBar.listCategory.smoothScrollToPosition(index)
+                    }
+                }
                 refreshList()
             }
         }
@@ -67,7 +75,11 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
 
         sortViewModel.searchTerm.observe(viewLifecycleOwner) {
+            if(it.isNullOrBlank())
+                return@observe
             searchTerm = it
+            binding.tvProductForQuery.text = getString(R.string.product_for, it)
+            binding.tvProductForQuery.visibility = View.VISIBLE
             refreshList()
         }
 
@@ -80,6 +92,11 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     override fun init() {
         listCategory = viewModel.categoryList
         listProductData = viewModel.listProductData.value ?: emptyList()
+        arguments?.apply {
+            getString(Constants.KEY_SEARCH)?.let {
+                sortViewModel.searchTerm.value = it
+            }
+        }
     }
 
 
@@ -89,7 +106,8 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
-        val homeFilter = arguments?.getString("home_filter")
+        val homeFilter = arguments?.getString(Constants.KEY_CATEGORY)
+        Log.d(TAG, "setViews: $homeFilter")
         sortViewModel.filterType.value = homeFilter
 
         binding.rcvCategoryGrid.adapter = adapterGrid
@@ -138,15 +156,15 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         val list = getListCategory()
 
-        listCategory.adapter =
-                //todo
-            AppBarCategoryListAdapter(
-                list,
-                object : AppBarCategoryListAdapter.IClickListenerAppbar {
-                    override fun onClick(position: Int) {
-                        sortViewModel.filterType.value = list[position]
-                    }
-                })
+        listCategoryAdapter = AppBarCategoryListAdapter(
+            list,
+            object : AppBarCategoryListAdapter.IClickListenerAppbar {
+                override fun onClick(position: Int) {
+                    sortViewModel.filterType.value = list[position]
+                }
+            })
+        listCategory.adapter = listCategoryAdapter
+
         listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
     }

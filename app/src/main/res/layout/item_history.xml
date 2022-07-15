@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="30dp"
+    android:layout_marginEnd="12dp"
+    android:layout_marginBottom="15dp"
+    android:backgroundTint="@color/grey_219"
+    app:cardCornerRadius="2dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_history"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        style="@style/TextAppearance.MyApp.Text16.Roboto"
+        android:text="@string/history" />
+</com.google.android.material.card.MaterialCardView>
