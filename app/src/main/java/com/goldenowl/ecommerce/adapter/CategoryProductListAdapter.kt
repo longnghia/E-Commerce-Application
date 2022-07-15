@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,9 +29,9 @@ class CategoryProductListAdapter(
     fun setData(listProductData: List<ProductData>, filterType: String?, sortType: SortType?, searchTerm: String) {
         mListProductData = listProductData
 
-        if (filterType == "Sales")
+        if (filterType == Constants.KEY_SALE)
             mListProductData = mListProductData.filter { it.product.salePercent != null }
-        else if (filterType == "News")
+        else if (filterType == Constants.KEY_NEW)
             mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
         else if (filterType != null)
             mListProductData = mListProductData.filter { it.product.categoryName == filterType }

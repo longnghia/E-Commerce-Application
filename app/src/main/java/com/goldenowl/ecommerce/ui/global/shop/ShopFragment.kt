@@ -1,11 +1,13 @@
 package com.goldenowl.ecommerce.ui.global.shop
 
 import android.widget.ArrayAdapter
+import androidx.core.os.bundleOf
 import androidx.core.view.isEmpty
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentShopBinding
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils
 
 
@@ -26,13 +28,14 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
             adapter = this@ShopFragment.adapter
             setOnItemClickListener { _, _, position, _ ->
                 findNavController().navigate(
-                    R.id.category_dest
+                    R.id.category_dest,
+                    bundleOf(Constants.KEY_CATEGORY to viewModel.categoryList.elementAt(position))
                 )
             }
 
             binding.btnViewAll.setOnClickListener {
                 findNavController().navigate(
-                    R.id.action_view_all
+                    R.id.action_go_category
                 )
             }
         }

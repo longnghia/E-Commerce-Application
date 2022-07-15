@@ -181,6 +181,7 @@
     <string name="log_in_to_review">Log in to review</string>
     <string name="your_review">Your review</string>
     <string name="history">History</string>
+    <string name="product_for">Result for %s:</string>
     <string name="image_not_found">Image not found!</string>
 
     <plurals name="num_item">
