@@ -5,12 +5,10 @@ import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.utils.Constants.PRODUCTS_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.PROMOTIONS_COLLECTION
-import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -23,6 +21,8 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
+import com.google.firebase.firestore.Query
 
 
 class RemoteProductsDataSource : ProductDataSource {
@@ -461,6 +461,12 @@ class RemoteProductsDataSource : ProductDataSource {
 
             userOrderRef
                 .update("addresss", listAddress)
+        }
+    }
+
+    suspend fun insertMultipleCart(listCart: List<Cart>) {
+        listCart.forEach {
+            insertCart(it)
         }
     }
 

@@ -14,10 +14,7 @@ import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -31,6 +28,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var categoryList: Set<String> = setOf()
 
     var listProductData: MutableLiveData<List<ProductData>> = MutableLiveData<List<ProductData>>()
+    var listCartData: MutableLiveData<List<CartData>> = MutableLiveData<List<CartData>>()
     var listReviewData: MutableLiveData<MutableList<ReviewData>> = MutableLiveData<MutableList<ReviewData>>()
     var listPromo: MutableLiveData<List<Promo>> = MutableLiveData<List<Promo>>().apply { value = emptyList() }
     var listCard: MutableLiveData<List<Card>> = MutableLiveData<List<Card>>().apply { value = emptyList() }
@@ -50,6 +48,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     val allFavorite = productsRepository.allFavorite.asLiveData()
     val allCart = productsRepository.allCart.asLiveData()
     val allAddress = productsRepository.allAddress.asLiveData()
+    val allOrder = productsRepository.allOrder.asLiveData()
 
     var addAddressStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
         value = BaseLoadingStatus.NONE
@@ -100,6 +99,16 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun getListCartData(order: Order): List<CartData> {
+        val listCart = order.listCart
+        val list = listCart.map { cart ->
+            val product = mListProduct.find { it.id == cart.productId }
+            val promo = listPromo.value?.find { it.id == order.promoCode }
+            CartData(product!!, cart, promo)
+        }
+        return list
+    }
+
     private fun setCategoryList(list: List<Product>) {
         val categoryList = mutableSetOf<String>()
         if (list.isNotEmpty()) {
@@ -126,17 +135,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         if (resCard is MyResult.Success) {
             listCard.value = resCard.data
         }
-
-
-        //todo restore user data
-//        if (defaultCheckOut is MyResult.Success) {
-//            val data = defaultCheckOut.data
-//            val cardIndex = data.getOrDefault(Constants.DEFAULT_CARD, -1)
-//            defaultCardIndex.value = cardIndex
-//
-//            val addressIndex = data.getOrDefault(Constants.DEFAULT_ADDRESS, -1)
-//            defaultAddressIndex.value = addressIndex
-//        }
     }
 
     private suspend fun getListPromo() {
@@ -261,11 +259,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         val list = listProductData.value?.toMutableList()
         return list?.take(5) ?: emptyList()
         //todo getRelateProducts
-//        list.filter { product->
-//            product.tags.find { tag->
-//                tags.indexOf(tag.)
-//            }
-//        }
     }
 
 
@@ -388,10 +381,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private fun showToast(msg: String?) {
-        if (msg.isNullOrBlank())
-            return
-        Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT).show()
+    private suspend fun showToast(msg: String?) {
+        withContext(Dispatchers.Main) {
+            if (!msg.isNullOrBlank())
+                Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getString(resId: Int): String {
@@ -466,6 +460,19 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                 } else if (result is MyResult.Error) {
                     showToast(result.exception.message)
                 }
+            }
+        }
+    }
+
+    fun restoreCart(mOrder: Order) {
+        loadingStatus.value = BaseLoadingStatus.LOADING
+        viewModelScope.launch {
+            val res: MyResult<Boolean> = productsRepository.restoreCart(mOrder)
+            Log.d(TAG, "restoreCart: $res")
+            if (res is MyResult.Success) loadingStatus.value = BaseLoadingStatus.SUCCEEDED
+            else if (res is MyResult.Error) {
+                loadingStatus.value = BaseLoadingStatus.FAILED
+                Log.e(TAG, "restoreCart: ERR", res.exception)
             }
         }
     }

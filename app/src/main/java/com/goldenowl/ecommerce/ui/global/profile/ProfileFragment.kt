@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.goldenowl.ecommerce.R
@@ -24,6 +25,7 @@ import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
+import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -35,6 +37,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private lateinit var auth: FirebaseAuth
     private lateinit var userManager: UserManager
     private val viewModel: AuthViewModel by activityViewModels()
+    private val shopViewModel: ShopViewModel by activityViewModels()
 
     override fun init() {
         userManager = UserManager.getInstance(requireContext())
@@ -56,6 +59,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 activity?.finish()
             }
 
+            actionOrders.setOnClickListener {
+                findNavController().navigate(R.id.my_order_dest)
+            }
+
             actionSettings.setOnClickListener(
                 Navigation.createNavigateOnClickListener(com.goldenowl.ecommerce.R.id.next_action, null)
             )
@@ -74,6 +81,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     override fun setObservers() {
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+
+        shopViewModel.allOrder.observe(viewLifecycleOwner) {
+            binding.tvActionOrders.text =
+                requireContext().resources.getQuantityString(R.plurals.num_order, it.size, it.size)
         }
     }
 

@@ -215,17 +215,5 @@ object Utils {
         return false
     }
 
-    fun getRandomString(): String {
-        val numset = "0123456789"
-        val charset = "ABCDEFGHIJKLMNOPQRSTUVWXTZ"
-        val NUM_LENGTH = 2
-        val CHAR_LENGTH = 10
-        val num = (1..NUM_LENGTH)
-            .map { numset.random() }
-            .joinToString("")
-        val char = (1..CHAR_LENGTH)
-            .map { charset.random() }
-            .joinToString("")
-        return num + char
-    }
+
 }

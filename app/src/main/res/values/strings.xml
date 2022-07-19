@@ -121,7 +121,7 @@
     <string name="support">Support</string>
     <string name="you_can_also_like">You can also like this</string>
     <string name="enter_promo">Enter your promo code</string>
-    <string name="total_amount">Total amount</string>
+    <string name="total_amount">Total amount:</string>
     <string name="apply">Apply</string>
     <string name="your_promo_code">Your Promo Codes</string>
     <string name="add_address">Add shipping address</string>
@@ -182,6 +182,26 @@
     <string name="your_review">Your review</string>
     <string name="history">History</string>
     <string name="product_for">Result for %s:</string>
+    <string name="delivered">Delivered</string>
+    <string name="processing">Processing</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="no_verify">No verify</string>
+    <string name="tracking_number">Tracking number:</string>
+    <string name="quantity">Quantity:</string>
+    <string name="details">Details</string>
+    <string name="my_orders">My Orders</string>
+    <string name="order_info">Order information</string>
+    <string name="order_shipping_address">Shipping address:</string>
+    <string name="order_payment_method">Payment method:</string>
+    <string name="order_discount">Discount:</string>
+    <string name="order_total_amount">Total amount:</string>
+    <string name="order_details">Order Details</string>
+    <string name="unit">Units:</string>
+    <string name="reorder">Reorder</string>
+    <string name="leave_feedback">Leave feedback</string>
+    <string name="no_discount">No discount</string>
+    <string name="order_delivery_method">Delivery method:</string>
+    <string name="order_delivery">%1$s, %2$s, %3$d$</string>
     <string name="image_not_found">Image not found!</string>
 
     <plurals name="num_item">
@@ -190,6 +210,12 @@
     </plurals>
     <string name="channel_change_password">Change Password</string>
     <string name="channel_change_password_description">Notification when password changed successfully.</string>
+
+    <plurals name="num_order">
+        <item quantity="zero">No orders</item>
+        <item quantity="one">Already has 1 order</item>
+        <item quantity="other">Already has %d orders</item>
+    </plurals>
 
     <plurals name="num_review">
         <item quantity="one">%d review</item>

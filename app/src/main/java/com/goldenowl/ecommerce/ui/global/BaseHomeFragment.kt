@@ -15,6 +15,7 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetEnterPromo
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -97,6 +98,11 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
 
     companion object {
         val TAG = "BaseHomeFragment"
+    }
+
+    override fun init() {
+        super.init()
+        viewModel.loadingStatus.value = BaseLoadingStatus.NONE
     }
 }
 

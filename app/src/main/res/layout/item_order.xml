@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="164dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginBottom="24dp"
+    app:cardElevation="5dp"
+    app:cardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp">
+
+        <TextView
+            android:id="@+id/order_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="@string/my_order"
+            android:textColor="@color/black_light"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/order_date"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_order"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/order_id" />
+
+        <TextView
+            android:id="@+id/tv_tracking_number"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="@string/tracking_number"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/order_id" />
+
+        <TextView
+            android:id="@+id/order_tracking_number"
+            style="@style/TextAppearance.MyApp.Text14.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/tracking_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/tv_tracking_number"
+            app:layout_constraintTop_toTopOf="@id/tv_tracking_number" />
+
+        <TextView
+            android:id="@+id/tv_quantity"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/quantity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_tracking_number" />
+
+        <TextView
+            android:id="@+id/order_quantity"
+            style="@style/TextAppearance.MyApp.Text14.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="@string/tracking_number"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/tv_quantity"
+            app:layout_constraintTop_toTopOf="@id/tv_quantity" />
+
+        <TextView
+            android:id="@+id/tv_total"
+            style="@style/TextAppearance.MyApp.Text14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="11dp"
+            android:text="@string/total_amount"
+            app:layout_constraintEnd_toStartOf="@id/order_total"
+            app:layout_constraintTop_toTopOf="@id/order_total" />
+
+        <TextView
+            android:id="@+id/order_total"
+            style="@style/TextAppearance.MyApp.Text14.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_amount"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_quantity" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:backgroundTint="@color/white"
+            android:text="@string/details"
+            android:textColor="@color/black_light"
+            app:layout_constraintStart_toStartOf="@id/tv_quantity"
+            app:layout_constraintTop_toBottomOf="@id/tv_quantity"
+            app:shapeAppearanceOverlay="@style/RoundedButtonShape"
+            app:strokeColor="@color/black_light"
+            app:strokeWidth="1dp" />
+
+        <TextView
+            android:id="@+id/order_status"
+            style="@style/TextAppearance.MyApp.Text14.Black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/total_amount"
+            android:textColor="@color/green_success"
+            app:layout_constraintBottom_toBottomOf="@id/btn_detail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_detail" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="-8dp"
+        android:src="@drawable/bg_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</com.google.android.material.card.MaterialCardView>
+

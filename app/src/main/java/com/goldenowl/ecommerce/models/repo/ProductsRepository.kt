@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.models.repo
 
+import android.net.Uri
 import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
@@ -16,6 +17,7 @@ class ProductsRepository(
     val allFavorite = localProductDataSource.allFavorite
     val allCart = localProductDataSource.allCart
     val allAddress = localProductDataSource.allAddress
+    val allOrder = localProductDataSource.allOrder
 
 
     suspend fun getAllProducts(): List<Product> {
@@ -265,9 +267,6 @@ class ProductsRepository(
             val localAddress = localProductDataSource.allAddress.first()
 
             //todo local 2 remote
-//            remoteProductDataSource.insertMutipleFavorite(localFavorites)
-//            remoteProductDataSource.insertMutipleFavorite(localCarts)
-//            remoteProductDataSource.insertMutipleFavorite(localCarts)
         }
     }
 
@@ -340,6 +339,18 @@ class ProductsRepository(
                 val localSource = async { localProductDataSource.updateProduct(product) }
                 remoteSource.await()
                 localSource.await()
+                MyResult.Success(true)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    suspend fun restoreCart(mOrder: Order): MyResult<Boolean> {
+        return supervisorScope {
+            try {
+                localProductDataSource.insertMutipleCart(mOrder.listCart)
+                remoteProductDataSource.insertMultipleCart(mOrder.listCart)
                 MyResult.Success(true)
             } catch (e: Exception) {
                 MyResult.Error(e)
