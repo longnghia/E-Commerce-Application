@@ -35,7 +35,7 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
 
             binding.btnViewAll.setOnClickListener {
                 findNavController().navigate(
-                    R.id.action_go_category
+                    R.id.category_dest
                 )
             }
         }
