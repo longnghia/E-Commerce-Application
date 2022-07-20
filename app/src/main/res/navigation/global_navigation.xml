@@ -45,9 +45,27 @@
 
             app:destination="@id/category_dest" />
         <action
+            android:id="@+id/action_shop_dest_to_qr_dest"
+            app:destination="@id/qr_dest" />
+        <action
             android:id="@+id/action_shop_dest_to_search_dest"
             app:destination="@id/search_dest" />
     </fragment>
+
+    <fragment
+        android:id="@+id/qr_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.shop.QRFragment"
+        android:label="@string/qr">
+
+        <action
+            android:id="@+id/action_go_detail"
+            app:destination="@id/detail_dest"
+            app:popUpTo="@id/shop_dest" />
+            android:id="@+id/action_view_all"
+
+            app:destination="@id/category_dest" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/search_dest"

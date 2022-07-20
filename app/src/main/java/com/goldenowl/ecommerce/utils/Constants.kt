@@ -18,6 +18,7 @@ object Constants {
     const val KEY_PRODUCT = "KEY_PRODUCT"
     const val KEY_POSITION = "KEY_POSITION"
     const val KEY_ADDRESS = "KEY_ADDRESS"
+    const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"
 
     const val PRODUCTS_COLLECTION = "products"
     const val USER_ORDER_COLLECTION = "user_orders"

@@ -78,6 +78,10 @@ class SearchFragment : BaseHomeFragment<FragmentSearchBinding>() {
             false
         }
 
+        binding.topAppBar.inputLayoutSearch.setEndIconOnClickListener {
+            findNavController().navigate(R.id.qr_dest)
+        }
+
         binding.topAppBar.edtSearch.requestFocus()
     }
 

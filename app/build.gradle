@@ -117,6 +117,9 @@ dependencies {
     // gson
     implementation 'com.google.code.gson:gson:2.9.0'
 
+    // qrcode
+    implementation 'me.dm7.barcodescanner:zxing:1.9.13'
+
     // flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
