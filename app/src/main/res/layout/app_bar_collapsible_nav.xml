@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/app_bar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/background_color"
     android:elevation="4dp"
     android:fitsSystemWindows="true"
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
@@ -23,10 +22,10 @@
         app:expandedTitleMarginEnd="64dp"
         app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
         app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
-        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
-        <!--        app:statusBarScrim="@color/transparent"-->
-
-        <!--            app:navigationIconTint="@color/white"-->
+        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+        app:contentScrim="@color/background_color"
+        app:statusBarScrim="@color/background_color"
+        >
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"

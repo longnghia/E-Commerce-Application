@@ -19,8 +19,15 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/signup_dest"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_login_dest_to_forgot_dest"
+            app:destination="@id/forgot_dest" />
     </fragment>
-
+    <fragment
+        android:id="@+id/forgot_dest"
+        android:name="com.goldenowl.ecommerce.ui.auth.ForgotPasswordFragment"
+        android:label="@string/forgot_password"
+        tools:layout="@layout/fragment_forgot_password" />
     <fragment
         android:id="@+id/signup_dest"
         android:name="com.goldenowl.ecommerce.ui.auth.SignupFragment"

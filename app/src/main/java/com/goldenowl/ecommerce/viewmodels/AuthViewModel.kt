@@ -90,8 +90,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             forgotPasswordStatus.value = BaseLoadingStatus.LOADING
             val res = authRepository.forgotPassword(email)
-            if (res.isNullOrBlank())
-                toastMessage.value = getApplication<MyApplication>().getString(R.string.email_rs_password_sent, email)
+            if (!res.isNullOrBlank()) {
+                Toast.makeText((getApplication() as MyApplication).applicationContext, res, Toast.LENGTH_SHORT).show()
+            }
             onDone(res, forgotPasswordStatus)
         }
     }

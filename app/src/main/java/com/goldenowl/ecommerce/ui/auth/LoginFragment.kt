@@ -1,7 +1,6 @@
 package com.goldenowl.ecommerce.ui.auth
 
 import android.view.View
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
@@ -41,34 +40,9 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             errorMessage.observe(viewLifecycleOwner) {
                 showErrorMessage(it)
             }
-            forgotPasswordStatus.observe((viewLifecycleOwner)) { forgotPasswordStatus ->
-                handleForgotPassword(forgotPasswordStatus)
-            }
-
         }
 
 
-    }
-
-    private fun handleForgotPassword(forgotPasswordStatus: BaseLoadingStatus?) {
-        when (forgotPasswordStatus) {
-            BaseLoadingStatus.LOADING -> {
-                setLoading(true)
-            }
-            BaseLoadingStatus.SUCCEEDED -> {
-                Toast.makeText(
-                    activity,
-                    getString(R.string.email_rs_password_sent, binding.edtEmail.text.toString()),
-                    Toast.LENGTH_SHORT
-                ).show()
-                binding.edtPassword.requestFocus()
-                setLoading(false)
-            }
-            else -> {
-                setLoading(false)
-            }
-
-        }
     }
 
     private fun setLoading(isShow: Boolean) {
@@ -166,11 +140,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
 
             layoutForgotPassword.setOnClickListener {
                 hideKeyboard()
-                if (inputLayoutEmail.endIconMode != TextInputLayout.END_ICON_CUSTOM &&
-                    binding.edtEmail.text.toString().isNotBlank()
-                ) {
-                    viewModel.forgotPassword(binding.edtEmail.text.toString().trim())
-                }
+                findNavController().navigate(R.id.forgot_dest)
             }
 
             ivFacebook.setOnClickListener {
