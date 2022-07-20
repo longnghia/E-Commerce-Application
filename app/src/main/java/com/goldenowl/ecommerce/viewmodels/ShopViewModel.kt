@@ -59,6 +59,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
 
     private var isNetworkAvailable = false
 
+    private val rsaCipher = RSACipher((application as MyApplication).applicationContext)
 
     init {
         isNetworkAvailable = Utils.isNetworkAvailable(application.applicationContext)
@@ -133,7 +134,10 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         )
 
         if (resCard is MyResult.Success) {
-            listCard.value = resCard.data
+            val listEncrypted = resCard.data
+            listCard.value = listEncrypted.map { card ->
+                Card.decrypt(card, rsaCipher)
+            }
         }
     }
 
@@ -261,10 +265,9 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         //todo getRelateProducts
     }
 
-
     fun insertCard(card: Card) {
         viewModelScope.launch(Dispatchers.IO) {
-            productsRepository.insertCard(card).let {
+            productsRepository.insertCard(Card.encrypt(card, rsaCipher)).let {
                 Log.d(TAG, "insertCard: result= $it")
                 if (it is MyResult.Success) {
                     val newList = listCard.value?.toMutableList() ?: mutableListOf()
