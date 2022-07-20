@@ -1,4 +1,0 @@
-storePassword=goldenowl
-keyPassword=goldenowl
-keyAlias=upload
-storeFile=../keystore_GO.jks

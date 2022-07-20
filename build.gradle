@@ -19,7 +19,20 @@ buildscript {
 
         // firebase
         classpath 'com.google.gms:google-services:4.3.10'
+
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
     }
+}
+
+static def generateVersionCode() {
+    def result = "git rev-list HEAD --count".execute().text.trim() //unix
+    if (result.empty) throw new RuntimeException("Could not generate versioncode on this platform? Cmd output: ${result.text}")
+    return result.toInteger()
+}
+
+ext {
+    // query git for the commit count to automate versioning.
+    gitCommitCount = generateVersionCode()
 }
 
 allprojects{
