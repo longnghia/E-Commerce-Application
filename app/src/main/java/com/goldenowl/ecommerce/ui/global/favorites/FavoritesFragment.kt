@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.ui.global.favorites
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -14,6 +15,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentFavoritesBinding
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
@@ -98,6 +100,14 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     }
 
     override fun setViews() {
+        if (!viewModel.isLoggedIn()) {
+            binding.layoutContent.visibility = View.GONE
+            binding.topAppBar.appBarExtra.visibility = View.GONE
+            binding.layoutNotLogIn.layoutNotLogIn.visibility = View.VISIBLE
+            binding.layoutNotLogIn.layoutLogInToContinue.setOnClickListener {
+                startActivity(Intent(requireContext(), LoginSignupActivity::class.java))
+            }
+        }
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = FavoriteProductListAdapter(gridLayoutManager, this)
 
