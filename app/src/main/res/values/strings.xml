@@ -226,7 +226,9 @@
     <string name="pls_enter_email">Please, enter your email address. You will receive a link to create a new password via email.</string>
     <string name="not_valid_email">Not a valid email address. Should be your@email.com</string>
     <string name="send">Send</string>
-    <string name="ok">OK</string>
+    <string name="not_log_in_yet">Not logged in!</string>
+    <string name="log_in_now">Log in now?</string>
+    <string name="log_in_to_continue">Log in to continue</string>
 
     <plurals name="num_order">
         <item quantity="zero">No orders</item>

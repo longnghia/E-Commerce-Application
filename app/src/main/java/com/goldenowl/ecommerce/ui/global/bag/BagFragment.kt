@@ -2,7 +2,9 @@ package com.goldenowl.ecommerce.ui.global.bag
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentBagBinding
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
@@ -87,6 +90,13 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
     }
 
     override fun setViews() {
+        if (!viewModel.isLoggedIn()) {
+            binding.layoutContent.visibility = View.GONE
+            binding.layoutNotLogIn.layoutNotLogIn.visibility = View.VISIBLE
+            binding.layoutNotLogIn.layoutLogInToContinue.setOnClickListener {
+                startActivity(Intent(requireContext(), LoginSignupActivity::class.java))
+            }
+        }
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = BagProductListAdapter(this)
 

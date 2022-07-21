@@ -1,8 +1,10 @@
 package com.goldenowl.ecommerce.ui.global
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -12,6 +14,7 @@ import com.goldenowl.ecommerce.models.data.Cart
 import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetEnterPromo
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
@@ -29,6 +32,10 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     protected val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
     override fun onClickFavorite(product: Product, favorite: Favorite?) {
+        if (!viewModel.isLoggedIn()) {
+            toggleDialogLogIn()
+            return
+        }
         if (favorite == null) {
             toggleBottomSheetInsertFavorite(product)
         } else {
@@ -81,6 +88,20 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
         val modalBottomSheet = BottomSheetEnterPromo(viewModel)
         modalBottomSheet.enterTransition = View.GONE
         modalBottomSheet.show(parentFragmentManager, TAG)
+    }
+
+    protected fun toggleDialogLogIn() {
+        AlertDialog.Builder(requireContext())
+            .setTitle(getString(R.string.not_log_in_yet))
+            .setMessage(getString(R.string.log_in_now))
+            .setNegativeButton(R.string.cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(R.string.ok) { dialog, _ ->
+                dialog.dismiss()
+                startActivity(Intent(requireContext(), LoginSignupActivity::class.java))
+            }
+            .show()
     }
 
     protected fun showToast(msg: String?) {

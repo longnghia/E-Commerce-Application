@@ -133,11 +133,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
         /* insert favorite btn */
         binding.ivFavorite.setOnClickListener {
-            if (favorite == null) {
-                toggleBottomSheetInsertFavorite(product)
-            } else {
-                viewModel.removeFavorite(favorite!!)
-            }
+            this.onClickFavorite(product,favorite)
         }
     }
 
