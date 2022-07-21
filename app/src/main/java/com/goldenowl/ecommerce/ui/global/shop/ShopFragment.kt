@@ -66,6 +66,9 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
                     }
                     false
                 }
+                setNavigationOnClickListener {
+                    findNavController().navigateUp()
+                }
             }
         }
     }

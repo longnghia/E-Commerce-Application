@@ -58,7 +58,11 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             if (it == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
             else {
                 filterType = it
-                binding.topAppBar.collapsingToolbar.title = it
+                binding.topAppBar.collapsingToolbar.title = when(it){
+                    Constants.KEY_NEW -> getString(R.string.news)
+                    Constants.KEY_SALE -> getString(R.string.sales)
+                    else -> it
+                }
                 binding.tvProductForQuery.visibility = View.GONE
                 listCategory.indexOf(it).let { index ->
                     if (index > -1){
@@ -116,7 +120,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
         val homeFilter = arguments?.getString(Constants.KEY_CATEGORY)
-        Log.d(TAG, "setViews: $homeFilter")
         sortViewModel.filterType.value = homeFilter
 
         binding.rcvCategoryGrid.adapter = adapterGrid
@@ -136,9 +139,9 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     private fun refreshList() {
         var filteredList = listProductData.toList()
 
-        if (filterType == "Sales")
+        if (filterType == Constants.KEY_SALE)
             filteredList = filteredList.filter { it.product.salePercent != null }
-        else if (filterType == "News")
+        else if (filterType == Constants.KEY_NEW)
             filteredList = filteredList.filter { it.product.createdDate > Date(0) }
         else if (filterType != null)
             filteredList = filteredList.filter { it.product.categoryName == filterType }
@@ -283,11 +286,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
     private fun getListCategory(): List<String> {
         return viewModel.categoryList.toList()
-    }
-
-
-    companion object {
-        const val TAG = "CategoryFragment"
     }
 
     override fun getViewBinding(): FragmentCategoryBinding {

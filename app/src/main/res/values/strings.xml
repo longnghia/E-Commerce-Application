@@ -236,6 +236,8 @@
     <string name="not_log_in_yet">Not logged in!</string>
     <string name="log_in_now">Log in now?</string>
     <string name="log_in_to_continue">Log in to continue</string>
+    <string name="news">News</string>
+    <string name="sales">Sales</string>
 
     <plurals name="num_order">
         <item quantity="zero">No orders</item>
