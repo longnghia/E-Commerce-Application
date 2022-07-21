@@ -15,12 +15,14 @@ import com.goldenowl.ecommerce.adapter.CategoryProductListAdapter
 import com.goldenowl.ecommerce.databinding.FragmentCategoryBinding
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetFilterProduct
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
+import java.util.*
 
 
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
@@ -35,9 +37,9 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     private var filterType: String? = null
     private var sortType: SortType? = null
     private var searchTerm: String = ""
+    private var filterPrice: List<Float>? = null
 
 
-    //    private val sortViewModel: SortFilterViewModel by viewModels()
     private val sortViewModel = SortFilterViewModel()
     private var searchView: SearchView? = null
     private var queryTextListener: SearchView.OnQueryTextListener? = null
@@ -53,7 +55,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
 
         sortViewModel.filterType.observe(viewLifecycleOwner) {
-            if (it == null) binding.topAppBar.collapsingToolbar.title = "All products"
+            if (it == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
             else {
                 filterType = it
                 binding.topAppBar.collapsingToolbar.title = it
@@ -66,6 +68,13 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 }
                 refreshList()
             }
+        }
+
+        sortViewModel.filterByPrice.observe(viewLifecycleOwner) {
+            filterPrice = it
+            binding.topAppBar.tvFilter.text = if (filterPrice != null) getString(R.string.filter_by_price) else
+                getString(R.string.filters)
+            refreshList()
         }
 
         sortViewModel.sortType.observe(viewLifecycleOwner) {
@@ -119,10 +128,51 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         binding.topAppBar.layoutSort.setOnClickListener {
             toggleBottomSheetSortProduct()
         }
+        binding.topAppBar.layoutFilter.setOnClickListener {
+            toggleBottomSheetFilterProduct()
+        }
     }
 
     private fun refreshList() {
-        adapterGrid.setData(listProductData, filterType, sortType, searchTerm)
+        var filteredList = listProductData.toList()
+
+        if (filterType == "Sales")
+            filteredList = filteredList.filter { it.product.salePercent != null }
+        else if (filterType == "News")
+            filteredList = filteredList.filter { it.product.createdDate > Date(0) }
+        else if (filterType != null)
+            filteredList = filteredList.filter { it.product.categoryName == filterType }
+
+        filteredList = when (sortType) {
+            SortType.REVIEW -> filteredList.sortedByDescending { it.product.reviewStars }
+            SortType.PRICE_DECREASE -> filteredList.sortedByDescending { it.product.getDiscountPrice() }
+            SortType.PRICE_INCREASE -> filteredList.sortedBy { it.product.getDiscountPrice() }
+            SortType.POPULAR -> filteredList.sortedByDescending { it.product.isPopular }
+            SortType.NEWEST -> filteredList.sortedByDescending { it.product.createdDate }
+            else -> filteredList
+        }
+        if (searchTerm.isNotBlank()) {
+            filteredList = filteredList.filter {
+                it.product.title.indexOf(searchTerm, ignoreCase = true) >= 0 || it.product.brandName.indexOf(
+                    searchTerm,
+                    ignoreCase = true
+                ) >= 0
+            }
+        }
+        filterPrice?.let { filter ->
+            filteredList = filteredList.filter {
+                val price = it.product.getDiscountPrice()
+                price >= filter[0] && price <= filter[1]
+            }
+        }
+        if (filteredList.isEmpty()) {
+            binding.tvNoProduct.visibility = View.VISIBLE
+            binding.layoutCategory.visibility = View.GONE
+        } else {
+            binding.tvNoProduct.visibility = View.GONE
+            binding.layoutCategory.visibility = View.VISIBLE
+            adapterGrid.setData(filteredList)
+        }
     }
 
     private fun switchLayout() {
@@ -144,6 +194,22 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         modalBottomSheet.show(parentFragmentManager, BottomSheetSortProduct.TAG)
     }
 
+    private fun toggleBottomSheetFilterProduct() {
+
+        val modalBottomSheet =
+            BottomSheetFilterProduct(filterPrice, object : BottomSheetFilterProduct.OnFilterListener {
+                override fun discard() {
+                    sortViewModel.disCardFilterPrice()
+                }
+
+                override fun apply(values: List<Float>) {
+                    sortViewModel.filterByPrice.value = values
+                }
+
+            })
+        modalBottomSheet.enterTransition = View.GONE
+        modalBottomSheet.show(parentFragmentManager, BottomSheetFilterProduct.TAG)
+    }
 
     override fun setAppbar() {
         binding.topAppBar.toolbar.setNavigationOnClickListener {
