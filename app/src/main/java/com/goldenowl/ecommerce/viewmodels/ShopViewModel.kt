@@ -32,6 +32,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var listReviewData: MutableLiveData<MutableList<ReviewData>> = MutableLiveData<MutableList<ReviewData>>()
     var listPromo: MutableLiveData<List<Promo>> = MutableLiveData<List<Promo>>().apply { value = emptyList() }
     var listCard: MutableLiveData<List<Card>> = MutableLiveData<List<Card>>().apply { value = emptyList() }
+    var listAddress: MutableLiveData<List<Address>> = MutableLiveData<List<Address>>().apply { value = emptyList() }
     var mListReview = MutableLiveData<List<Review>>().apply { value = emptyList() }
 
     var curBag: MutableLiveData<Bag> = MutableLiveData<Bag>()
@@ -48,7 +49,8 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
 
     val allFavorite = productsRepository.allFavorite.asLiveData()
     val allCart = productsRepository.allCart.asLiveData()
-    val allAddress = productsRepository.allAddress.asLiveData()
+
+    //    val allAddress = productsRepository.allAddress.asLiveData()
     val allOrder = productsRepository.allOrder.asLiveData()
 
     var addAddressStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
@@ -77,9 +79,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
 
         curBag.value = Bag()
-
-        defaultAddressIndex.value = settingsManager.getDefaultAddress()
-        defaultCardIndex.value = settingsManager.getDefaultCard()
     }
 
     private fun getUser() = authRepository.getUser()
@@ -151,6 +150,21 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             } else if (resCard is MyResult.Error) {
                 showToast(resCard.exception.message)
             }
+
+            if (resAddress is MyResult.Success) {
+                listAddress.value = resAddress.data
+            } else if (resAddress is MyResult.Error) {
+                showToast(resAddress.exception.message)
+            }
+
+            if (defaultCheckOut is MyResult.Success) {
+                defaultAddressIndex.value = defaultCheckOut.data[Constants.DEFAULT_ADDRESS]
+                defaultCardIndex.value = defaultCheckOut.data[Constants.DEFAULT_CARD]
+            } else if (defaultCheckOut is MyResult.Error) {
+                showToast(defaultCheckOut.exception.message)
+            }
+
+
         }
     }
 
@@ -366,7 +380,8 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         if (position == defaultAddressIndex.value) {
             setDefaultAddress(0)
         }
-        val address = this.allAddress.value?.get(position)
+//        val address = this.allAddress.value?.get(position)
+        val address = this.listAddress.value?.get(position)
         viewModelScope.launch(Dispatchers.IO) {
             if (address != null) {
                 productsRepository.removeAddress(position, address).let {

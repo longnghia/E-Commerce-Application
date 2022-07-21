@@ -54,7 +54,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
             }
         }
 
-        viewModel.allAddress.observe(viewLifecycleOwner) {
+        viewModel.listAddress.observe(viewLifecycleOwner) {
             listAddress = it
             if (it.isEmpty()) {
                 binding.btnAddAddress.visibility = View.VISIBLE

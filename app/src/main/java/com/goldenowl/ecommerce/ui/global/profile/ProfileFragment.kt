@@ -67,7 +67,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         shopViewModel.mListReview.observe(viewLifecycleOwner) {
             binding.tvActionReview.text = getQuantityString(R.plurals.num_review, it.size)
         }
-        shopViewModel.allAddress.observe(viewLifecycleOwner) { list ->
+        shopViewModel.listAddress.observe(viewLifecycleOwner) { list ->
             val address = shopViewModel.defaultAddressIndex.value?.let { list[it] }
             binding.tvActionAddress.text = address?.getShippingAddress() ?: getString(R.string.no_address)
         }

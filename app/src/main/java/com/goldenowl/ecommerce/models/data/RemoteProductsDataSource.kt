@@ -354,7 +354,7 @@ class RemoteProductsDataSource : ProductDataSource {
         val userId =
             firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
         var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
-        val snapshot = userOrderRef.get(Source.SERVER).await()
+        val snapshot = userOrderRef.get().await()
         if (!snapshot.exists()) {
             return emptyList()
         } else {
