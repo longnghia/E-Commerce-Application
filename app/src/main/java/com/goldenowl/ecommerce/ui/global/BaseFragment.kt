@@ -54,4 +54,8 @@ abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
     open fun init() {
         setHasOptionsMenu(true)
     }
+
+    fun getQuantityString(resId: Int, quantity: Int): CharSequence {
+        return requireContext().resources.getQuantityString(resId, quantity, quantity)
+    }
 }

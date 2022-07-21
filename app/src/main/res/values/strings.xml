@@ -226,26 +226,37 @@
     <string name="pls_enter_email">Please, enter your email address. You will receive a link to create a new password via email.</string>
     <string name="not_valid_email">Not a valid email address. Should be your@email.com</string>
     <string name="send">Send</string>
+    <string name="my_promo">My promotions</string>
+    <string name="promo_expired">Promotion expired!</string>
+    <string name="expired">expired</string>
+    <string name="no_promo">No promocodes</string>
     <string name="private_key">-----BEGIN PRIVATE KEY----- MIICXQIBAAKBgQC4iSdCw0vIAJudlcBYsDars8gVVa41TZeQqD+ks/LtQVxAix8x 8eoW8TifQI8lMJq2fUM3MWKoi2cO4sQMQyNDAH3zOEDn/M7DMEs07LGVX3yCXflI G1mN9EhkUkXRQn1Y/e6CCPu/NblDwAj60ej4xnCDz9RClebxrVNw+LTK4wIDAQAB AoGAB99yGVsTpJjCCtsUtbPu4SxuYNqi8As7aCSFcpVqy8x6DxbgYdUcU5Y/ACxU 7xU/xIFbmMM2nlI0N2JdUtiabHK+qCw/xQ/6pJyYWtd9ziGz9BbYSyKHN0rfEvfZ G4DkQEOzVtZW1TtVncsFSwSOnxuasT1BbsCV7Qd3ieLbB4ECQQDtaow4TaHptAdH DVulC0HrxgciJIUEZFm2Gclam6AjIkayaAslud0b1L8Cmce/zyyJrNn1TwqEgSen 0+ZlvDzzAkEAxvr2qkGHSbNmpcPxdzOLiAf8/ebkhnHsoq5A+MGwwZ8V9jprvzaR slpYACxbjb0rnx4MAo/W1IpD2d0smRz2UQJBANimu1CB33ghteZr1S6WSFC8hDPu +YeZf5hCjdFmZMrK85LIiSujIZfNG4VnCbYKe40jND68I0/pgGORZhV+omsCQQC3 kZ3wsmWKU8zWDu/8ZXxLcfsvjkyzz/RcnN/p3l8gMZEESR9QF5rQbNKUzldkauoM cJ7p2iN6j1hLbOWRGAwRAkAgOgNVVqV5nl12HIVkqpOLZYYDh/OKKOv6JsjF2ih+ j7Y+vT0dTKzfuHaZ10N0jjrPLoXmxLHfRulhAAYSszsM -----END PRIVATE KEY-----</string>
     <string name="not_log_in_yet">Not logged in!</string>
     <string name="log_in_now">Log in now?</string>
     <string name="log_in_to_continue">Log in to continue</string>
 
     <plurals name="num_order">
-        <item quantity="zero">No orders</item>
         <item quantity="one">Already has 1 order</item>
         <item quantity="other">Already has %d orders</item>
     </plurals>
 
+    <plurals name="num_promo">
+        <item quantity="one">You have 1 promocode</item>
+        <item quantity="other">You have %d promocodes</item>
+    </plurals>
+
     <plurals name="num_review">
         <item quantity="one">%d review</item>
-        <item quantity="zero">No review</item>
         <item quantity="other">%d reviews</item>
     </plurals>
 
     <plurals name="num_rating">
         <item quantity="one">%d rating</item>
-        <item quantity="zero">No rating</item>
         <item quantity="other">%d ratings</item>
+    </plurals>
+
+    <plurals name="num_day_left">
+        <item quantity="one">%d day left</item>
+        <item quantity="other">%d days left</item>
     </plurals>
 </resources>

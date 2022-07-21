@@ -5,10 +5,12 @@ import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.utils.Constants.PRODUCTS_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.PROMOTIONS_COLLECTION
+import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -21,8 +23,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.util.*
 import kotlin.coroutines.CoroutineContext
-import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
-import com.google.firebase.firestore.Query
 
 
 class RemoteProductsDataSource : ProductDataSource {
@@ -367,7 +367,6 @@ class RemoteProductsDataSource : ProductDataSource {
 
     suspend fun getListReview(): List<Review> {
         firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
-        firebaseAuth.currentUser?.uid ?: throw(java.lang.Exception("[Firestore] User not found!"))
 
         val listReviews = mutableListOf<Review>()
         val documents = db.collection(PRODUCTS_COLLECTION).get().await()
@@ -532,6 +531,22 @@ class RemoteProductsDataSource : ProductDataSource {
 
         val userOrder = snapshot.toObject(UserOrder::class.java) ?: return emptyList()
         return userOrder.usefulReviews
+    }
+
+    suspend fun getMyListReview(uid: String): MutableList<Review> {
+        val listReviews = mutableListOf<Review>()
+        val documents = reviewRef
+            .whereEqualTo("userId", uid)
+            .get().await()
+        if (documents != null) {
+            for (d in documents) {
+                val review = d.toObject<Review>()
+                listReviews.add(
+                    review
+                )
+            }
+        }
+        return listReviews
     }
 
     companion object {

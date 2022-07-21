@@ -61,9 +61,6 @@
             android:id="@+id/action_go_detail"
             app:destination="@id/detail_dest"
             app:popUpTo="@id/shop_dest" />
-            android:id="@+id/action_view_all"
-
-            app:destination="@id/category_dest" />
     </fragment>
 
 
@@ -125,6 +122,16 @@
         android:name="com.goldenowl.ecommerce.ui.global.profile.OrderDetailFragment"
         android:label="@string/order_details"
         tools:layout="@layout/fragment_order_detail" />
+    <fragment
+        android:id="@+id/my_review_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.profile.MyReviewFragment"
+        android:label="@string/my_review"
+        tools:layout="@layout/fragment_my_review" />
+    <fragment
+        android:id="@+id/my_promo_dest"
+        android:name="com.goldenowl.ecommerce.ui.global.profile.MyPromoFragment"
+        android:label="@string/my_promo"
+        tools:layout="@layout/fragment_my_promo" />
     <fragment
         android:id="@+id/checkout_dest"
         android:name="com.goldenowl.ecommerce.ui.global.bag.CheckoutFragment"

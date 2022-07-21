@@ -20,6 +20,16 @@ data class Card @JvmOverloads constructor(
             return "**** **** **** ${cardNumber.substring(16)}"
         }
 
+        fun getProfileCard(cardNumber: String): String {
+            val type = when (cardNumber[0]) {
+                '4' -> "MasterCard"
+                '5' -> "Visa"
+                else -> ""
+            }
+            val hidden = "**${cardNumber.substring(18)}"
+            return "$type$hidden"
+        }
+
         fun encrypt(card: Card, rsaCipher: RSACipher): Card {
             return Card(
                 rsaCipher.encrypt(card.cardName),

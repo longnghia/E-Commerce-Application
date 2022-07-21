@@ -32,6 +32,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var listReviewData: MutableLiveData<MutableList<ReviewData>> = MutableLiveData<MutableList<ReviewData>>()
     var listPromo: MutableLiveData<List<Promo>> = MutableLiveData<List<Promo>>().apply { value = emptyList() }
     var listCard: MutableLiveData<List<Card>> = MutableLiveData<List<Card>>().apply { value = emptyList() }
+    var mListReview = MutableLiveData<List<Review>>().apply { value = emptyList() }
 
     var curBag: MutableLiveData<Bag> = MutableLiveData<Bag>()
     var orderPrice: MutableLiveData<Float> = MutableLiveData<Float>()
@@ -124,19 +125,31 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         mListProduct = productsRepository.getAllProducts()
         setCategoryList(mListProduct)
 
-        val resCard = productsRepository.getListCard()
-        val resAddress = productsRepository.getListAddress()
-        val defaultCheckOut = productsRepository.getDefaultCheckOut()
+        if (authRepository.isUserLoggedIn()) {
+            val id = authRepository.getUserId()
+            val resMyReview = productsRepository.getMyListReview(id)
+            val resCard = productsRepository.getListCard()
+            val resAddress = productsRepository.getListAddress()
+            val defaultCheckOut = productsRepository.getDefaultCheckOut()
 
-        Log.d(
-            TAG,
-            "fetchData: \n$mListProduct \nresCard=$resCard \nresCard=$resAddress \nresCard=$defaultCheckOut"
-        )
+            Log.d(TAG, "resCard: $resCard")
+            Log.d(TAG, "resAddress: $resAddress")
+            Log.d(TAG, "defaultCheckOut: $defaultCheckOut")
+            Log.d(TAG, "getMyListReview: $resMyReview")
 
-        if (resCard is MyResult.Success) {
-            val listEncrypted = resCard.data
-            listCard.value = listEncrypted.map { card ->
-                Card.decrypt(card, rsaCipher)
+            if (resMyReview is MyResult.Success) {
+                mListReview.value = resMyReview.data
+            } else if (resMyReview is MyResult.Error) {
+                showToast(resMyReview.exception.message)
+            }
+
+            if (resCard is MyResult.Success) {
+                val listEncrypted = resCard.data
+                listCard.value = listEncrypted.map { card ->
+                    Card.decrypt(card, rsaCipher)
+                }
+            } else if (resCard is MyResult.Error) {
+                showToast(resCard.exception.message)
             }
         }
     }
@@ -387,7 +400,8 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     private suspend fun showToast(msg: String?) {
         withContext(Dispatchers.Main) {
             if (!msg.isNullOrBlank())
-                Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT)
+                    .show()
         }
     }
 
@@ -460,6 +474,9 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                     listReviewData.value = newList
                     loadingStatus.value = BaseLoadingStatus.SUCCEEDED
                     updateProductReviewInfo(productId, newList)
+                    mListReview.value = mListReview.value?.toMutableList()?.apply {
+                        this.add(review)
+                    }
                 } else if (result is MyResult.Error) {
                     showToast(result.exception.message)
                 }

@@ -30,37 +30,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ActivityMainBinding
 
-/*todo
-* change password
-* forgot password
-* save info, settings to firestore
-* change avatar
-*
-* bottom sheet check hash vs old password
-*
-* bottomsheet shadow
-* searchview close on submit
-*
-* category toggle show all -show by
-* homepage viewpager
-*
-* guest: hide add to favorite
-* status bar transparent
-*
-* email forgot password custom
-*
-* delete database when logout
-*
-* image avatar, icon in reviews
-*
-* check user upload image size
-* check dark theme
-* check times login fail and wait 2minute
-*
-* center collapsed title bag fragment
-* */
-
-
 class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG: String = "MainActivity"
@@ -103,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun showNavBar(b: Boolean) {
+    fun showNavBar(b: Boolean) {
         binding.bottomNavView?.visibility = if (b) View.VISIBLE else View.GONE
     }
 

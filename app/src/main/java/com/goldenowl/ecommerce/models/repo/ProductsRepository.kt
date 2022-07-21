@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.models.repo
 
-import android.net.Uri
 import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
@@ -355,6 +354,15 @@ class ProductsRepository(
             } catch (e: Exception) {
                 MyResult.Error(e)
             }
+        }
+    }
+
+    suspend fun getMyListReview(uid: String): MyResult<List<Review>> {
+        return try {
+            val listReview = remoteProductDataSource.getMyListReview(uid)
+            MyResult.Success(listReview)
+        } catch (e: Exception) {
+            MyResult.Error(e)
         }
     }
 
