@@ -93,6 +93,15 @@ class AuthRepository(
         return localAuthDataSource.getUser()
     }
 
+    suspend fun restoreUserSettingsData(userId: String): MyResult<Boolean> {
+        return try {
+            remoteAuthDataSource.restoreUserData(userId)
+            MyResult.Success(true)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
     companion object {
         val TAG = "AuthRepository"
     }

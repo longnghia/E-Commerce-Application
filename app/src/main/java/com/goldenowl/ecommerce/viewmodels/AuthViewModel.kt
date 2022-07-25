@@ -20,6 +20,7 @@ import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
@@ -31,6 +32,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logOut() {
         authRepository.logOut()
         settingManager.clear()
+        viewModelScope.launch {
+            val clearRes = productsRepository.clearLocalDataSource()
+            Log.d(TAG, "logOut: clearRes=$clearRes")
+            if (clearRes is MyResult.Error) {
+                toastMessage.value = clearRes.exception.message
+            }
+        }
     }
 
     val toastMessage = MutableLiveData<String?>()
@@ -42,6 +50,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     var signUpStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var logInStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
+    var restoreStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var changePasswordStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var forgotPasswordStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var uploadAvatarStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
@@ -156,6 +165,43 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             val err = authRepository.updateUserData(user)
             toastMessage.value = if (err.isNullOrEmpty()) "Apply changes successfully" else err
         }
+    }
+
+    fun restoreUserData() {
+        restoreStatus.value = BaseLoadingStatus.LOADING
+
+        viewModelScope.launch {
+            val userId = firebaseAuth.currentUser?.uid
+            if (userId == null) {
+                showToast(R.string.error_occurred)
+                return@launch
+            }
+            val restoreData = async { productsRepository.restoreUserData(userId) }
+            val restoreSettings = async { authRepository.restoreUserSettingsData(userId) }
+            val restoreDataRes = restoreData.await()
+            val restoreSettingsRes = restoreSettings.await()
+
+            Log.d(TAG, "restoreDataRes: $restoreDataRes")
+            Log.d(TAG, "restoreSettingsRes: $restoreSettingsRes")
+
+            if (restoreDataRes is MyResult.Success && restoreSettingsRes is MyResult.Success) {
+                restoreStatus.value = BaseLoadingStatus.SUCCEEDED
+            } else if (restoreDataRes is MyResult.Error) {
+                restoreStatus.value = BaseLoadingStatus.FAILED
+                toastMessage.value = restoreDataRes.exception.message
+            }else if(restoreSettingsRes is MyResult.Error){
+                restoreStatus.value = BaseLoadingStatus.FAILED
+                toastMessage.value = restoreSettingsRes.exception.message
+            }
+        }
+    }
+
+    private fun showToast(resId: Int) {
+        Toast.makeText(
+            getApplication<Application>().applicationContext,
+            getApplication<Application>().applicationContext.resources.getString(resId),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

@@ -2,6 +2,9 @@ package com.goldenowl.ecommerce.models.data
 
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.supervisorScope
 
 class LocalProductsDataSource(
     private val productDao: ProductDao,
@@ -80,7 +83,21 @@ class LocalProductsDataSource(
     }
 
 
-    suspend fun insertMutipleCart(listCart: List<Cart>) {
+    suspend fun insertMultipleCart(listCart: List<Cart>) {
         cartDao.insertMultipleCart(listCart)
+    }
+
+    suspend fun insertMultipleFavorite(allFavorite: List<Favorite>) {
+        favoriteDao.insertMultipleFavorite(allFavorite)
+    }
+
+    suspend fun clearLocalDataSource() {
+        supervisorScope {
+            listOf(
+                async { favoriteDao.deleteTable() },
+                async { cartDao.deleteTable() },
+                async { orderDao.deleteTable() },
+            ).awaitAll()
+        }
     }
 }

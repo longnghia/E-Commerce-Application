@@ -237,8 +237,6 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
                     Log.d(TAG, "onLoginSuccess: add new user successfully")
                 }
                 userManager.addAccount(user)
-            } else {
-                restoreUserData()
             }
         }
             .addOnFailureListener {
@@ -263,43 +261,13 @@ class RemoteAuthDataSource(private val userManager: UserManager, val context: Co
         }
     }
 
-    private fun restoreUserData() {
-        currentUser = firebaseAuth.currentUser
-        userRef.document(currentUser!!.uid).get(Source.SERVER).addOnCompleteListener {
-            val userDataSnapshot = it.result
-            if (!userDataSnapshot.exists()) {
-                Log.d(TAG, "restoreUser: user ${currentUser!!.uid} not exist")
-            } else {
-                val user = userDataSnapshot.toObject(User::class.java)
-                userManager.addAccount(user!!) // restore local
-                /* restore settings to Preference */
-                if (user.settings.isNotEmpty())
-                    settingsManager.saveUserSettings(user.settings)
-
-                /* restore database */
-//                restoreDatabase(user.id)
-            }
-        }.addOnFailureListener {
-            Log.e(TAG, "restoreUserData: ERROR", it)
-        }
-    }
-
-    private fun logCurrentUser(currentUser: FirebaseUser?) {
-        currentUser?.let {
-            for (profile in it.providerData) {
-                // Id of the provider (ex: google.com)
-                val providerId = profile.providerId
-
-                // UID specific to the provider
-                val uid = profile.uid
-
-                // Name, email address, and profile photo Url
-                val name = profile.displayName
-                val email = profile.email
-                val photoUrl = profile.photoUrl
-
-            }
-        }
+    suspend fun restoreUserData(userId: String) {
+        val userDataSnapshot = userRef.document(userId).get().await()
+        val user = userDataSnapshot.toObject(User::class.java)
+        userManager.addAccount(user!!) // restore local
+        /* restore settings to Preference */
+        if (user.settings.isNotEmpty())
+            settingsManager.saveUserSettings(user.settings)
     }
 
     private fun addNewUserToFireStore(user: User) {

@@ -17,4 +17,6 @@ interface OrderDao {
     @Update
     suspend fun updateOrder(order: Order)
 
+    @Query("Delete from order_table")
+    suspend fun deleteTable()
 }

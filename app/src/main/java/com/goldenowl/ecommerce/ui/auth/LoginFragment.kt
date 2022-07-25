@@ -7,7 +7,6 @@ import com.goldenowl.ecommerce.databinding.FragmentLoginBinding
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.FieldValidators
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
-import com.goldenowl.ecommerce.utils.Utils.launchHome
 import com.google.android.material.textfield.TextInputLayout
 
 
@@ -40,15 +39,15 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             errorMessage.observe(viewLifecycleOwner) {
                 showErrorMessage(it)
             }
+            restoreStatus.observe(viewLifecycleOwner) {
+                validRestore(it)
+            }
         }
-
-
     }
 
-    private fun setLoading(isShow: Boolean) {
+    override fun setLoading(isShow: Boolean) {
         if (isShow) {
             binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
-            binding.layoutLoading.circularLoader.showAnimationBehavior
         } else {
             binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
         }
@@ -73,8 +72,7 @@ class LoginFragment : BaseAuthFragment<FragmentLoginBinding>() {
             }
             BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
-                launchHome(requireContext())
-                activity?.finish()
+                viewModel.restoreUserData()
             }
             BaseLoadingStatus.FAILED -> {
                 setLoading(false)

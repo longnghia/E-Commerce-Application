@@ -88,4 +88,12 @@ class ForgotPasswordFragment : BaseAuthFragment<FragmentForgotPasswordBinding>()
     override fun getViewBinding(): FragmentForgotPasswordBinding {
         return FragmentForgotPasswordBinding.inflate(layoutInflater)
     }
+
+    override fun setLoading(isShow: Boolean) {
+        if (isShow) {
+            binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+        } else {
+            binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
+        }
+    }
 }
