@@ -22,14 +22,13 @@ class ShopFragment : BaseHomeFragment<FragmentShopBinding>() {
     override fun setViews() {
         val fullList = viewModel.categoryList.toList()
         val list = fullList.toList()
-
         adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, list)
         binding.listCategory.apply {
             adapter = this@ShopFragment.adapter
             setOnItemClickListener { _, _, position, _ ->
                 findNavController().navigate(
                     R.id.category_dest,
-                    bundleOf(Constants.KEY_CATEGORY to viewModel.categoryList.elementAt(position))
+                    bundleOf(Constants.KEY_CATEGORY to list[position])
                 )
             }
 

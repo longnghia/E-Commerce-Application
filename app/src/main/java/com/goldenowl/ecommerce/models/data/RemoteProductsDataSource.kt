@@ -3,12 +3,14 @@ package com.goldenowl.ecommerce.models.data
 import android.util.Log
 import com.goldenowl.ecommerce.models.repo.ProductDataSource
 import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.PRODUCTS_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.PROMOTIONS_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.REVIEW_COLLECTION
 import com.goldenowl.ecommerce.utils.Constants.USER_ORDER_COLLECTION
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
@@ -26,6 +28,7 @@ import kotlin.coroutines.CoroutineContext
 
 
 class RemoteProductsDataSource : ProductDataSource {
+    private var lastVisible: DocumentSnapshot? = null
     private val dispatcherIO: CoroutineContext = Dispatchers.IO
     private val db: FirebaseFirestore = Firebase.firestore
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -532,6 +535,67 @@ class RemoteProductsDataSource : ProductDataSource {
         val userOrder = snapshot.toObject(UserOrder::class.java) ?: return emptyList()
         return userOrder.usefulReviews
     }
+
+
+    suspend fun loadFirstPage(
+        category: String?
+    ): MutableList<Product> {
+        val listProducts = mutableListOf<Product>()
+
+        val productRef = if (category.isNullOrBlank())
+            db.collection(PRODUCTS_COLLECTION)
+        else db.collection(PRODUCTS_COLLECTION).whereEqualTo("categoryName", category)
+
+        val querySnapshot = productRef
+            .orderBy("id")
+            .limit(Constants.LOAD_MORE_QUANTITY)
+            .get()
+            .await()
+
+        lastVisible = querySnapshot.documents[querySnapshot.size() - 1]
+
+        if (querySnapshot != null) {
+            for (d in querySnapshot) {
+                val product = d.toObject<Product>()
+                listProducts.add(product)
+            }
+        }
+        return listProducts
+    }
+
+    suspend fun loadMorePage(
+        category: String?
+    ): MutableList<Product> {
+        val listProducts = mutableListOf<Product>()
+
+        val productRef = if (category.isNullOrBlank())
+            db.collection(PRODUCTS_COLLECTION)
+        else db.collection(PRODUCTS_COLLECTION).whereEqualTo("categoryName", category)
+
+        var query = if (lastVisible == null)
+            productRef
+                .orderBy("id")
+        else
+            productRef
+                .orderBy("id")
+                .startAfter(lastVisible!!)
+        val querySnapshot = query
+            .limit(Constants.LOAD_MORE_QUANTITY)
+            .get()
+            .await()
+
+        if (querySnapshot.size() > 0)
+            lastVisible = querySnapshot.documents[querySnapshot.size() - 1]
+
+        if (querySnapshot != null) {
+            for (d in querySnapshot) {
+                val product = d.toObject<Product>()
+                listProducts.add(product)
+            }
+        }
+        return listProducts
+    }
+
 
     suspend fun getMyListReview(uid: String): MutableList<Review> {
         val listReviews = mutableListOf<Review>()
