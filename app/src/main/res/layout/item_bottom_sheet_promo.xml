@@ -122,10 +122,10 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:layout_marginEnd="14dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -140,13 +140,19 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_apply"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="93dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="10dp"
                 android:backgroundTint="@color/red_dark"
                 android:elevation="2dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
                 android:text="@string/apply"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
+                android:textSize="14sp"
                 app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
         </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.SettingsManager
@@ -21,7 +22,7 @@ class LaunchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
         userManager = UserManager.getInstance(this)
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setLaunchScreenTimeOut()
     }
 

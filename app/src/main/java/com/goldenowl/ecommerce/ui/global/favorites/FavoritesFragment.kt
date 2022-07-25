@@ -8,7 +8,6 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
@@ -216,11 +215,11 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
     }
 
     override fun setAppbar() {
-        binding.topAppBar.toolbar.setNavigationOnClickListener {
-            sortViewModel.filterType.value = null
-            sortViewModel.sortType.value = null
-            findNavController().navigateUp()
-        }
+//        binding.topAppBar.toolbar.setNavigationOnClickListener {
+//            sortViewModel.filterType.value = null
+//            sortViewModel.sortType.value = null
+//            findNavController().navigateUp()
+//        }
         setAppBarMenu()
 
         val appbarListCategory = binding.topAppBar.listCategory

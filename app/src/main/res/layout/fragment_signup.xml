@@ -10,7 +10,7 @@
 
     <include
         android:id="@+id/top_app_bar"
-        layout="@layout/app_bar_collapsible" />
+        layout="@layout/app_bar_collapsible_grey" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

@@ -32,6 +32,7 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.MaterialComponents.Light"
             app:contentInsetEnd="@dimen/icon_width"
+            app:contentInsetStart="@dimen/icon_width"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_collapseMode="pin"
             app:navigationIcon="@drawable/ic_back"
