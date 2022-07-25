@@ -1,5 +1,7 @@
 package com.goldenowl.ecommerce.ui.global.home
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -20,6 +22,7 @@ import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
+import com.goldenowl.ecommerce.utils.Utils.prepareForTwoWayPaging
 
 
 class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
@@ -32,6 +35,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     private var relateList: List<ProductData> = emptyList()
 
     private var listProductData: List<ProductData> = emptyList()
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun setObservers() {
         viewModel.listProductData.observe(viewLifecycleOwner) { it ->
@@ -107,8 +112,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
 
         /* viewpager*/
-        binding.viewPager.adapter = ImageProductDetailAdapter(product.images)
-        binding.viewPager.autoScroll(3500)
+        binding.viewPager.adapter = ImageProductDetailAdapter(product.images.prepareForTwoWayPaging())
+        binding.viewPager.autoScroll(handler, 3500)
         /* recyclerView*/
         relateProductAdapter = HomeProductListAdapter(this)
         val relateProducts = getRelateProducts()
@@ -183,6 +188,16 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     override fun getViewBinding(): FragmentProductDetailBinding {
         return FragmentProductDetailBinding.inflate(layoutInflater)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeMessages(0)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeMessages(0)
     }
 }
 

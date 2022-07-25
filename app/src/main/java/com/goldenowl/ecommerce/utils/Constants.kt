@@ -4,6 +4,7 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val AUTO_SCROLL: Long = 3500
     const val LOAD_MORE_QUANTITY: Long = 2
     const val ERR_NOT_LOGIN = "[Firestore] User not found!"
 

@@ -1,5 +1,7 @@
 package com.goldenowl.ecommerce.ui.global.home
 
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -16,6 +18,7 @@ import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 import com.goldenowl.ecommerce.utils.Utils.getColor
+import com.goldenowl.ecommerce.utils.Utils.prepareForTwoWayPaging
 
 class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
     val TAG: String = "HomeFragment"
@@ -24,6 +27,7 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
     private lateinit var newsListAdapter: HomeProductListAdapter
 
     private var listProductData: List<ProductData> = emptyList()
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun setObservers() {
         viewModel.dataReady.observe(viewLifecycleOwner) {
@@ -92,8 +96,19 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             R.drawable.carousel1, R.drawable.carousel2, R.drawable.carousel3, R.drawable.carousel4
         )
         val titles = listOf("Street clothes", "Sleep clothes", "Sport clothes", "Inform clothes")
-        binding.topAppBar.viewPager.adapter = HomeViewPagerAdapter(imgs, titles)
-        binding.topAppBar.viewPager.autoScroll(3500)
+        binding.topAppBar.viewPager.adapter =
+            HomeViewPagerAdapter(imgs.prepareForTwoWayPaging(), titles.prepareForTwoWayPaging())
+        binding.topAppBar.viewPager.autoScroll(handler, Constants.AUTO_SCROLL)
+
     }
 
+    override fun onPause() {
+        super.onPause()
+        handler.removeMessages(0)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeMessages(0)
+    }
 }
