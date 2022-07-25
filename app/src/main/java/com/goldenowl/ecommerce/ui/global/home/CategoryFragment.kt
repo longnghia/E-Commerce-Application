@@ -130,6 +130,9 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             getString(Constants.KEY_SEARCH)?.let {
                 sortViewModel.searchTerm.value = it
             }
+            getString(Constants.KEY_CATEGORY)?.let {
+                filterType = it
+            }
         }
     }
 
@@ -143,8 +146,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         /*list view*/
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
-        val homeFilter = arguments?.getString(Constants.KEY_CATEGORY)
-        sortViewModel.filterType.value = homeFilter
 
         binding.rcvCategoryGrid.adapter = adapterGrid
         binding.rcvCategoryGrid.layoutManager = gridLayoutManager

@@ -53,7 +53,7 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
             if (loadRes is MyResult.Success) {
                 loading.value = BaseLoadingStatus.SUCCEEDED
                 val list = loadRes.data
-                if (list.isEmpty())      {
+                if (list.isEmpty()) {
                     endList.value = true
                     return@launch
                 }
