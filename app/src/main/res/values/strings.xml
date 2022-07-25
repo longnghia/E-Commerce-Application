@@ -248,6 +248,7 @@
         <item quantity="other">Already has %d orders</item>
     </plurals>
     <string name="no_more_products">No more products to show</string>
+    <string name="all_product">All products</string>
 
     <plurals name="num_promo">
         <item quantity="one">You have 1 promocode</item>

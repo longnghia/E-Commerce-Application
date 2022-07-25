@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -26,7 +27,6 @@ import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
 import java.util.*
-
 
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
@@ -62,33 +62,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         viewModel.allFavorite.observe(viewLifecycleOwner) {
             categoryViewModel.mListFavorite = it
             categoryViewModel.loadListProductData(it)
-        }
-
-        sortViewModel.filterType.observe(viewLifecycleOwner) {
-            if (it == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
-            else {
-                filterType = it
-                binding.topAppBar.collapsingToolbar.title = when (it) {
-                    Constants.KEY_NEW -> getString(R.string.news)
-                    Constants.KEY_SALE -> getString(R.string.sales)
-                    else -> it
-                }
-                binding.tvProductForQuery.visibility = View.GONE
-                listCategory.indexOf(it).let { index ->
-                    if (index > -1) {
-                        listCategoryAdapter.setPosition(index)
-                        binding.topAppBar.listCategory.smoothScrollToPosition(index)
-                    }
-                }
-                refreshList()
-            }
-        }
-
-        sortViewModel.filterByPrice.observe(viewLifecycleOwner) {
-            filterPrice = it
-            binding.topAppBar.tvFilter.text = if (filterPrice != null) getString(R.string.filter_by_price) else
-                getString(R.string.filters)
-            refreshList()
         }
 
         sortViewModel.sortType.observe(viewLifecycleOwner) {
@@ -265,7 +238,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
         setAppBarMenu()
 
-        val listCategory = binding.topAppBar.listCategory
+        val appBarCategory = binding.topAppBar.listCategory
 
         val list = getListCategory()
 
@@ -273,12 +246,27 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             list,
             object : AppBarCategoryListAdapter.IClickListenerAppbar {
                 override fun onClick(position: Int) {
-                    sortViewModel.filterType.value = list[position]
+                    findNavController().navigate(
+                        R.id.category_dest,
+                        bundleOf(Constants.KEY_CATEGORY to list[position])
+                    )
                 }
             })
-        listCategory.adapter = listCategoryAdapter
+        appBarCategory.adapter = listCategoryAdapter
 
-        listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        if (filterType == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
+        else {
+            binding.topAppBar.collapsingToolbar.title = filterType
+            binding.tvProductForQuery.visibility = View.GONE
+            listCategory.indexOf(filterType).let { index ->
+                if (index > -1) {
+                    listCategoryAdapter.setPosition(index)
+                    binding.topAppBar.listCategory.smoothScrollToPosition(index)
+                }
+            }
+        }
+
+        appBarCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
     }
 

@@ -10,6 +10,7 @@ import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.launch
 
@@ -35,8 +36,9 @@ class CategoryViewModel(application: Application) : AndroidViewModel(application
             Log.d(TAG, "loadFirstPage: $loadRes")
             if (loadRes is MyResult.Success) {
                 loading.value = BaseLoadingStatus.SUCCEEDED
-                val list = loadRes.data
-                listProduct = list
+                listProduct = loadRes.data
+                if (listProduct.size < Constants.LOAD_MORE_QUANTITY)
+                    endList.value = true
                 loadListProductData(mListFavorite)
             } else if (loadRes is MyResult.Error) {
                 loading.value = BaseLoadingStatus.FAILED
