@@ -3,7 +3,6 @@ package com.goldenowl.ecommerce.ui.global.home
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
@@ -159,28 +158,13 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
                 findNavController().navigateUp()
             }
             setOnMenuItemClickListener {
-                Log.d(TAG, "setAppbar: ${it.itemId == R.drawable.ic_share} ")
                 false
             }
-            title = product.categoryName
         }
+        Log.d(TAG, "product.categoryName: ${product.categoryName}")
+        binding.topAppBar.toolbar.title = product.categoryName
     }
 
-
-    private fun onMenuClick(menuItem: MenuItem?): Boolean {
-        Log.d(TAG, "onMenuClick: ${menuItem?.itemId}")
-        when (menuItem?.itemId) {
-            R.id.ic_search -> {
-                Log.d(TAG, "onMenuClick: search clicked")
-                // todo
-//                binding.topAppBar.searchBar.searchBarFrameLayout.apply {
-//                    visibility = if (visibility == View.VISIBLE) View.INVISIBLE else View.INVISIBLE
-//                }
-                return false
-            }
-        }
-        return false
-    }
 
     private fun getListCategory(): List<String> {
         return viewModel.categoryList.toList()
