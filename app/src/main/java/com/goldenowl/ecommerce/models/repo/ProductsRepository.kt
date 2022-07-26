@@ -337,12 +337,43 @@ class ProductsRepository(
     suspend fun restoreCart(mOrder: Order): MyResult<Boolean> {
         return supervisorScope {
             try {
-                localProductDataSource.insertMutipleCart(mOrder.listCart)
+                localProductDataSource.insertMultipleCart(mOrder.listCart)
                 remoteProductDataSource.insertMultipleCart(mOrder.listCart)
                 MyResult.Success(true)
             } catch (e: Exception) {
                 MyResult.Error(e)
             }
+        }
+    }
+
+    suspend fun restoreUserData(userId: String): MyResult<Boolean> {
+        return supervisorScope {
+            try {
+                val favoriteRes = async {
+                    val allFavorite = remoteProductDataSource.getAllFavorite(userId)
+                    if (allFavorite.isNotEmpty())
+                        localProductDataSource.insertMultipleFavorite(allFavorite)
+                }
+                val cartRes = async {
+                    val allCart = remoteProductDataSource.getAllCart(userId)
+                    if (allCart.isNotEmpty())
+                        localProductDataSource.insertMultipleCart(allCart)
+                }
+                val listFavorite = favoriteRes.await()
+                val listCart = cartRes.await()
+                MyResult.Success(true)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    suspend fun clearLocalDataSource(): MyResult<Boolean> {
+        return try {
+            localProductDataSource.clearLocalDataSource()
+            MyResult.Success(true)
+        } catch (e: Exception) {
+            MyResult.Error(e)
         }
     }
 

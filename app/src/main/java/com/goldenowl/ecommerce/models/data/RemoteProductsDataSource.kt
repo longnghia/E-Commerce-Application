@@ -613,6 +613,20 @@ class RemoteProductsDataSource : ProductDataSource {
         return listReviews
     }
 
+    suspend fun getAllFavorite(userId: String): List<Favorite> {
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        val snapshot = userOrderRef.get().await()
+        val userOrder = snapshot.toObject(UserOrder::class.java)
+        return userOrder?.favorites ?: emptyList()
+    }
+
+    suspend fun getAllCart(userId: String): List<Cart> {
+        var userOrderRef = db.collection(USER_ORDER_COLLECTION).document(userId)
+        val snapshot = userOrderRef.get().await()
+        val userOrder = snapshot.toObject(UserOrder::class.java)
+        return userOrder?.carts ?: emptyList()
+    }
+
     companion object {
         val TAG = "RemoteProductSource"
     }

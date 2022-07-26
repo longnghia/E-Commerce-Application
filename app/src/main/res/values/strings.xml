@@ -239,6 +239,7 @@
     <string name="not_log_in_yet">Not logged in!</string>
     <string name="log_in_now">Log in now?</string>
     <string name="log_in_to_continue">Log in to continue</string>
+    <string name="error_occurred">An Error Occurred. Please Try Again Later</string>
     <string name="news">News</string>
     <string name="sales">Sales</string>
 

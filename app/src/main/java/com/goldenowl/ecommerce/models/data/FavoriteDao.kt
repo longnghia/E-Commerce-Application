@@ -16,4 +16,10 @@ interface FavoriteDao {
 
     @Update
     suspend fun updateFavorite(favorite: Favorite): Int
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMultipleFavorite(listFavorite: List<Favorite>)
+
+    @Query("Delete from favorite_table")
+    suspend fun deleteTable()
 }

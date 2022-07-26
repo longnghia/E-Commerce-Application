@@ -40,6 +40,9 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
         viewModel.errorMessage.observe(viewLifecycleOwner) {
             hasError(it)
         }
+        viewModel.restoreStatus.observe(viewLifecycleOwner) {
+            validRestore(it)
+        }
     }
 
     private fun handleLogin(it: BaseLoadingStatus?) {
@@ -50,8 +53,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
             }
             BaseLoadingStatus.SUCCEEDED -> {
                 setLoading(false)
-                launchHome(requireContext())
-                activity?.finish()
+                viewModel.restoreUserData()
             }
             BaseLoadingStatus.FAILED -> {
                 setLoading(false)
@@ -160,7 +162,7 @@ class SignupFragment : BaseAuthFragment<FragmentSignupBinding>() {
 
     }
 
-    private fun setLoading(isShow: Boolean) {
+    override fun setLoading(isShow: Boolean) {
         if (isShow) {
             binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
         } else {

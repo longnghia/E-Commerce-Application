@@ -15,6 +15,7 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.repo.LoginListener
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.MyResult
+import com.goldenowl.ecommerce.utils.Utils
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
 import com.goldenowl.ecommerce.viewmodels.TextInputViewModel
 
@@ -64,6 +65,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
         viewModel.facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
         viewModel.callbackManager().onActivityResult(requestCode, resultCode, data, object : LoginListener {
             override fun callback(result: MyResult<Boolean>) {
+                Log.d(TAG, "onActivityResult: result=$result")
                 if (result is MyResult.Success) {
                     viewModel.logInStatus.value = BaseLoadingStatus.SUCCEEDED
                 } else if (result is MyResult.Error) {
@@ -76,6 +78,23 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    abstract fun setLoading(loading: Boolean)
+
+    protected fun validRestore(restoreStatus: BaseLoadingStatus) {
+        when (restoreStatus) {
+            BaseLoadingStatus.LOADING -> {
+                setLoading(true)
+            }
+            BaseLoadingStatus.SUCCEEDED -> {
+                setLoading(false)
+                Utils.launchHome(requireContext())
+                activity?.finish()
+            }
+            else -> {
+                setLoading(false)
+            }
+        }
+    }
     protected fun loginWithFacebook() {
         LoginManager.getInstance()
             .logInWithReadPermissions(this, listOf("public_profile", "email"))
