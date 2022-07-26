@@ -94,7 +94,7 @@ class HomeProductListAdapter(private val listener: IClickListener) :
 
         glide2View(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
 
-        holder.tvNumberReviews?.text = product.numberReviews.toString()
+        holder.tvNumberReviews?.text = "(${product.numberReviews})"
 
         holder.tvSize?.text = favorite?.size
         holder.tvColor?.text = favorite?.color

@@ -84,7 +84,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
             productDescription.text = product.description
             productRatingBar.rating = product.reviewStars.toFloat()
-            tvNumberReviews.text = product.numberReviews.toString()
+            tvNumberReviews.text = "(${product.numberReviews})"
             productBrand.text = product.brandName
             productPrice.text =
                 binding.root.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
@@ -133,7 +133,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
         /* insert favorite btn */
         binding.ivFavorite.setOnClickListener {
-            this.onClickFavorite(product,favorite)
+            this.onClickFavorite(product, favorite)
         }
     }
 

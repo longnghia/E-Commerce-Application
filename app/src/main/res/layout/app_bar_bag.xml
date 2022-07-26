@@ -5,7 +5,7 @@
     android:id="@+id/appbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/background_color"
     android:elevation="4dp"
     android:fitsSystemWindows="true"
     android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
@@ -20,10 +20,12 @@
         android:fitsSystemWindows="true"
         app:collapsedTitleGravity="center_horizontal"
         app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
-        app:contentScrim="@color/white"
+        app:contentScrim="@color/background_color"
         app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
         app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
-        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+        app:layout_scrollFlags="scroll|snap|exitUntilCollapsed"
+
+        app:statusBarScrim="@color/background_color">
 
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -32,6 +34,7 @@
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.MaterialComponents.Light"
             app:contentInsetEnd="@dimen/icon_width"
+            app:contentInsetStart="@dimen/icon_width"
             app:contentInsetStartWithNavigation="50dp"
             app:layout_collapseMode="pin"
             app:title="@string/bag">

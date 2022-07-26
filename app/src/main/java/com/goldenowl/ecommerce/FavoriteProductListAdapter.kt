@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.viewmodels
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -139,7 +138,7 @@ class FavoriteProductListAdapter(private val mLayoutManager: GridLayoutManager, 
 
         glide2View(holder.productImg!!, holder.layoutLoading!!, product.getImage()!!)
 
-        holder.tvNumberReviews?.text = product.numberReviews.toString()
+        holder.tvNumberReviews?.text = "(${product.numberReviews})"
         holder.tvSize?.text = favorite?.size
         holder.tvColor?.text = favorite?.color
 

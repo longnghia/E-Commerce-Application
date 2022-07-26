@@ -5,5 +5,8 @@
     android:ellipsize="end"
     android:maxLines="1"
     android:padding="16dp"
+    android:textSize="11sp"
     android:textAppearance="?attr/textAppearanceSubtitle1"
-    android:textColor="@color/black_light" />
+    android:textColor="@color/black_light"
+    android:gravity="center"
+    />

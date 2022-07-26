@@ -15,10 +15,9 @@
         android:fitsSystemWindows="true"
         app:collapsedTitleGravity="center_horizontal"
         app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
-        app:contentScrim="@color/white"
         app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
         app:layout_scrollFlags="scroll|snap"
-        app:statusBarScrim="@color/white"
+        app:statusBarScrim="@color/background_color"
         app:title="@string/home">
 
         <androidx.viewpager2.widget.ViewPager2

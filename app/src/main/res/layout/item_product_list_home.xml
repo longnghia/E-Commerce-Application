@@ -53,12 +53,12 @@
     <TextView
         android:id="@+id/tv_discount_percent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="24dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/bg_rounded_button_red"
-        android:paddingStart="2dp"
-        android:paddingEnd="2dp"
+        android:gravity="center"
+        android:padding="5dp"
         android:text="-20%"
         android:textColor="@color/white"
         android:textSize="11sp"
@@ -79,6 +79,7 @@
             style="@style/Widget.AppCompat.RatingBar.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:progressTint="@color/gold"
             android:rating="4.25"
             android:secondaryProgressTint="#FFFFFF" />
@@ -87,6 +88,7 @@
             android:id="@+id/tv_number_reviews"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="(10)"
             android:textAppearance="@style/TextAppearance.MyApp.TextSubTitle"
             app:layout_constraintLeft_toRightOf="@+id/product_rating_bar" />
@@ -106,11 +108,11 @@
 
     <TextView
         android:id="@+id/product_name"
+        style="@style/TextAppearance.MyApp.Text16.Black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Evening Dress"
-        android:textColor="@color/text_title_color"
-        android:textSize="16sp"
+        android:textFontWeight="600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_brand" />
 

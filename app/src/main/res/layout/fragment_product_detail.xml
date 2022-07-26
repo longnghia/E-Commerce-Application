@@ -138,6 +138,7 @@
                     style="@style/Widget.AppCompat.RatingBar.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:progressTint="@color/gold"
                     android:rating="4.25"
                     android:secondaryProgressTint="#FFFFFF" />
@@ -146,6 +147,7 @@
                     android:id="@+id/tv_number_reviews"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:text="(10)"
                     android:textAppearance="@style/TextAppearance.MyApp.TextSubTitle"
 
