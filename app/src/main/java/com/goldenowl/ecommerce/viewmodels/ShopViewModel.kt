@@ -26,6 +26,8 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var mListProduct: List<Product> = ArrayList()
 
     var categoryList: Set<String> = setOf()
+    var listAppbarImg: MutableLiveData<List<Pair<String, String>>> =
+        MutableLiveData<List<Pair<String, String>>>().apply { value = emptyList() }
 
     var listProductData: MutableLiveData<List<ProductData>> = MutableLiveData<List<ProductData>>()
     var listCartData: MutableLiveData<List<CartData>> = MutableLiveData<List<CartData>>()
@@ -49,8 +51,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
 
     val allFavorite = productsRepository.allFavorite.asLiveData()
     val allCart = productsRepository.allCart.asLiveData()
-
-    //    val allAddress = productsRepository.allAddress.asLiveData()
     val allOrder = productsRepository.allOrder.asLiveData()
 
     var addAddressStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
@@ -158,7 +158,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             } else if (defaultCheckOut is MyResult.Error) {
                 showToast(defaultCheckOut.exception.message)
             }
-
+            val appbarRes = productsRepository.getListAppbarImg()
+            Log.d(TAG, "fetchData: appbarRes: $appbarRes")
+            if (appbarRes is MyResult.Success) {
+                listAppbarImg.value = appbarRes.data
+            }
 
         }
     }
@@ -375,7 +379,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         if (position == defaultAddressIndex.value) {
             setDefaultAddress(0)
         }
-//        val address = this.allAddress.value?.get(position)
         val address = this.listAddress.value?.get(position)
         viewModelScope.launch(Dispatchers.IO) {
             if (address != null) {

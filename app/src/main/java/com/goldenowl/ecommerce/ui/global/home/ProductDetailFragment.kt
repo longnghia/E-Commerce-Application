@@ -1,5 +1,7 @@
 package com.goldenowl.ecommerce.ui.global.home
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
@@ -30,6 +32,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     private var favorite: Favorite? = null
     private var relateList: List<ProductData> = emptyList()
+    private val handler = Handler(Looper.getMainLooper())
 
     private var listProductData: List<ProductData> = emptyList()
 
