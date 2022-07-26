@@ -1,6 +1,5 @@
 package com.goldenowl.ecommerce.ui.global.bag
 
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.os.bundleOf
@@ -10,6 +9,7 @@ import com.goldenowl.ecommerce.adapter.ShippingAddressAdapter
 import com.goldenowl.ecommerce.databinding.FragmentShippingAddressesBinding
 import com.goldenowl.ecommerce.models.data.Address
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 
 class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBinding>(),
@@ -39,10 +39,16 @@ class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBindin
         }
 
         viewModel.defaultAddressIndex.observe(viewLifecycleOwner) {
-            Log.d(PaymentMethodFragment.TAG, "setObservers: defaultAddress=$it")
             if (it != null) {
                 defaultAddress = it
                 adapter.setData(listAddress, defaultAddress)
+            }
+        }
+
+        viewModel.loadingStatus.observe(viewLifecycleOwner) {
+            when (it) {
+                BaseLoadingStatus.LOADING -> binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+                else -> binding.layoutLoading.loadingFrameLayout.visibility = View.INVISIBLE
             }
         }
     }

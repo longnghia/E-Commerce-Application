@@ -95,8 +95,8 @@ class RemoteProductsDataSource : ProductDataSource {
             var listFavorite: MutableList<Favorite> =
                 userOrder?.favorites?.toMutableList() ?: mutableListOf()
 
-            listFavorite.add(favorite)
-
+            val remove = listFavorite.find { it.productId == favorite.productId && it.size == favorite.size }
+            listFavorite.remove(remove)
             userOrderRef.update("favorites", listFavorite).await()
         }
 
@@ -435,6 +435,7 @@ class RemoteProductsDataSource : ProductDataSource {
             var listAddress: MutableList<Address> =
                 userOrder?.addresss?.toMutableList() ?: mutableListOf()
 
+            Log.d(TAG, "removeAddress: $position , ${listAddress[position]}")
             listAddress.removeAt(position)
 
             userOrderRef

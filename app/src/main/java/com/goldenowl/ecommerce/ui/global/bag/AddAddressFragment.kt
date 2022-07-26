@@ -22,7 +22,7 @@ class AddAddressFragment : BaseHomeFragment<FragmentAddAddressBinding>() {
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
-        viewModel.addAddressStatus.observe(viewLifecycleOwner) {
+        viewModel.loadingStatus.observe(viewLifecycleOwner) {
             handleStatus(it)
         }
     }
@@ -33,6 +33,7 @@ class AddAddressFragment : BaseHomeFragment<FragmentAddAddressBinding>() {
             BaseLoadingStatus.SUCCEEDED -> {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
                 showToast(getString(R.string.success))
+                findNavController().navigateUp()
             }
             else -> binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
         }
