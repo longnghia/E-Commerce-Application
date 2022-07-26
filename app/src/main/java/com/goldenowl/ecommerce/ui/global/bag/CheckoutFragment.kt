@@ -159,7 +159,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
         binding.btnSubmitOrder.setOnClickListener {
             if (deliveryPrice == 0) {
                 showToast(getString(R.string.please_select_delivery))
-                binding.tvDelivery.requestFocus()
+                binding.scrollView.smoothScrollTo(0, binding.tvDelivery.top, 500)
                 return@setOnClickListener
             }
             val listCart = viewModel.allCart.value

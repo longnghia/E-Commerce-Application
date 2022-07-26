@@ -14,6 +14,7 @@
         layout="@layout/layout_loading" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="280dp"
@@ -56,8 +57,6 @@
                     android:text="@string/add_address"
                     android:textAllCaps="false"
                     app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
-
-                />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/card_view_address"
@@ -148,9 +147,6 @@
                     android:text="@string/add_payment"
                     android:textAllCaps="false"
                     app:shapeAppearanceOverlay="@style/RoundedButtonShape" />
-
-                />
-
 
                 <LinearLayout
                     android:id="@+id/layout_card"
