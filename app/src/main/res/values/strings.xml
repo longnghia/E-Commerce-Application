@@ -223,6 +223,12 @@
     </plurals>
     <string name="channel_change_password">Change Password</string>
     <string name="channel_change_password_description">Notification when password changed successfully.</string>
+    <string name="filter_by">Filter by</string>
+    <string name="price_range">Price range</string>
+    <string name="discard">Discard</string>
+    <string name="all_product">All products</string>
+    <string name="filter_by_price">Filters: Price</string>
+    <string name="no_product">No products</string>
     <string name="pls_enter_email">Please, enter your email address. You will receive a link to create a new password via email.</string>
     <string name="not_valid_email">Not a valid email address. Should be your@email.com</string>
     <string name="send">Send</string>
@@ -230,6 +236,8 @@
     <string name="not_log_in_yet">Not logged in!</string>
     <string name="log_in_now">Log in now?</string>
     <string name="log_in_to_continue">Log in to continue</string>
+    <string name="news">News</string>
+    <string name="sales">Sales</string>
 
     <plurals name="num_order">
         <item quantity="zero">No orders</item>

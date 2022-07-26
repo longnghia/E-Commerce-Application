@@ -87,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="11dp"
                     android:text="@string/filters"
+                    android:id="@+id/tv_filter"
                     android:textColor="@color/black_light" />
             </LinearLayout>
 

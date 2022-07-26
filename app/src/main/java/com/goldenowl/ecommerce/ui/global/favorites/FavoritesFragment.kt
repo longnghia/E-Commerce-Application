@@ -18,7 +18,6 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
-import com.goldenowl.ecommerce.ui.global.home.CategoryFragment
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.sortMap
 import com.goldenowl.ecommerce.utils.SortType
@@ -166,8 +165,6 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
                             uiScope.launch {
                                 delay(500)
                                 if (lastInput == newText) {
-                                    Log.i("onQueryTextChange", newText!!)
-                                    Log.d(CategoryFragment.TAG, "onQueryTextChange: uiScope")
                                     sortViewModel.searchTerm.value = newText
                                 }
                             }

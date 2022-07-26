@@ -13,10 +13,8 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.IClickListener
 import com.goldenowl.ecommerce.utils.Constants
-import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
-import java.util.*
 
 class CategoryProductListAdapter(
     private val mLayoutManager: GridLayoutManager,
@@ -26,33 +24,8 @@ class CategoryProductListAdapter(
 
     private var mListProductData = listOf<ProductData>()
 
-    fun setData(listProductData: List<ProductData>, filterType: String?, sortType: SortType?, searchTerm: String) {
+    fun setData(listProductData: List<ProductData>) {
         mListProductData = listProductData
-
-        if (filterType == Constants.KEY_SALE)
-            mListProductData = mListProductData.filter { it.product.salePercent != null }
-        else if (filterType == Constants.KEY_NEW)
-            mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
-        else if (filterType != null)
-            mListProductData = mListProductData.filter { it.product.categoryName == filterType }
-
-        mListProductData = when (sortType) {
-            SortType.REVIEW -> mListProductData.sortedByDescending { it.product.reviewStars }
-            SortType.PRICE_DECREASE -> mListProductData.sortedByDescending { it.product.getDiscountPrice() }
-            SortType.PRICE_INCREASE -> mListProductData.sortedBy { it.product.getDiscountPrice() }
-            SortType.POPULAR -> mListProductData.sortedByDescending { it.product.isPopular }
-            SortType.NEWEST -> mListProductData.sortedByDescending { it.product.createdDate }
-            else -> mListProductData
-        }
-        if (searchTerm.isNotBlank()) {
-            mListProductData = mListProductData.filter {
-                it.product.title.indexOf(searchTerm, ignoreCase = true) >= 0 || it.product.brandName.indexOf(
-                    searchTerm,
-                    ignoreCase = true
-                ) >= 0
-            }
-        }
-
         notifyDataSetChanged()
     }
 
