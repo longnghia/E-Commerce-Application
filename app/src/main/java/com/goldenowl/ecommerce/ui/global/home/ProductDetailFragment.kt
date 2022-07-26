@@ -32,6 +32,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     private var favorite: Favorite? = null
     private var relateList: List<ProductData> = emptyList()
+    private val handler = Handler(Looper.getMainLooper())
 
     private var listProductData: List<ProductData> = emptyList()
 

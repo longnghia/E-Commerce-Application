@@ -25,9 +25,11 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
 
     private lateinit var salesListAdapter: HomeProductListAdapter
     private lateinit var newsListAdapter: HomeProductListAdapter
+    private lateinit var viewPagerAdapter: HomeViewPagerAdapter
 
     private var listProductData: List<ProductData> = emptyList()
     private val handler = Handler(Looper.getMainLooper())
+    private var mListAppbarImg: List<Pair<String, String>> = emptyList()
 
     override fun setObservers() {
         viewModel.dataReady.observe(viewLifecycleOwner) {
@@ -51,6 +53,13 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             viewModel.toastMessage.observe(viewLifecycleOwner) {
                 if (!it.isNullOrBlank())
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
+            viewModel.listAppbarImg.observe(viewLifecycleOwner) { list ->
+                mListAppbarImg = list
+                if (list.isEmpty())
+                    return@observe
+                viewPagerAdapter.setData(list.prepareForTwoWayPaging())
+                binding.topAppBar.viewPager.autoScroll(3500)
             }
         }
     }
@@ -79,7 +88,6 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         }
     }
 
-
     override fun getViewBinding(): FragmentHomeBinding {
         return FragmentHomeBinding.inflate(layoutInflater)
     }
@@ -91,15 +99,10 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             setExpandedTitleColor(getColor(context, R.color.white) ?: 0xFFFFFF)
         }
 
-        // todo fetch list image and title
-        val imgs = listOf(
-            R.drawable.carousel1, R.drawable.carousel2, R.drawable.carousel3, R.drawable.carousel4
-        )
-        val titles = listOf("Street clothes", "Sleep clothes", "Sport clothes", "Inform clothes")
-        binding.topAppBar.viewPager.adapter =
-            HomeViewPagerAdapter(imgs.prepareForTwoWayPaging(), titles.prepareForTwoWayPaging())
-        binding.topAppBar.viewPager.autoScroll(handler, Constants.AUTO_SCROLL)
-
+        viewPagerAdapter = HomeViewPagerAdapter { title ->
+            findNavController().navigate(R.id.category_dest, bundleOf(Constants.KEY_CATEGORY to title))
+        }
+        binding.topAppBar.viewPager.adapter = viewPagerAdapter
     }
 
     override fun onPause() {

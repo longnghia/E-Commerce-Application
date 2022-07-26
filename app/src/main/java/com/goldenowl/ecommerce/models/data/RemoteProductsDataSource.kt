@@ -628,6 +628,15 @@ class RemoteProductsDataSource : ProductDataSource {
         return userOrder?.carts ?: emptyList()
     }
 
+    suspend fun getListAppbarImg(): List<Pair<String, String>> {
+        val homePageRef = storageRef.child("images/homepage")
+        val list = homePageRef.listAll().await().items.map {
+            val name = it.name.split(".")[0]
+            Pair(name, it.downloadUrl.await().toString())
+        }
+        return list
+    }
+
     companion object {
         val TAG = "RemoteProductSource"
     }

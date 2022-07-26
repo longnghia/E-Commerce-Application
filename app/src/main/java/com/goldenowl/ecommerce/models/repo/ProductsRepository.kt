@@ -402,6 +402,14 @@ class ProductsRepository(
         }
     }
 
+    suspend fun getListAppbarImg(): MyResult<List<Pair<String, String>>> {
+        return try {
+            MyResult.Success(remoteProductDataSource.getListAppbarImg())
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
     companion object {
         val TAG = "ProductsRepository"
     }
