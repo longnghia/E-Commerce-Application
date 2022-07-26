@@ -51,6 +51,10 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     }
 
     override fun onClickCart(product: Product, cart: Cart?) {
+        if (!viewModel.isLoggedIn()) {
+            toggleDialogLogIn()
+            return
+        }
         if (cart == null) {
             toggleBottomSheetInsertCart(product, null)
         } else {

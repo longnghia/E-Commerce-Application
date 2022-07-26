@@ -125,11 +125,16 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
             resources.getQuantityString(R.plurals.num_item, relateProducts.size, relateProducts.size)
 
         binding.btnAddToCart.setOnClickListener {
+            if (!viewModel.isLoggedIn()) {
+                toggleDialogLogIn()
+                return@setOnClickListener
+            }
             val size = binding.menuSize.editText?.text.toString()
             val color = binding.menuColor.editText?.text.toString()
             if (color.isNullOrBlank()) {
                 showToast(getString(R.string.please_select_color))
                 binding.menuColor.requestFocus()
+                (binding.menuColor.editText as? AutoCompleteTextView)?.showDropDown()
             } else {
                 toggleBottomSheetInsertCart(
                     product, Cart(product.id, size, color, 1)
