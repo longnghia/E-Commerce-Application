@@ -6,7 +6,7 @@ import com.goldenowl.ecommerce.utils.SortType
 class SortFilterViewModel {
 
     val sortType: MutableLiveData<SortType> = MutableLiveData<SortType>()
-        .apply { value = SortType.PRICE_INCREASE }
+        .apply { value = null }
     val filterType: MutableLiveData<String?> = MutableLiveData<String?>()
         .apply { value = null }
     val filterByPrice: MutableLiveData<List<Float>?> = MutableLiveData<List<Float>?>()

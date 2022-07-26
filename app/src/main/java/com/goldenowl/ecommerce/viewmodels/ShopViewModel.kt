@@ -71,7 +71,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
 
         viewModelScope.launch {
             if (!settingsManager.getLastNetwork() && isNetworkAvailable) {
-                local2remote()
             }
             fetchData()
             getListPromo()
@@ -83,10 +82,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun getUser() = authRepository.getUser()
     fun isLoggedIn() = authRepository.isUserLoggedIn()
-
-    private suspend fun local2remote() {
-        productsRepository.local2remote()
-    }
 
     fun reloadListProductData() {
         listProductData.value = mListProduct.map { p ->
@@ -412,8 +407,8 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private suspend fun showToast(msg: String?) {
-        withContext(Dispatchers.Main) {
+    private fun showToast(msg: String?) {
+        viewModelScope.launch(Dispatchers.Main) {
             if (!msg.isNullOrBlank())
                 Toast.makeText((getApplication() as MyApplication).applicationContext, msg, Toast.LENGTH_SHORT)
                     .show()

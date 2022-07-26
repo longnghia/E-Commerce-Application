@@ -2,13 +2,16 @@ package com.goldenowl.ecommerce.ui.global.home
 
 import android.app.SearchManager
 import android.content.Context
-import android.util.Log
 import android.view.View
+import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.AppBarCategoryListAdapter
 import com.goldenowl.ecommerce.adapter.CategoryProductListAdapter
@@ -17,6 +20,7 @@ import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetFilterProduct
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetSortProduct
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
@@ -24,13 +28,13 @@ import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
 import java.util.*
 
-
 class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
     private lateinit var listCategoryAdapter: AppBarCategoryListAdapter
     private lateinit var adapterGrid: CategoryProductListAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
 
+    private val categoryViewModel: CategoryViewModel by activityViewModels()
 
     private lateinit var listProductData: List<ProductData>
     private lateinit var listCategory: Set<String>
@@ -39,46 +43,25 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     private var searchTerm: String = ""
     private var filterPrice: List<Float>? = null
 
+    private var userScrolled = false
+    private var endList = true
+    var pastVisiblesItems = 0
+    var visibleItemCount: Int = 0
+    var totalItemCount: Int = 0
 
     private val sortViewModel = SortFilterViewModel()
     private var searchView: SearchView? = null
     private var queryTextListener: SearchView.OnQueryTextListener? = null
 
     override fun setObservers() {
-        viewModel.listProductData.observe(viewLifecycleOwner) {
+        categoryViewModel.listProductData.observe(viewLifecycleOwner) {
             listProductData = it
             refreshList()
         }
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
-            viewModel.reloadListProductData()
-        }
-
-        sortViewModel.filterType.observe(viewLifecycleOwner) {
-            if (it == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
-            else {
-                filterType = it
-                binding.topAppBar.collapsingToolbar.title = when(it){
-                    Constants.KEY_NEW -> getString(R.string.news)
-                    Constants.KEY_SALE -> getString(R.string.sales)
-                    else -> it
-                }
-                binding.tvProductForQuery.visibility = View.GONE
-                listCategory.indexOf(it).let { index ->
-                    if (index > -1){
-                        listCategoryAdapter.setPosition(index)
-                        binding.topAppBar.listCategory.smoothScrollToPosition(index)
-                    }
-                }
-                refreshList()
-            }
-        }
-
-        sortViewModel.filterByPrice.observe(viewLifecycleOwner) {
-            filterPrice = it
-            binding.topAppBar.tvFilter.text = if (filterPrice != null) getString(R.string.filter_by_price) else
-                getString(R.string.filters)
-            refreshList()
+            categoryViewModel.mListFavorite = it
+            categoryViewModel.loadListProductData(it)
         }
 
         sortViewModel.sortType.observe(viewLifecycleOwner) {
@@ -88,7 +71,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
 
         sortViewModel.searchTerm.observe(viewLifecycleOwner) {
-            if(it.isNullOrBlank())
+            if (it.isNullOrBlank())
                 return@observe
             searchTerm = it
             binding.tvProductForQuery.text = getString(R.string.product_for, it)
@@ -99,28 +82,43 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
-
+        categoryViewModel.toastMessage.observe(viewLifecycleOwner) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+        categoryViewModel.loading.observe(viewLifecycleOwner) {
+            if (it == BaseLoadingStatus.LOADING)
+                binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+            else binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
+        }
+        categoryViewModel.endList.observe(viewLifecycleOwner) {
+            endList = it
+            if (endList) binding.tvNoMoreProducts.visibility = View.VISIBLE
+        }
     }
 
     override fun init() {
         listCategory = viewModel.categoryList
-        listProductData = viewModel.listProductData.value ?: emptyList()
+        listProductData = emptyList()
         arguments?.apply {
             getString(Constants.KEY_SEARCH)?.let {
                 sortViewModel.searchTerm.value = it
+            }
+            getString(Constants.KEY_CATEGORY)?.let {
+                filterType = it
             }
         }
     }
 
 
     override fun setViews() {
+
+        /* first load*/
+        categoryViewModel.mListFavorite = viewModel.allFavorite.value
+        categoryViewModel.loadFirstPage(filterType)
+
         /*list view*/
-
-
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
         adapterGrid = CategoryProductListAdapter(gridLayoutManager, this)
-        val homeFilter = arguments?.getString(Constants.KEY_CATEGORY)
-        sortViewModel.filterType.value = homeFilter
 
         binding.rcvCategoryGrid.adapter = adapterGrid
         binding.rcvCategoryGrid.layoutManager = gridLayoutManager
@@ -134,6 +132,25 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         binding.topAppBar.layoutFilter.setOnClickListener {
             toggleBottomSheetFilterProduct()
         }
+        binding.rcvCategoryGrid.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == SCROLL_STATE_TOUCH_SCROLL) userScrolled = true
+
+                visibleItemCount = gridLayoutManager.childCount;
+                totalItemCount = gridLayoutManager.itemCount;
+                pastVisiblesItems = gridLayoutManager
+                    .findFirstVisibleItemPosition();
+
+                if (userScrolled
+                    && !endList
+                    && (visibleItemCount + pastVisiblesItems) == totalItemCount
+                ) {
+                    userScrolled = false;
+                    categoryViewModel.loadMorePage(filterType)
+                }
+            }
+        })
     }
 
     private fun refreshList() {
@@ -221,7 +238,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
         }
         setAppBarMenu()
 
-        val listCategory = binding.topAppBar.listCategory
+        val appBarCategory = binding.topAppBar.listCategory
 
         val list = getListCategory()
 
@@ -229,12 +246,27 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             list,
             object : AppBarCategoryListAdapter.IClickListenerAppbar {
                 override fun onClick(position: Int) {
-                    sortViewModel.filterType.value = list[position]
+                    findNavController().navigate(
+                        R.id.category_dest,
+                        bundleOf(Constants.KEY_CATEGORY to list[position])
+                    )
                 }
             })
-        listCategory.adapter = listCategoryAdapter
+        appBarCategory.adapter = listCategoryAdapter
 
-        listCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        if (filterType == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
+        else {
+            binding.topAppBar.collapsingToolbar.title = filterType
+            binding.tvProductForQuery.visibility = View.GONE
+            listCategory.indexOf(filterType).let { index ->
+                if (index > -1) {
+                    listCategoryAdapter.setPosition(index)
+                    binding.topAppBar.listCategory.smoothScrollToPosition(index)
+                }
+            }
+        }
+
+        appBarCategory.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
     }
 
@@ -249,7 +281,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
                 searchView = searchItem.actionView as SearchView
             }
             if (searchView != null) {
-//                searchView!!.imeOptions = EditorInfo.IME_ACTION_DONE;
                 val debounceJob: Job? = null
                 val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
                 var lastInput = ""
@@ -282,7 +313,6 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             }
         }
     }
-
 
     private fun getListCategory(): List<String> {
         return viewModel.categoryList.toList()

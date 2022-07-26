@@ -130,9 +130,10 @@ class CategoryProductListAdapter(
             }
         }
 
-        if (favorite != null) {
+        if (favorite != null)
             holder.ivFavorite?.setImageResource(R.drawable.ic_favorites_selected)
-        }
+        else
+            holder.ivFavorite?.setImageResource(R.drawable.ic_favorites_bold)
     }
 
     override fun getItemViewType(position: Int): Int {

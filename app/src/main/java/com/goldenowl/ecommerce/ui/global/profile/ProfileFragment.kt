@@ -68,8 +68,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             binding.tvActionReview.text = getQuantityString(R.plurals.num_review, it.size)
         }
         shopViewModel.listAddress.observe(viewLifecycleOwner) { list ->
-            val address = shopViewModel.defaultAddressIndex.value?.let { list[it] }
-            binding.tvActionAddress.text = address?.getShippingAddress() ?: getString(R.string.no_address)
+            shopViewModel.defaultAddressIndex.value?.let {
+                if (it >= 0) {
+                    val address = list[it]
+                    binding.tvActionAddress.text = address?.getShippingAddress() ?: getString(R.string.no_address)
+                }
+            }
         }
         shopViewModel.allOrder.observe(viewLifecycleOwner) { list ->
             binding.tvActionOrders.text = if (list.isEmpty()) getString(R.string.no_orders)
@@ -81,11 +85,14 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 if (list.isEmpty()) getString(R.string.no_promo) else getQuantityString(R.plurals.num_promo, list.size)
         }
 
-
         shopViewModel.listCard.observe(viewLifecycleOwner) { list ->
-            val card = shopViewModel.defaultCardIndex.value?.let { list[it] }
-            binding.tvActionPayment.text =
-                if (card != null) Card.getProfileCard(card.cardNumber) else getString(R.string.no_card)
+            shopViewModel.defaultCardIndex.value?.let {
+                if (it >= 0) {
+                    val card = list[it]
+                    binding.tvActionPayment.text =
+                        if (card != null) Card.getProfileCard(card.cardNumber) else getString(R.string.no_card)
+                }
+            }
         }
     }
 

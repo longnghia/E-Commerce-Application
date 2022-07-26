@@ -4,7 +4,6 @@ import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.supervisorScope
 
 
@@ -259,16 +258,6 @@ class ProductsRepository(
         this.networkAvailable = networkAvailable
     }
 
-    suspend fun local2remote() {
-        supervisorScope {
-            val localCarts = localProductDataSource.allCart.first()
-            val localFavorites = localProductDataSource.allFavorite.first()
-            val localAddress = localProductDataSource.allAddress.first()
-
-            //todo local 2 remote
-        }
-    }
-
     suspend fun uploadReviewImages(list: List<String>): MyResult<List<String>> {
         if (list.isEmpty())
             return MyResult.Success(emptyList())
@@ -361,6 +350,22 @@ class ProductsRepository(
         return try {
             val listReview = remoteProductDataSource.getMyListReview(uid)
             MyResult.Success(listReview)
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun loadFirstPage(category: String?): MyResult<MutableList<Product>> {
+        return try {
+            MyResult.Success(remoteProductDataSource.loadFirstPage(category))
+        } catch (e: Exception) {
+            MyResult.Error(e)
+        }
+    }
+
+    suspend fun loadMorePage(category: String?): MyResult<MutableList<Product>> {
+        return try {
+            MyResult.Success(remoteProductDataSource.loadMorePage(category))
         } catch (e: Exception) {
             MyResult.Error(e)
         }

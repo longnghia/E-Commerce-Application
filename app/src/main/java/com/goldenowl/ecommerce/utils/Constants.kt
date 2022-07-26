@@ -4,10 +4,12 @@ import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.Delivery
 
 object Constants {
+    const val LOAD_MORE_QUANTITY: Long = 2
+    const val ERR_NOT_LOGIN = "[Firestore] User not found!"
+
     const val KEY_ORDER = "KEY_ORDER"
     const val HISTORY_SIZE = 12
 
-    const val KEY_CATEGORY = "KEY_CATEGORY"
     const val KEY_NEW = "KEY_NEW"
     const val KEY_SALE = "KEY_SALE"
     const val KEY_SEARCH = "KEY_SEARCH"
@@ -16,6 +18,7 @@ object Constants {
     const val UPLOAD_MAX_SIZE: Long = 1_048_576
 
     const val KEY_PRODUCT = "KEY_PRODUCT"
+    const val KEY_CATEGORY = "KEY_CATEGORY"
     const val KEY_POSITION = "KEY_POSITION"
     const val KEY_ADDRESS = "KEY_ADDRESS"
     const val KEY_PRODUCT_ID = "KEY_PRODUCT_ID"

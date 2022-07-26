@@ -226,7 +226,6 @@
     <string name="filter_by">Filter by</string>
     <string name="price_range">Price range</string>
     <string name="discard">Discard</string>
-    <string name="all_product">All products</string>
     <string name="filter_by_price">Filters: Price</string>
     <string name="no_product">No products</string>
     <string name="pls_enter_email">Please, enter your email address. You will receive a link to create a new password via email.</string>
@@ -247,6 +246,8 @@
         <item quantity="one">Already has 1 order</item>
         <item quantity="other">Already has %d orders</item>
     </plurals>
+    <string name="no_more_products">No more products to show</string>
+    <string name="all_product">All products</string>
 
     <plurals name="num_promo">
         <item quantity="one">You have 1 promocode</item>
