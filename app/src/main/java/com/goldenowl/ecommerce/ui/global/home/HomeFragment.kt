@@ -29,10 +29,10 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         viewModel.dataReady.observe(viewLifecycleOwner) {
             if (it == BaseLoadingStatus.LOADING) {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
-                (requireActivity() as MainActivity).setBottomNavBarEnabled(false)
+                (requireActivity() as MainActivity).showNavBar(false)
             } else {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.INVISIBLE
-                (requireActivity() as MainActivity).setBottomNavBarEnabled(true)
+                (requireActivity() as MainActivity).showNavBar(true)
             }
 
             viewModel.listProductData.observe(viewLifecycleOwner) {

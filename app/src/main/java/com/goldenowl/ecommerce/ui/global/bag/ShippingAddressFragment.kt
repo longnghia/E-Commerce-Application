@@ -28,7 +28,7 @@ class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBindin
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
-        viewModel.allAddress.observe(viewLifecycleOwner) {
+        viewModel.listAddress.observe(viewLifecycleOwner) {
             listAddress = it
             adapter.setData(listAddress, defaultAddress)
             if (it.isEmpty()) {

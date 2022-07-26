@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.ui.global.profile
 
+import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentMyOrderBinding
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
@@ -28,6 +29,9 @@ class MyOrderFragment : BaseHomeFragment<FragmentMyOrderBinding>() {
 
     override fun setAppbar() {
         binding.topAppBar.collapsingToolbar.title = getString(R.string.my_orders)
+        binding.topAppBar.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun setObservers() {

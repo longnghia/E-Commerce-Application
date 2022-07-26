@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentProfileBinding
 import com.goldenowl.ecommerce.models.auth.UserManager
+import com.goldenowl.ecommerce.models.data.Card
 import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
@@ -49,28 +50,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setViews() {
-        setUpUI()
-
-        with(binding) {
-            btnLogOut.setOnClickListener {
-                val loginIntent = Intent(activity, MainActivity::class.java)
-                logOut()
-                context?.startActivity(loginIntent)
-                activity?.finish()
-            }
-
-            actionOrders.setOnClickListener {
-                findNavController().navigate(R.id.my_order_dest)
-            }
-
-            actionSettings.setOnClickListener(
-                Navigation.createNavigateOnClickListener(com.goldenowl.ecommerce.R.id.next_action, null)
-            )
-        }
-    }
-
-    private fun setUpUI() {
-
         if (userManager.isLoggedIn()) {
             setUpUserUI()
         } else {
@@ -79,13 +58,34 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     }
 
     override fun setObservers() {
+        if (!userManager.isLoggedIn())
+            return
+
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
+        shopViewModel.mListReview.observe(viewLifecycleOwner) {
+            binding.tvActionReview.text = getQuantityString(R.plurals.num_review, it.size)
+        }
+        shopViewModel.listAddress.observe(viewLifecycleOwner) { list ->
+            val address = shopViewModel.defaultAddressIndex.value?.let { list[it] }
+            binding.tvActionAddress.text = address?.getShippingAddress() ?: getString(R.string.no_address)
+        }
+        shopViewModel.allOrder.observe(viewLifecycleOwner) { list ->
+            binding.tvActionOrders.text = if (list.isEmpty()) getString(R.string.no_orders)
+            else getQuantityString(R.plurals.num_order, list.size)
+        }
+        shopViewModel.listPromo.observe(viewLifecycleOwner) { list ->
 
-        shopViewModel.allOrder.observe(viewLifecycleOwner) {
-            binding.tvActionOrders.text =
-                requireContext().resources.getQuantityString(R.plurals.num_order, it.size, it.size)
+            binding.tvActionPromocode.text =
+                if (list.isEmpty()) getString(R.string.no_promo) else getQuantityString(R.plurals.num_promo, list.size)
+        }
+
+
+        shopViewModel.listCard.observe(viewLifecycleOwner) { list ->
+            val card = shopViewModel.defaultCardIndex.value?.let { list[it] }
+            binding.tvActionPayment.text =
+                if (card != null) Card.getProfileCard(card.cardNumber) else getString(R.string.no_card)
         }
     }
 
@@ -106,6 +106,37 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
             }
             layoutUserActions.visibility = View.VISIBLE
             layoutGuessActions.visibility = View.GONE
+
+            btnLogOut.setOnClickListener {
+                val loginIntent = Intent(activity, MainActivity::class.java)
+                logOut()
+                context?.startActivity(loginIntent)
+                activity?.finish()
+            }
+
+            actionOrders.setOnClickListener {
+                findNavController().navigate(R.id.my_order_dest)
+            }
+
+            actionSettings.setOnClickListener(
+                Navigation.createNavigateOnClickListener(com.goldenowl.ecommerce.R.id.next_action, null)
+            )
+
+            actionAddress.setOnClickListener {
+                findNavController().navigate(R.id.address_dest)
+            }
+
+            actionPayment.setOnClickListener {
+                findNavController().navigate(R.id.payment_dest)
+            }
+
+            actionPromocode.setOnClickListener {
+                findNavController().navigate(R.id.my_promo_dest)
+            }
+
+            actionReview.setOnClickListener {
+                findNavController().navigate(R.id.my_review_dest)
+            }
         }
     }
 
@@ -150,6 +181,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
     override fun setAppbar() {
         binding.topAppBar.collapsingToolbarLayout.title = getString(com.goldenowl.ecommerce.R.string.profile)
+        binding.topAppBar.toolbar.setNavigationOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     companion object {

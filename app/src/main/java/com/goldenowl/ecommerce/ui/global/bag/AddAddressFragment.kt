@@ -53,7 +53,7 @@ class AddAddressFragment : BaseHomeFragment<FragmentAddAddressBinding>() {
             topAppBar.collapsingToolbarLayout.title = getString(R.string.editing_address)
             btnSaveAddress.text = getString(R.string.update_address)
             btnSaveAddress.setOnClickListener {
-                val curAddress = viewModel.allAddress.value?.get(position)
+                val curAddress = viewModel.listAddress.value?.get(position)
                 if (curAddress != null) {
                     curAddress.fullName = edtFullName.text.toString()
                     curAddress.address = edtAddress.text.toString()

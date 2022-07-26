@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="32dp"
+    android:layout_marginBottom="6dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:id="@+id/tv_product"
+                style="@style/TextAppearance.MyApp.Text14.Black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RatingBar
+                android:id="@+id/product_rating_bar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:progressTint="@color/gold"
+                android:rating="4.25"
+                android:secondaryProgressTint="#FFFFFF"
+                app:layout_constraintStart_toStartOf="@id/tv_product"
+                app:layout_constraintTop_toBottomOf="@id/tv_product" />
+
+            <TextView
+                android:id="@+id/tv_rating_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="18dp"
+                android:text="@string/full_name"
+                android:textColor="@color/grey_text"
+                android:textSize="11sp"
+                app:layout_constraintBottom_toBottomOf="@id/product_rating_bar"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/product_rating_bar" />
+
+            <TextView
+                android:id="@+id/tv_review"
+                style="@style/TextAppearance.MyApp.Text14.Black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:paddingTop="12dp"
+                android:text="@string/full_name"
+                app:layout_constraintStart_toStartOf="@id/product_rating_bar"
+                app:layout_constraintTop_toBottomOf="@id/product_rating_bar" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_imgs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintStart_toStartOf="@id/tv_review"
+                app:layout_constraintTop_toBottomOf="@id/tv_review" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

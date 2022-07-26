@@ -1,5 +1,6 @@
 package com.goldenowl.ecommerce.models.data
 
+import com.goldenowl.ecommerce.utils.SimpleDateFormatHelper
 import java.util.*
 
 
@@ -15,13 +16,8 @@ data class Promo @JvmOverloads constructor(
     }
 
     fun getDayRemain(): Int {
-        //todo count remain day
-//        val current = LocalDateTime.now()
-//        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-//        val formatted = current.format(formatter)
-//        println("Current Date and Time is: $formatted")
-//        Duration.between(expire, current)
-        return 123
+        val left = SimpleDateFormatHelper.countDate(Date(), endDate).toInt()
+        return if (left > 0) left else 0
     }
 }
 
