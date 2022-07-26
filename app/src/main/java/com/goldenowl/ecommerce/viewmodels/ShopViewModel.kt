@@ -14,7 +14,10 @@ import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -158,12 +161,12 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             } else if (defaultCheckOut is MyResult.Error) {
                 showToast(defaultCheckOut.exception.message)
             }
-            val appbarRes = productsRepository.getListAppbarImg()
-            Log.d(TAG, "fetchData: appbarRes: $appbarRes")
-            if (appbarRes is MyResult.Success) {
-                listAppbarImg.value = appbarRes.data
-            }
+        }
 
+        val appbarRes = productsRepository.getListAppbarImg()
+        Log.d(TAG, "fetchData: appbarRes: $appbarRes")
+        if (appbarRes is MyResult.Success) {
+            listAppbarImg.value = appbarRes.data
         }
     }
 
