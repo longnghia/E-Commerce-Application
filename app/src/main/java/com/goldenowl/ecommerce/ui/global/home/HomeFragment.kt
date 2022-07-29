@@ -3,7 +3,6 @@ package com.goldenowl.ecommerce.ui.global.home
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,16 +49,13 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
             viewModel.allFavorite.observe(viewLifecycleOwner) {
                 viewModel.reloadListProductData()
             }
-            viewModel.toastMessage.observe(viewLifecycleOwner) {
-                if (!it.isNullOrBlank())
-                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-            }
+
             viewModel.listAppbarImg.observe(viewLifecycleOwner) { list ->
                 mListAppbarImg = list
                 if (list.isEmpty())
                     return@observe
                 viewPagerAdapter.setData(list.prepareForTwoWayPaging())
-                binding.topAppBar.viewPager.autoScroll(3500)
+                binding.topAppBar.viewPager.autoScroll(handler, Constants.AUTO_SCROLL)
             }
         }
     }

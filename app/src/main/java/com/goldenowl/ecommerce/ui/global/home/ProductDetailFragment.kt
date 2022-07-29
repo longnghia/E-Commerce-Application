@@ -36,8 +36,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     private var listProductData: List<ProductData> = emptyList()
 
-    private val handler = Handler(Looper.getMainLooper())
-
     override fun setObservers() {
         viewModel.listProductData.observe(viewLifecycleOwner) { it ->
             listProductData = it
