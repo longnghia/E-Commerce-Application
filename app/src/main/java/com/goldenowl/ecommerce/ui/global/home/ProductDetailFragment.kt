@@ -5,7 +5,6 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,10 +53,6 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
         viewModel.allFavorite.observe(viewLifecycleOwner) {
             viewModel.reloadListProductData()
-        }
-
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
     }
@@ -111,7 +106,7 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
         /* viewpager*/
         binding.viewPager.adapter = ImageProductDetailAdapter(product.images.prepareForTwoWayPaging())
-        binding.viewPager.autoScroll(handler, 3500)
+        binding.viewPager.autoScroll(handler, Constants.AUTO_SCROLL)
         /* recyclerView*/
         relateProductAdapter = HomeProductListAdapter(this)
         val relateProducts = getRelateProducts()

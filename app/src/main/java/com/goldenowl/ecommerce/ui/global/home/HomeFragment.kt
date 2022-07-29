@@ -31,6 +31,7 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
     private var mListAppbarImg: List<Pair<String, String>> = emptyList()
 
     override fun setObservers() {
+        super.setObservers()
         viewModel.dataReady.observe(viewLifecycleOwner) {
             if (it == BaseLoadingStatus.LOADING) {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE

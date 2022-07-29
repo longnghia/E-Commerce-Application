@@ -53,8 +53,18 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
             viewModel.reloadListProductData()
         }
         viewModel.allCart.observe(viewLifecycleOwner) {
-            viewModel.reloadListProductData()
-            setPrice()
+            if (it.isEmpty()) {
+                binding.tvNoProduct.visibility = View.VISIBLE
+                binding.layoutContent.visibility = View.GONE
+                binding.layoutCheckout.visibility = View.GONE
+
+            } else {
+                binding.tvNoProduct.visibility = View.GONE
+                binding.layoutContent.visibility = View.VISIBLE
+                binding.layoutCheckout.visibility = View.VISIBLE
+                viewModel.reloadListProductData()
+                setPrice()
+            }
         }
 
         viewModel.curBag.observe(viewLifecycleOwner) {

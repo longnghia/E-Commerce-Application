@@ -37,9 +37,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
     override fun setObservers() {
 
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
         viewModel.listCard.observe(viewLifecycleOwner) {
             listCard = it
             if (it.isNotEmpty()) {

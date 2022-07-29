@@ -1,7 +1,6 @@
 package com.goldenowl.ecommerce.ui.global.bag
 
 import android.view.View
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.FragmentAddAddressBinding
@@ -19,9 +18,6 @@ class AddAddressFragment : BaseHomeFragment<FragmentAddAddressBinding>() {
     }
 
     override fun setObservers() {
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
         viewModel.loadingStatus.observe(viewLifecycleOwner) {
             handleStatus(it)
         }

@@ -14,10 +14,7 @@ import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.utils.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.M)
@@ -47,8 +44,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     var defaultAddressIndex: MutableLiveData<Int?> = MutableLiveData<Int?>()
     var deliveryMethod: MutableLiveData<Delivery?> = MutableLiveData<Delivery?>()
 
-    val toastMessage: MutableLiveData<String?> = MutableLiveData<String?>()
-
     val dataReady: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
         value = BaseLoadingStatus.LOADING
     }
@@ -61,12 +56,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         value = BaseLoadingStatus.NONE
     }
 
-    private var isNetworkAvailable = false
+    private var isNetworkAvailable = Utils.isNetworkAvailable(application.applicationContext)
 
     private val rsaCipher = RSACipher((application as MyApplication).applicationContext)
 
     init {
-        isNetworkAvailable = Utils.isNetworkAvailable(application.applicationContext)
         productsRepository.setNetworkAvailable(isNetworkAvailable)
         settingsManager.setLastNetwork(isNetworkAvailable)
 
@@ -74,7 +68,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             if (!settingsManager.getLastNetwork() && isNetworkAvailable) {
             }
             fetchData()
-            getListPromo()
             dataReady.value = BaseLoadingStatus.SUCCEEDED
         }
 
@@ -117,15 +110,39 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun fetchData() {
-        mListProduct = productsRepository.getAllProducts()
+
+        mListProduct = withContext(Dispatchers.Default) { productsRepository.getAllProducts() }
+        Log.d(TAG, "fetchData: getAllProducts $mListProduct")
+        val resPromo = withContext(Dispatchers.Default) { productsRepository.getListPromo() }
+        Log.d(TAG, "fetchData: getListPromo $resPromo")
+        if (resPromo is MyResult.Error) {
+            showToast(resPromo.exception.message)
+        } else if (resPromo is MyResult.Success) {
+            listPromo.value = resPromo.data
+        }
+
+        val appbarRes = withContext(Dispatchers.Default) {productsRepository.getListAppbarImg()}
+        Log.d(TAG, "fetchData: appbarRes: $appbarRes")
+
+        if (appbarRes is MyResult.Success) {
+            listAppbarImg.value = appbarRes.data
+        }
+
         setCategoryList(mListProduct)
 
         if (authRepository.isUserLoggedIn()) {
+            Log.d(TAG, "fetchData: logged in")
             val id = authRepository.getUserId()
-            val resMyReview = productsRepository.getMyListReview(id)
-            val resCard = productsRepository.getListCard()
-            val resAddress = productsRepository.getListAddress()
-            val defaultCheckOut = productsRepository.getDefaultCheckOut()
+
+            val resMyReview = withContext(Dispatchers.Default) {
+                productsRepository.getMyListReview(id)
+            }
+            val resCard =
+                withContext(Dispatchers.Default) { productsRepository.getListCard() }
+            val resAddress =
+                withContext(Dispatchers.Default) { productsRepository.getListAddress() }
+            val defaultCheckOut =
+                withContext(Dispatchers.Default) { productsRepository.getDefaultCheckOut() }
 
             Log.d(TAG, "resCard: $resCard")
             Log.d(TAG, "resAddress: $resAddress")
@@ -161,21 +178,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        val appbarRes = productsRepository.getListAppbarImg()
-        Log.d(TAG, "fetchData: appbarRes: $appbarRes")
-        if (appbarRes is MyResult.Success) {
-            listAppbarImg.value = appbarRes.data
-        }
-    }
 
-    private suspend fun getListPromo() {
-        val res = productsRepository.getListPromo()
-        Log.d(TAG, "getListPromo: $res")
-        if (res is MyResult.Error) {
-            showToast(res.exception.message)
-        } else if (res is MyResult.Success) {
-            listPromo.value = res.data
-        }
     }
 
     fun insertFavorite(favorite: Favorite) {
@@ -560,6 +563,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                 showToast(res.exception.message)
             }
         }
+    }
+
+    fun setNetWorkAvailable(network: Boolean) {
+        isNetworkAvailable = network
+        productsRepository.setNetWorkAvailable(network)
     }
 
     companion object {

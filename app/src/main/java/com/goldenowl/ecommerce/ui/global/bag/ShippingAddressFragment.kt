@@ -24,10 +24,6 @@ class ShippingAddressFragment : BaseHomeFragment<FragmentShippingAddressesBindin
     }
 
     override fun setObservers() {
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
-
         viewModel.listAddress.observe(viewLifecycleOwner) {
             listAddress = it
             adapter.setData(listAddress, defaultAddress)

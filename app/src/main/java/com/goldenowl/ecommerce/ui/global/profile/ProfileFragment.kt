@@ -61,9 +61,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
         if (!userManager.isLoggedIn())
             return
 
-        viewModel.toastMessage.observe(viewLifecycleOwner) {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-        }
         shopViewModel.mListReview.observe(viewLifecycleOwner) {
             binding.tvActionReview.text = getQuantityString(R.plurals.num_review, it.size)
         }

@@ -45,7 +45,6 @@ object Utils {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(homeIntent)
     }
-
     fun getDateTime(time: Long?): String {
         if (time == null) {
             return ""
@@ -222,12 +221,10 @@ object Utils {
     fun isNetworkAvailable(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (connectivityManager != null) {
-            val capabilities =
-                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            if (capabilities != null) {
-                return true
-            }
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            return true
         }
         return false
     }
