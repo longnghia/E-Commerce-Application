@@ -7,6 +7,7 @@ import android.widget.AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.core.view.isEmpty
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -43,7 +44,9 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
     private var filterPrice: List<Float>? = null
 
     private var userScrolled = false
-    private var endList = true
+    private var endList = false
+    private var loading = false
+    private var firstPageLoaded = false
     var pastVisiblesItems = 0
     var visibleItemCount: Int = 0
     var totalItemCount: Int = 0
@@ -89,6 +92,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
         categoryViewModel.loading.observe(viewLifecycleOwner) {
+            loading = it == BaseLoadingStatus.LOADING
             if (it == BaseLoadingStatus.LOADING)
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             else binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
@@ -117,7 +121,10 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         /* first load*/
         categoryViewModel.mListFavorite = viewModel.allFavorite.value
-        categoryViewModel.loadFirstPage(filterType)
+        if (!firstPageLoaded){
+            firstPageLoaded = true
+            categoryViewModel.loadFirstPage(filterType)
+        }
 
         /*list view*/
         gridLayoutManager = GridLayoutManager(context, Constants.SPAN_COUNT_ONE)
@@ -147,6 +154,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
                 if (userScrolled
                     && !endList
+                    && !loading
                     && (visibleItemCount + pastVisiblesItems) == totalItemCount
                 ) {
                     userScrolled = false;
@@ -252,7 +260,7 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
         if (filterType == null) binding.topAppBar.collapsingToolbar.title = getString(R.string.all_product)
         else {
-            binding.topAppBar.collapsingToolbar.title = when(filterType){
+            binding.topAppBar.collapsingToolbar.title = when (filterType) {
                 Constants.KEY_SALE -> getString(R.string.sales)
                 Constants.KEY_NEW -> getString(R.string.news)
                 else -> filterType
@@ -273,43 +281,45 @@ class CategoryFragment : BaseHomeFragment<FragmentCategoryBinding>() {
 
     private fun setAppBarMenu() {
         binding.topAppBar.toolbar.apply {
-            inflateMenu(R.menu.menu_search)
-            val searchItem = menu.findItem(R.id.ic_search)
-            val searchManager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            if (menu.isEmpty()) {
+                inflateMenu(R.menu.menu_search)
+                val searchItem = menu.findItem(R.id.ic_search)
+                val searchManager = requireActivity().getSystemService(Context.SEARCH_SERVICE) as SearchManager
 
-            if (searchItem != null) {
-                searchView = searchItem.actionView as SearchView
-            }
-            if (searchView != null) {
-                val debounceJob: Job? = null
-                val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-                var lastInput = ""
-                searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
-                queryTextListener = object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextChange(newText: String?): Boolean {
-                        debounceJob?.cancel()
-                        if (lastInput != newText) {
-                            lastInput = newText ?: ""
-                            uiScope.launch {
-                                delay(500)
-                                if (lastInput == newText) {
-                                    sortViewModel.searchTerm.value = newText
+                if (searchItem != null) {
+                    searchView = searchItem.actionView as SearchView
+                }
+                if (searchView != null) {
+                    val debounceJob: Job? = null
+                    val uiScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+                    var lastInput = ""
+                    searchView!!.setSearchableInfo(searchManager.getSearchableInfo(requireActivity().componentName))
+                    queryTextListener = object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextChange(newText: String?): Boolean {
+                            debounceJob?.cancel()
+                            if (lastInput != newText) {
+                                lastInput = newText ?: ""
+                                uiScope.launch {
+                                    delay(500)
+                                    if (lastInput == newText) {
+                                        sortViewModel.searchTerm.value = newText
+                                    }
                                 }
                             }
+                            return true
                         }
-                        return true
-                    }
 
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        hideKeyboard()
-                        return true
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            hideKeyboard()
+                            return true
+                        }
                     }
+                    searchView!!.setOnCloseListener {
+                        false
+                    }
+                    searchView!!.maxWidth = Integer.MAX_VALUE
+                    searchView!!.setOnQueryTextListener(queryTextListener)
                 }
-                searchView!!.setOnCloseListener {
-                    false
-                }
-                searchView!!.maxWidth = Integer.MAX_VALUE
-                searchView!!.setOnQueryTextListener(queryTextListener)
             }
         }
     }

@@ -41,10 +41,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/TextAppearance.MyApp.TextTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/personal_info" />
+                    android:text="@string/personal_info"
+                    android:textAppearance="@style/TextAppearance.MyApp.Text16.Black.Bold" />
                 <!--                Full Name-->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_layout_name"
@@ -111,11 +111,10 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        style="@style/TextAppearance.MyApp.TextTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/input_password"
-
+                        android:textAppearance="@style/TextAppearance.MyApp.Text16.Black.Bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -163,11 +162,10 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/TextAppearance.MyApp.TextTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/notification"
-
+                    android:textAppearance="@style/TextAppearance.MyApp.Text16.Black.Bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

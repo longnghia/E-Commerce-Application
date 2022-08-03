@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.facebook.CallbackManager
 import com.facebook.login.LoginManager
+import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.repo.LoginListener
@@ -33,7 +34,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
     val viewModel: AuthViewModel by activityViewModels()
     protected lateinit var connectionLiveData: ConnectionLiveData
 
-    val facebookCallbackManager = CallbackManager.Factory.create() //facebook callback
+    private val facebookCallbackManager = CallbackManager.Factory.create() //facebook callback
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +42,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         connectionLiveData = ConnectionLiveData(requireContext())
-        userManager = UserManager.getInstance(requireContext())
+        userManager = (activity?.application as MyApplication).userManager
         binding = getViewBinding()
 
         resetValue()
@@ -76,7 +77,7 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         Log.d(TAG, "onActivityResult: requestCode=$requestCode, resultCode=$resultCode")
-        viewModel.facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
+//        facebookCallbackManager.onActivityResult(requestCode, resultCode, data)
         viewModel.callbackManager().onActivityResult(requestCode, resultCode, data, object : LoginListener {
             override fun callback(result: MyResult<Boolean>) {
                 Log.d(TAG, "onActivityResult: result=$result")
@@ -89,7 +90,6 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
             }
         }
         )
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     abstract fun setLoading(loading: Boolean)
@@ -112,8 +112,8 @@ abstract class BaseAuthFragment<VBiding : ViewBinding> : Fragment() {
 
     protected fun loginWithFacebook() {
         LoginManager.getInstance()
-            .logInWithReadPermissions(this, listOf("public_profile", "email"))
+            .logInWithReadPermissions(this, facebookCallbackManager, listOf("public_profile", "email"))
 
-        viewModel.logInWithFacebook()
+        viewModel.logInWithFacebook(facebookCallbackManager)
     }
 }

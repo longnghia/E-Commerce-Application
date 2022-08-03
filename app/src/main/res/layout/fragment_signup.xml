@@ -12,6 +12,13 @@
         android:id="@+id/top_app_bar"
         layout="@layout/app_bar_collapsible_grey" />
 
+    <include
+        android:id="@+id/layout_loading"
+        layout="@layout/layout_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,13 +27,6 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <include
-                android:id="@+id/layout_loading"
-                layout="@layout/layout_loading"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center" />
 
             <LinearLayout
                 android:layout_width="match_parent"

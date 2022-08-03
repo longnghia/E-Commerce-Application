@@ -2,12 +2,12 @@ package com.goldenowl.ecommerce.ui.global.home
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
+import com.goldenowl.ecommerce.adapter.HomeAdapter
 import com.goldenowl.ecommerce.adapter.HomeViewPagerAdapter
 import com.goldenowl.ecommerce.databinding.FragmentHomeBinding
 import com.goldenowl.ecommerce.models.data.ProductData
@@ -22,8 +22,10 @@ import com.goldenowl.ecommerce.utils.Utils.prepareForTwoWayPaging
 class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
     val TAG: String = "HomeFragment"
 
-    private lateinit var salesListAdapter: HomeProductListAdapter
-    private lateinit var newsListAdapter: HomeProductListAdapter
+
+    private var listCategory: MutableList<String> = mutableListOf()
+    private lateinit var homeAdapter: HomeAdapter
+
     private lateinit var viewPagerAdapter: HomeViewPagerAdapter
 
     private var listProductData: List<ProductData> = emptyList()
@@ -35,16 +37,30 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
         viewModel.dataReady.observe(viewLifecycleOwner) {
             if (it == BaseLoadingStatus.LOADING) {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+                binding.layoutContent.visibility = View.INVISIBLE
                 (requireActivity() as MainActivity).showNavBar(false)
             } else {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.INVISIBLE
+                binding.layoutContent.visibility = View.VISIBLE
                 (requireActivity() as MainActivity).showNavBar(true)
             }
 
+            listCategory = viewModel.categoryList.toMutableList().apply {
+                add(0, Constants.KEY_SALE)
+                add(1, Constants.KEY_NEW)
+            }
+            Log.d(TAG, "listCategory: $listCategory")
+
             viewModel.listProductData.observe(viewLifecycleOwner) {
                 listProductData = it
-                salesListAdapter.setData(listProductData, Constants.KEY_SALE)
-                newsListAdapter.setData(listProductData, Constants.KEY_NEW)
+                homeAdapter = HomeAdapter(this, listCategory) { category ->
+                    findNavController().navigate(
+                        R.id.action_view_all,
+                        bundleOf(Constants.KEY_CATEGORY to category)
+                    )
+                }
+                homeAdapter.setData(listProductData)
+                binding.rcvCategory.adapter = homeAdapter
             }
 
             viewModel.allFavorite.observe(viewLifecycleOwner) {
@@ -63,26 +79,6 @@ class HomeFragment : BaseHomeFragment<FragmentHomeBinding>() {
 
 
     override fun setViews() {
-        salesListAdapter = HomeProductListAdapter(this)
-        newsListAdapter = HomeProductListAdapter(this)
-        binding.rcvSales.adapter = salesListAdapter
-        binding.rcvSales.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.rcvNew.adapter = newsListAdapter
-        binding.rcvNew.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        binding.tvViewAllSale.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_view_all,
-                bundleOf(Constants.KEY_CATEGORY to Constants.KEY_SALE)
-            )
-        }
-
-        binding.tvViewAllNew.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_view_all,
-                bundleOf(Constants.KEY_CATEGORY to Constants.KEY_NEW)
-            )
-        }
     }
 
     override fun getViewBinding(): FragmentHomeBinding {

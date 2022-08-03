@@ -1,11 +1,10 @@
-package com.goldenowl.ecommerce.viewmodels
+package com.goldenowl.ecommerce.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.goldenowl.ecommerce.R
-import com.goldenowl.ecommerce.adapter.ReviewImagesAdapter
 import com.goldenowl.ecommerce.databinding.ItemReviewBinding
 import com.goldenowl.ecommerce.models.data.ReviewData
 import com.goldenowl.ecommerce.utils.SimpleDateFormatHelper

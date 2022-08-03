@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.models.repo
+package com.goldenowl.ecommerce.models.repo.datasource
 
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.User

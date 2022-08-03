@@ -10,7 +10,7 @@ import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetWriteReview
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
-import com.goldenowl.ecommerce.viewmodels.ReviewAdapter
+import com.goldenowl.ecommerce.adapter.ReviewAdapter
 
 
 class RatingReviewFragment : BaseHomeFragment<FragmentRatingReviewBinding>() {

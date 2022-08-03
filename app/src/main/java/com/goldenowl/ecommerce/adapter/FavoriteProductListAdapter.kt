@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.viewmodels
+package com.goldenowl.ecommerce.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater

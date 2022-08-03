@@ -12,8 +12,7 @@ import com.goldenowl.ecommerce.models.data.Card
 import com.goldenowl.ecommerce.viewmodels.InputViewModel
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.textfield.TextInputLayout.END_ICON_CUSTOM
-import com.google.android.material.textfield.TextInputLayout.END_ICON_NONE
+import com.google.android.material.textfield.TextInputLayout
 
 
 class BottomSheetInsertCard(private val viewModel: ShopViewModel) :
@@ -51,27 +50,6 @@ class BottomSheetInsertCard(private val viewModel: ShopViewModel) :
             formatCardNumber(text)
         }
 
-        binding.edtCardNumber.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val c = binding.edtCardNumber.text.toString()
-                if (c.isEmpty()) return@setOnFocusChangeListener
-                when (c[0]) {
-                    '4' -> {
-                        // mastercard
-                        binding.inputLayoutCardNumber.endIconMode = END_ICON_CUSTOM
-                        binding.inputLayoutCardNumber.setEndIconDrawable(R.drawable.ic_master_card)
-                    }
-                    '5' -> {
-                        //visa
-                        binding.inputLayoutCardNumber.endIconMode = END_ICON_CUSTOM
-                        binding.inputLayoutCardNumber.setEndIconDrawable(R.drawable.ic_visa)
-                    }
-                    else -> {
-                        binding.inputLayoutCardNumber.endIconMode = END_ICON_NONE
-                    }
-                }
-            }
-        }
         binding.edtCvv.doAfterTextChanged {
             val s = it.toString()
             inputViewModel.checkCardCvv(s)
@@ -164,7 +142,28 @@ class BottomSheetInsertCard(private val viewModel: ShopViewModel) :
             handleExpireDate(it)
         }
         inputViewModel.newCardValid.observe(viewLifecycleOwner) {
+            setCardIcon()
             handleCardValid(it)
+        }
+    }
+
+    private fun setCardIcon() {
+        val c = binding.edtCardNumber.text.toString()
+        if (c.isEmpty()) return
+        when (c[0]) {
+            '4' -> {
+                // mastercard
+                binding.inputLayoutCardNumber.endIconMode = TextInputLayout.END_ICON_CUSTOM
+                binding.inputLayoutCardNumber.setEndIconDrawable(R.drawable.ic_master_card)
+            }
+            '5' -> {
+                //visa
+                binding.inputLayoutCardNumber.endIconMode = TextInputLayout.END_ICON_CUSTOM
+                binding.inputLayoutCardNumber.setEndIconDrawable(R.drawable.ic_visa)
+            }
+            else -> {
+                binding.inputLayoutCardNumber.endIconMode = TextInputLayout.END_ICON_NONE
+            }
         }
     }
 

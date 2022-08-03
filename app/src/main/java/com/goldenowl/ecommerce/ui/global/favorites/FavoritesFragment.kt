@@ -16,7 +16,7 @@ import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.SortType
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
-import com.goldenowl.ecommerce.viewmodels.FavoriteProductListAdapter
+import com.goldenowl.ecommerce.adapter.FavoriteProductListAdapter
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
 
@@ -25,9 +25,6 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
         return FragmentFavoritesBinding.inflate(layoutInflater)
     }
 
-    //        private val sortViewModel: SortFilterViewModel by activityViewModels()
-//    private lateinit var sortViewModel: SortFilterViewModel
-//    private val sortViewModel: SortFilterViewModel by viewModels()
     private val sortViewModel = SortFilterViewModel()
 
 
@@ -54,10 +51,8 @@ class FavoritesFragment : BaseHomeFragment<FragmentFavoritesBinding>() {
         viewModel.allFavorite.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 binding.tvNoProduct.visibility = View.VISIBLE
-                binding.layoutContent.visibility = View.GONE
             } else {
                 binding.tvNoProduct.visibility = View.GONE
-                binding.layoutContent.visibility = View.VISIBLE
                 viewModel.reloadListProductData()
             }
         }

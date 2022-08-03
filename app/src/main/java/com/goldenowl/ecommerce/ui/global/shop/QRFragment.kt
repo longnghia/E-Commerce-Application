@@ -118,6 +118,7 @@ class QRFragment : Fragment(), ZXingScannerView.ResultHandler {
                     }
                     .setPositiveButton(R.string.ok) { dialog, _ ->
                         dialog.dismiss()
+                        onResume()
                         qrViewModel.setTimeout()
                     }
                     .show()
