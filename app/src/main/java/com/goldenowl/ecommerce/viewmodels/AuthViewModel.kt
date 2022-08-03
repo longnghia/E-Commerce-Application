@@ -198,12 +198,17 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
             if (restoreDataRes is MyResult.Success && restoreSettingsRes is MyResult.Success) {
                 restoreStatus.value = BaseLoadingStatus.SUCCEEDED
-            } else if (restoreDataRes is MyResult.Error) {
+                return@launch
+            }
+            if (restoreDataRes is MyResult.Error) {
                 restoreStatus.value = BaseLoadingStatus.FAILED
                 toastMessage.value = restoreDataRes.exception.message
-            } else if (restoreSettingsRes is MyResult.Error) {
+                return@launch
+            }
+            if (restoreSettingsRes is MyResult.Error) {
                 restoreStatus.value = BaseLoadingStatus.FAILED
                 toastMessage.value = restoreSettingsRes.exception.message
+                return@launch
             }
 
         }

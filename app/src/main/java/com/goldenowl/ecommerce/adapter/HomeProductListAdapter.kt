@@ -24,13 +24,13 @@ class HomeProductListAdapter(private val listener: IClickListener) :
 
     fun setData(listProductData: List<ProductData>, filterType: String?) {
         mListProductData = listProductData
-        if (filterType == Constants.KEY_SALE)
-            mListProductData = mListProductData.filter { it.product.salePercent != null }
-        else if (filterType == Constants.KEY_NEW)
-            mListProductData =
+        mListProductData = when (filterType) {
+            Constants.KEY_SALE ->
+                mListProductData.filter { it.product.salePercent != null }
+            Constants.KEY_NEW ->
                 mListProductData.sortedByDescending { it.product.createdDate }.subList(0, mListProductData.size / 2)
-        else if (filterType != null)
-            mListProductData = mListProductData.filter { it.product.categoryName == filterType }
+            else -> mListProductData.filter { it.product.categoryName == filterType }
+        }
         notifyDataSetChanged()
     }
 
@@ -111,7 +111,10 @@ class HomeProductListAdapter(private val listener: IClickListener) :
                 }
                 holder.discountPrice?.visibility = View.VISIBLE
                 holder.discountPrice?.text =
-                    holder.itemView.context.resources.getString(R.string.money_unit_float, product.getDiscountPrice())
+                    holder.itemView.context.resources.getString(
+                        R.string.money_unit_float,
+                        product.getDiscountPrice()
+                    )
                 val text =
                     holder.itemView.context.resources.getString(R.string.money_unit_int, product.getOriginPrice())
                 holder.originPrice?.strike(text)
