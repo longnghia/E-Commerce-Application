@@ -101,7 +101,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:text="@string/color"
-                android:textAppearance="@style/TextAppearance.MyApp.TextTitle"
+                android:textAppearance="@style/TextAppearance.MyApp.Text24.Black"
                 app:layout_constraintStart_toStartOf="@id/layout_menu"
                 app:layout_constraintTop_toBottomOf="@id/layout_menu" />
 
@@ -111,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
                 android:text="0$"
-                android:textAppearance="@style/TextAppearance.MyApp.TextTitle"
+                android:textAppearance="@style/TextAppearance.MyApp.Text24.Black"
                 app:layout_constraintEnd_toEndOf="@id/layout_menu"
                 app:layout_constraintTop_toBottomOf="@id/layout_menu" />
 

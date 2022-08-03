@@ -56,6 +56,10 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
         value = BaseLoadingStatus.NONE
     }
 
+    var orderStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>().apply {
+        value = BaseLoadingStatus.NONE
+    }
+
     private var isNetworkAvailable = Utils.isNetworkAvailable(application.applicationContext)
 
     private val rsaCipher = RSACipher((application as MyApplication).applicationContext)
@@ -121,7 +125,7 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
             listPromo.value = resPromo.data
         }
 
-        val appbarRes = withContext(Dispatchers.Default) {productsRepository.getListAppbarImg()}
+        val appbarRes = withContext(Dispatchers.Default) { productsRepository.getListAppbarImg() }
         Log.d(TAG, "fetchData: appbarRes: $appbarRes")
 
         if (appbarRes is MyResult.Success) {
@@ -138,11 +142,11 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                 productsRepository.getMyListReview(id)
             }
             val resCard =
-                withContext(Dispatchers.Default) { productsRepository.getListCard() }
+                withContext(Dispatchers.Default) { productsRepository.getListCard(id) }
             val resAddress =
-                withContext(Dispatchers.Default) { productsRepository.getListAddress() }
+                withContext(Dispatchers.Default) { productsRepository.getListAddress(id) }
             val defaultCheckOut =
-                withContext(Dispatchers.Default) { productsRepository.getDefaultCheckOut() }
+                withContext(Dispatchers.Default) { productsRepository.getDefaultCheckOut(id) }
 
             Log.d(TAG, "resCard: $resCard")
             Log.d(TAG, "resAddress: $resAddress")
@@ -177,8 +181,6 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                 showToast(defaultCheckOut.exception.message)
             }
         }
-
-
     }
 
     fun insertFavorite(favorite: Favorite) {
@@ -267,8 +269,10 @@ class ShopViewModel(application: Application) : AndroidViewModel(application) {
                 Log.d(TAG, "insertOrder: result= $it")
                 if (it is MyResult.Success) {
                     loadingStatus.postValue(BaseLoadingStatus.SUCCEEDED)
+                    orderStatus.postValue(BaseLoadingStatus.SUCCEEDED)
                 } else if (it is MyResult.Error) {
                     loadingStatus.postValue(BaseLoadingStatus.FAILED)
+                    orderStatus.postValue(BaseLoadingStatus.FAILED)
                     showToast(it.exception.message)
                 }
             }

@@ -257,6 +257,8 @@
     <string name="pls_check_internet">Please check your internet</string>
     <string name="go_back">Go back</string>
     <string name="retry">Retry?</string>
+    <string name="please_select_card">Please select card</string>
+    <string name="please_select_address">Please select address!</string>
 
     <plurals name="num_promo">
         <item quantity="one">You have 1 promocode</item>

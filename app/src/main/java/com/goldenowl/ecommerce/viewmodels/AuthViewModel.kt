@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.facebook.CallbackManager
 import com.goldenowl.ecommerce.MyApplication
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.models.data.User
 import com.goldenowl.ecommerce.models.repo.ICallback
@@ -28,6 +30,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val authRepository = (application as MyApplication).authRepository
     private val productsRepository = (application as MyApplication).productsRepository
     private val settingManager: SettingsManager = SettingsManager(application as MyApplication)
+    private val userManager: UserManager = (application as MyApplication).userManager
 
     fun logOut() {
         authRepository.logOut()
@@ -45,8 +48,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db = Firebase.firestore
-
-    val facebookCallbackManager = authRepository.facebookCallbackManager
 
     var signUpStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
     var logInStatus: MutableLiveData<BaseLoadingStatus> = MutableLiveData<BaseLoadingStatus>()
@@ -75,9 +76,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun logInWithFacebook() {
+    fun logInWithFacebook(facebookCallbackManager: CallbackManager) {
         logInStatus.value = BaseLoadingStatus.LOADING
-        authRepository.logInWithFacebook(object : LoginListener {
+        authRepository.logInWithFacebook(facebookCallbackManager, object : LoginListener {
             override fun callback(result: MyResult<Boolean>) {
                 if (result is MyResult.Success) {
                     logInStatus.value = BaseLoadingStatus.SUCCEEDED
@@ -92,8 +93,16 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     fun logInWithEmail(email: String, password: String) {
         viewModelScope.launch {
             logInStatus.value = BaseLoadingStatus.LOADING
-            val res = authRepository.logInWithEmail(email, password)
-            onDone(res, logInStatus)
+            val res = authRepository.logInWithEmail(email, password, object : LoginListener {
+                override fun callback(result: MyResult<Boolean>) {
+                    if (result is MyResult.Success) {
+                        logInStatus.value = BaseLoadingStatus.SUCCEEDED
+                    } else if (result is MyResult.Error) {
+                        logInStatus.value = BaseLoadingStatus.FAILED
+                        toastMessage.value = result.exception.message
+                    }
+                }
+            })
         }
     }
 
@@ -173,31 +182,30 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         restoreStatus.value = BaseLoadingStatus.LOADING
 
         viewModelScope.launch {
-            if (firebaseAuth.currentUser == null) {
+            if (!userManager.isLoggedIn()) {
                 showToast(R.string.error_occurred)
                 return@launch
             }
-            Log.d(TAG, "restoreUserData: not call if false")
-            firebaseAuth.currentUser?.let {
-                val userId = it.uid
-                val restoreData = async { productsRepository.restoreUserData(userId) }
-                val restoreSettings = async { authRepository.restoreUserSettingsData(userId) }
-                val restoreDataRes = restoreData.await()
-                val restoreSettingsRes = restoreSettings.await()
 
-                Log.d(TAG, "restoreDataRes: $restoreDataRes")
-                Log.d(TAG, "restoreSettingsRes: $restoreSettingsRes")
+            val userId = userManager.id
+            val restoreData = async { productsRepository.restoreUserData(userId) }
+            val restoreSettings = async { authRepository.restoreUserSettingsData(userId) }
+            val restoreDataRes = restoreData.await()
+            val restoreSettingsRes = restoreSettings.await()
 
-                if (restoreDataRes is MyResult.Success && restoreSettingsRes is MyResult.Success) {
-                    restoreStatus.value = BaseLoadingStatus.SUCCEEDED
-                } else if (restoreDataRes is MyResult.Error) {
-                    restoreStatus.value = BaseLoadingStatus.FAILED
-                    toastMessage.value = restoreDataRes.exception.message
-                } else if (restoreSettingsRes is MyResult.Error) {
-                    restoreStatus.value = BaseLoadingStatus.FAILED
-                    toastMessage.value = restoreSettingsRes.exception.message
-                }
+            Log.d(TAG, "restoreDataRes: $restoreDataRes")
+            Log.d(TAG, "restoreSettingsRes: $restoreSettingsRes")
+
+            if (restoreDataRes is MyResult.Success && restoreSettingsRes is MyResult.Success) {
+                restoreStatus.value = BaseLoadingStatus.SUCCEEDED
+            } else if (restoreDataRes is MyResult.Error) {
+                restoreStatus.value = BaseLoadingStatus.FAILED
+                toastMessage.value = restoreDataRes.exception.message
+            } else if (restoreSettingsRes is MyResult.Error) {
+                restoreStatus.value = BaseLoadingStatus.FAILED
+                toastMessage.value = restoreSettingsRes.exception.message
             }
+
         }
     }
 

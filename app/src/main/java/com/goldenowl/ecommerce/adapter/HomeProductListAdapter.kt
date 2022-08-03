@@ -15,7 +15,6 @@ import com.goldenowl.ecommerce.ui.global.IClickListener
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.glide2View
 import com.goldenowl.ecommerce.utils.Utils.strike
-import java.util.*
 
 
 class HomeProductListAdapter(private val listener: IClickListener) :
@@ -28,7 +27,10 @@ class HomeProductListAdapter(private val listener: IClickListener) :
         if (filterType == Constants.KEY_SALE)
             mListProductData = mListProductData.filter { it.product.salePercent != null }
         else if (filterType == Constants.KEY_NEW)
-            mListProductData = mListProductData.filter { it.product.createdDate > Date(0) }
+            mListProductData =
+                mListProductData.sortedByDescending { it.product.createdDate }.subList(0, mListProductData.size / 2)
+        else if (filterType != null)
+            mListProductData = mListProductData.filter { it.product.categoryName == filterType }
         notifyDataSetChanged()
     }
 

@@ -7,6 +7,8 @@ object Constants {
     const val MIN_AGE = 365
     const val AUTO_SCROLL: Long = 3500
     const val LOAD_MORE_QUANTITY: Long = 2
+
+    const val ERR_CANCEL_LOGIN = "Login Canceled!"
     const val ERR_NOT_LOGIN = "[Firestore] User not found!"
 
     const val KEY_ORDER = "KEY_ORDER"

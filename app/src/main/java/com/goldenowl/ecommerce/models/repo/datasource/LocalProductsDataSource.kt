@@ -1,6 +1,6 @@
-package com.goldenowl.ecommerce.models.data
+package com.goldenowl.ecommerce.models.repo.datasource
 
-import com.goldenowl.ecommerce.models.repo.ProductDataSource
+import com.goldenowl.ecommerce.models.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -12,7 +12,7 @@ class LocalProductsDataSource(
     private val cartDao: CartDao,
     private val orderDao: OrderDao,
     private val addressDao: AddressDao,
-) : ProductDataSource {
+) {
 
     private val dispatchers = Dispatchers.IO
 
@@ -21,7 +21,7 @@ class LocalProductsDataSource(
     val allAddress = addressDao.getListAddress()
     val allOrder = orderDao.getListOrder()
 
-    override suspend fun getAllProducts(): List<Product> {
+    suspend fun getAllProducts(): List<Product> {
         return productDao.getListProduct()
     }
 
@@ -29,11 +29,11 @@ class LocalProductsDataSource(
         return productDao.updateProduct(product)
     }
 
-    override suspend fun insertFavorite(favorite: Favorite) {
+    suspend fun insertFavorite(favorite: Favorite) {
         favoriteDao.insertFavorite(favorite)
     }
 
-    override suspend fun removeFavorite(favorite: Favorite) {
+    suspend fun removeFavorite(favorite: Favorite) {
         favoriteDao.removeFavorite(favorite)
     }
 

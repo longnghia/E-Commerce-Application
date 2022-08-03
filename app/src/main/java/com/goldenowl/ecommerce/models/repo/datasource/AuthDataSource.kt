@@ -1,4 +1,4 @@
-package com.goldenowl.ecommerce.models.repo
+package com.goldenowl.ecommerce.models.repo.datasource
 
 interface AuthDataSource {
     fun isLogin(): Boolean

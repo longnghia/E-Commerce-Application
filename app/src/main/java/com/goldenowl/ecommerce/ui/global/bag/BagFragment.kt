@@ -18,7 +18,7 @@ import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils.hideKeyboard
-import com.goldenowl.ecommerce.viewmodels.BagProductListAdapter
+import com.goldenowl.ecommerce.adapter.BagProductListAdapter
 import com.goldenowl.ecommerce.viewmodels.SortFilterViewModel
 import kotlinx.coroutines.*
 
@@ -55,12 +55,10 @@ class BagFragment : BaseHomeFragment<FragmentBagBinding>() {
         viewModel.allCart.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 binding.tvNoProduct.visibility = View.VISIBLE
-                binding.layoutContent.visibility = View.GONE
                 binding.layoutCheckout.visibility = View.GONE
-
+                viewModel.reloadListProductData()
             } else {
                 binding.tvNoProduct.visibility = View.GONE
-                binding.layoutContent.visibility = View.VISIBLE
                 binding.layoutCheckout.visibility = View.VISIBLE
                 viewModel.reloadListProductData()
                 setPrice()

@@ -2,7 +2,6 @@ package com.goldenowl.ecommerce.ui.global.bag
 
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.CheckoutDeliveryAdapter
@@ -36,7 +35,7 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
     private lateinit var loadingView: FrameLayout
 
     override fun setObservers() {
-
+        viewModel.orderStatus.value = BaseLoadingStatus.NONE
         viewModel.listCard.observe(viewLifecycleOwner) {
             listCard = it
             if (it.isNotEmpty()) {
@@ -94,6 +93,10 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
         viewModel.loadingStatus.observe(viewLifecycleOwner) {
             handleResult(it)
         }
+
+        viewModel.orderStatus.observe(viewLifecycleOwner) {
+            handleOrderResult(it)
+        }
     }
 
     private fun setCard() {
@@ -118,6 +121,14 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
     private fun handleResult(status: BaseLoadingStatus?) {
         when (status) {
             BaseLoadingStatus.LOADING -> loadingView.visibility = View.VISIBLE
+            BaseLoadingStatus.SUCCEEDED -> loadingView.visibility = View.INVISIBLE
+            else -> loadingView.visibility = View.INVISIBLE
+        }
+    }
+
+    private fun handleOrderResult(status: BaseLoadingStatus?) {
+        when (status) {
+            BaseLoadingStatus.LOADING -> loadingView.visibility = View.VISIBLE
             BaseLoadingStatus.SUCCEEDED -> {
                 loadingView.visibility = View.INVISIBLE
                 findNavController().navigate(R.id.success_dest)
@@ -126,7 +137,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
 
         }
     }
-
 
     override fun init() {
         super.init()
@@ -154,6 +164,16 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
             findNavController().navigate(R.id.address_dest)
         }
         binding.btnSubmitOrder.setOnClickListener {
+            if (address == null) {
+                showToast(getString(R.string.please_select_address))
+                binding.scrollView.smoothScrollTo(0, binding.tvAddress.top, 500)
+                return@setOnClickListener
+            }
+            if (card == null) {
+                showToast(getString(R.string.please_select_card))
+                binding.scrollView.smoothScrollTo(0, binding.tvPayment.top, 500)
+                return@setOnClickListener
+            }
             if (deliveryPrice == 0) {
                 showToast(getString(R.string.please_select_delivery))
                 binding.scrollView.smoothScrollTo(0, binding.tvDelivery.top, 500)
@@ -178,7 +198,6 @@ class CheckoutFragment : BaseHomeFragment<FragmentCheckoutBinding>() {
             }
         }
     }
-
 
     companion object {
         const val TAG = "CheckoutFragment"

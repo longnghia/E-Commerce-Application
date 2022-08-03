@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:elevation="0dp"
     android:fitsSystemWindows="true"
     app:liftOnScroll="true">
 
@@ -17,6 +18,7 @@
         app:collapsedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Collapsed"
         app:expandedTitleTextAppearance="@style/TextAppearance.MyApp.CollapsingToolbar.Expanded"
         app:layout_scrollFlags="scroll|snap"
+        android:elevation="0dp"
         app:statusBarScrim="@color/background_color"
         app:title="@string/home">
 

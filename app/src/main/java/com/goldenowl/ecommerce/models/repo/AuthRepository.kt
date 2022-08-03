@@ -1,7 +1,9 @@
 package com.goldenowl.ecommerce.models.repo
 
 import androidx.fragment.app.Fragment
+import com.facebook.CallbackManager
 import com.goldenowl.ecommerce.models.data.User
+import com.goldenowl.ecommerce.models.repo.datasource.LocalAuthDataSource
 import com.goldenowl.ecommerce.utils.MyResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -11,8 +13,6 @@ class AuthRepository(
     private val remoteAuthDataSource: RemoteAuthDataSource,
     private val localAuthDataSource: LocalAuthDataSource
 ) {
-
-    val facebookCallbackManager = remoteAuthDataSource.facebookCallbackManager
 
     fun isUserLoggedIn(): Boolean {
         return localAuthDataSource.isLogin()
@@ -32,12 +32,12 @@ class AuthRepository(
         return remoteAuthDataSource.signUpWithEmail(email, password, name)
     }
 
-    fun logInWithFacebook(listener: LoginListener) {
-        remoteAuthDataSource.logInWithFacebook(listener)
+    fun logInWithFacebook(facebookCallbackManager: CallbackManager, listener: LoginListener) {
+        remoteAuthDataSource.logInWithFacebook(facebookCallbackManager, listener)
     }
 
-    suspend fun logInWithEmail(email: String, password: String): String? {
-        return remoteAuthDataSource.logInWithEmail(email, password)
+    fun logInWithEmail(email: String, password: String, listener: LoginListener){
+        remoteAuthDataSource.logInWithEmail(email, password, listener)
     }
 
     suspend fun forgotPassword(email: String): String? {
@@ -93,7 +93,7 @@ class AuthRepository(
         return localAuthDataSource.getUser()
     }
 
-    suspend fun restoreUserSettingsData(userId: String): MyResult<Boolean> {
+    fun restoreUserSettingsData(userId: String): MyResult<Boolean> {
         return try {
             remoteAuthDataSource.restoreUserData(userId)
             MyResult.Success(true)

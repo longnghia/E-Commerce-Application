@@ -9,35 +9,6 @@
       "client_info": {
         "mobilesdk_app_id": "1:174656673319:android:8d3f5c6f67515b9c46e002",
         "android_client_info": {
-          "package_name": "com.goldenowl.ecommerce"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "174656673319-f7j14kp1o55oulok6smdnqaosdvdjqd2.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCVB0zIEMYcVOzSEtro9ATAXsWzVKFpZHE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "174656673319-f7j14kp1o55oulok6smdnqaosdvdjqd2.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:174656673319:android:8d3f5c6f67515b9c46e002",
-        "android_client_info": {
           "package_name": "com.goldenowl.paul.ecommerce"
         }
       },

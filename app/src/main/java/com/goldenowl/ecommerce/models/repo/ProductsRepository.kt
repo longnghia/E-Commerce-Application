@@ -2,6 +2,7 @@ package com.goldenowl.ecommerce.models.repo
 
 import android.util.Log
 import com.goldenowl.ecommerce.models.data.*
+import com.goldenowl.ecommerce.models.repo.datasource.*
 import com.goldenowl.ecommerce.utils.MyResult
 import com.google.firebase.firestore.Source
 import kotlinx.coroutines.async
@@ -10,12 +11,18 @@ import kotlinx.coroutines.supervisorScope
 
 class ProductsRepository(
     private val remoteProductDataSource: RemoteProductsDataSource,
+    private val remoteReviewDataSource: RemoteReviewDataSource,
+    private val remoteFavoriteDataSource: RemoteFavoriteDataSource,
+    private val remoteOrderDataSource: RemoteOrderDataSource,
+    private val remoteAddressDataSource: RemoteAddressDataSource,
+    private val remotePaymentDataSource: RemotePaymentDataSource,
+    private val remoteCartDataSource: RemoteCartDataSource,
+
     private val localProductDataSource: LocalProductsDataSource
 ) {
     private var networkAvailable: Boolean = false
     val allFavorite = localProductDataSource.allFavorite
     val allCart = localProductDataSource.allCart
-    val allAddress = localProductDataSource.allAddress
     val allOrder = localProductDataSource.allOrder
 
 
@@ -29,7 +36,7 @@ class ProductsRepository(
         // let 2 child coroutine run async in father  supervisorScope/coroutineScope
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.insertFavorite(favorite) }
+                val remoteSource = async { remoteFavoriteDataSource.insertFavorite(favorite) }
                 val localSource = async { localProductDataSource.insertFavorite(favorite) }
                 remoteSource.await()
                 localSource.await()
@@ -48,7 +55,7 @@ class ProductsRepository(
 
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.removeFavorite(favorite) }
+                val remoteSource = async { remoteFavoriteDataSource.removeFavorite(favorite) }
                 val localSource = async { localProductDataSource.removeFavorite(favorite) }
                 remoteSource.await()
                 localSource.await()
@@ -62,7 +69,7 @@ class ProductsRepository(
     suspend fun insertCart(cart: Cart): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.insertCart(cart) }
+                val remoteSource = async { remoteCartDataSource.insertCart(cart) }
                 val localSource = async { localProductDataSource.insertCart(cart) }
                 remoteSource.await()
                 localSource.await()
@@ -76,13 +83,12 @@ class ProductsRepository(
     suspend fun updateCart(cart: Cart, position: Int): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.updateCart(cart, position) }
+                val remoteSource = async { remoteCartDataSource.updateCart(cart, position) }
                 val localSource = async { localProductDataSource.updateCart(cart) }
                 remoteSource.await()
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.e(TAG, "insertFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
@@ -90,7 +96,7 @@ class ProductsRepository(
 
     suspend fun removeCart(cart: Cart): MyResult<Boolean> {
         return supervisorScope {
-            val remoteSource = async { remoteProductDataSource.removeCart(cart) }
+            val remoteSource = async { remoteCartDataSource.removeCart(cart) }
             val localSource = async { localProductDataSource.removeCart(cart) }
             try {
                 remoteSource.await()
@@ -104,7 +110,7 @@ class ProductsRepository(
 
     suspend fun emptyCartTable(): MyResult<Boolean> {
         return supervisorScope {
-            val remoteSource = async { remoteProductDataSource.emptyCartTable() }
+            val remoteSource = async { remoteCartDataSource.emptyCartTable() }
             val localSource = async { localProductDataSource.emptyCartTable() }
             try {
                 remoteSource.await()
@@ -119,7 +125,7 @@ class ProductsRepository(
     suspend fun insertOrder(order: Order): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.insertOrder(order) }
+                val remoteSource = async { remoteOrderDataSource.insertOrder(order) }
                 val localSource = async { localProductDataSource.insertOrder(order) }
                 remoteSource.await()
                 localSource.await()
@@ -132,7 +138,7 @@ class ProductsRepository(
 
     suspend fun removeOrder(order: Order): MyResult<Boolean> {
         return supervisorScope {
-            val remoteSource = async { remoteProductDataSource.removeOrder(order) }
+            val remoteSource = async { remoteOrderDataSource.removeOrder(order) }
             val localSource = async { localProductDataSource.removeOrder(order) }
             try {
                 remoteSource.await()
@@ -148,22 +154,13 @@ class ProductsRepository(
         return remoteProductDataSource.getListPromo()
     }
 
-    suspend fun getListCard(): MyResult<List<Card>> {
-        return remoteProductDataSource.getListCard()
+    suspend fun getListCard(id: String): MyResult<List<Card>> {
+        return remotePaymentDataSource.getListCard(id)
     }
 
-    suspend fun getListAddress(): MyResult<List<Address>> {
+    suspend fun getListAddress(id: String): MyResult<List<Address>> {
         return try {
-            val data = remoteProductDataSource.getListAddress()
-            MyResult.Success(data)
-        } catch (e: Exception) {
-            MyResult.Error(e)
-        }
-    }
-
-    suspend fun getListReview(): MyResult<List<Review>> {
-        return try {
-            val data = remoteProductDataSource.getListReview()
+            val data = remoteAddressDataSource.getListAddress(id)
             MyResult.Success(data)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -172,7 +169,7 @@ class ProductsRepository(
 
     suspend fun insertCard(card: Card): MyResult<Boolean> {
         return try {
-            remoteProductDataSource.insertCard(card)
+            remotePaymentDataSource.insertCard(card)
             MyResult.Success(true)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -181,7 +178,7 @@ class ProductsRepository(
 
     suspend fun setDefaultCheckOut(default: Map<String, Int?>): MyResult<Boolean> {
         return try {
-            remoteProductDataSource.setDefaultCheckOut(default)
+            remotePaymentDataSource.setDefaultCheckOut(default)
             MyResult.Success(true)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -190,16 +187,16 @@ class ProductsRepository(
 
     suspend fun removeCard(position: Int): MyResult<Boolean> {
         return try {
-            remoteProductDataSource.removeCard(position)
+            remotePaymentDataSource.removeCard(position)
             MyResult.Success(true)
         } catch (e: Exception) {
             MyResult.Error(e)
         }
     }
 
-    suspend fun getDefaultCheckOut(): MyResult<Map<String, Int>> {
+    suspend fun getDefaultCheckOut(id: String): MyResult<Map<String, Int>> {
         return try {
-            val data = remoteProductDataSource.getDefaultCheckOut()
+            val data = remotePaymentDataSource.getDefaultCheckOut(id)
             MyResult.Success(data)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -209,7 +206,7 @@ class ProductsRepository(
     suspend fun insertAddress(address: Address): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remote = async { remoteProductDataSource.insertAddress(address) }
+                val remote = async { remoteAddressDataSource.insertAddress(address) }
                 val local = async { localProductDataSource.insertAddress(address) }
                 remote.await()
                 local.await()
@@ -223,7 +220,7 @@ class ProductsRepository(
     suspend fun removeAddress(position: Int, address: Address): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remote = async { remoteProductDataSource.removeAddress(position) }
+                val remote = async { remoteAddressDataSource.removeAddress(position) }
                 val local = async { localProductDataSource.removeAddress(address) }
                 remote.await()
                 local.await()
@@ -237,13 +234,12 @@ class ProductsRepository(
     suspend fun updateAddress(address: Address, position: Int): MyResult<Boolean> {
         return supervisorScope {
             try {
-                val remoteSource = async { remoteProductDataSource.updateAddress(address, position) }
+                val remoteSource = async { remoteAddressDataSource.updateAddress(address, position) }
                 val localSource = async { localProductDataSource.updateAddress(address) }
                 remoteSource.await()
                 localSource.await()
                 MyResult.Success(true)
             } catch (e: Exception) {
-                Log.e(TAG, "insertFavorite: ERROR", e)
                 MyResult.Error(e)
             }
         }
@@ -260,7 +256,7 @@ class ProductsRepository(
             val listUrl: MutableList<String> = ArrayList()
             try {
                 for (file in list) {
-                    val link = async { remoteProductDataSource.uploadReviewImage(file) }
+                    val link = async { remoteReviewDataSource.uploadReviewImage(file) }
                     listUrl.add(link.await())
                 }
                 MyResult.Success(listUrl)
@@ -273,7 +269,7 @@ class ProductsRepository(
 
     suspend fun sendReview(rating: Review): MyResult<String> {
         return try {
-            val reviewId = remoteProductDataSource.sendReview(rating)
+            val reviewId = remoteReviewDataSource.sendReview(rating)
             MyResult.Success(reviewId)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -290,7 +286,7 @@ class ProductsRepository(
 
     suspend fun updateHelpful(reviewId: String, helpful: Boolean): MyResult<Boolean> {
         return try {
-            remoteProductDataSource.updateHelpful(reviewId, helpful)
+            remoteReviewDataSource.updateHelpful(reviewId, helpful)
             MyResult.Success(true)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -299,7 +295,7 @@ class ProductsRepository(
 
     suspend fun getReviewByProductId(productId: String): MyResult<List<ReviewData>> {
         return try {
-            val listReview = remoteProductDataSource.getReviewByProductId(productId)
+            val listReview = remoteReviewDataSource.getReviewByProductId(productId)
             MyResult.Success(listReview)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -308,7 +304,7 @@ class ProductsRepository(
 
     suspend fun getHelpfulReview(): MyResult<List<String>> {
         return try {
-            val listReview: List<String> = remoteProductDataSource.getHelpfulReview()
+            val listReview: List<String> = remoteReviewDataSource.getHelpfulReview()
             MyResult.Success(listReview)
         } catch (e: Exception) {
             MyResult.Error(e)
@@ -333,7 +329,7 @@ class ProductsRepository(
         return supervisorScope {
             try {
                 localProductDataSource.insertMultipleCart(mOrder.listCart)
-                remoteProductDataSource.insertMultipleCart(mOrder.listCart)
+                remoteCartDataSource.insertMultipleCart(mOrder.listCart)
                 MyResult.Success(true)
             } catch (e: Exception) {
                 MyResult.Error(e)
@@ -345,17 +341,17 @@ class ProductsRepository(
         return supervisorScope {
             try {
                 val favoriteRes = async {
-                    val allFavorite = remoteProductDataSource.getAllFavorite(userId)
+                    val allFavorite = remoteFavoriteDataSource.getAllFavorite(userId)
                     if (allFavorite.isNotEmpty())
                         localProductDataSource.insertMultipleFavorite(allFavorite)
                 }
                 val cartRes = async {
-                    val allCart = remoteProductDataSource.getAllCart(userId)
+                    val allCart = remoteCartDataSource.getAllCart(userId)
                     if (allCart.isNotEmpty())
                         localProductDataSource.insertMultipleCart(allCart)
                 }
                 val orderRes = async {
-                    val allOrder = remoteProductDataSource.getAllOrder(userId)
+                    val allOrder = remoteOrderDataSource.getAllOrder(userId)
                     if (allOrder.isNotEmpty())
                         localProductDataSource.insertMultipleOrder(allOrder)
                 }
@@ -381,7 +377,7 @@ class ProductsRepository(
 
     suspend fun getMyListReview(uid: String): MyResult<List<Review>> {
         return try {
-            val listReview = remoteProductDataSource.getMyListReview(uid)
+            val listReview = remoteReviewDataSource.getMyListReview(uid)
             MyResult.Success(listReview)
         } catch (e: Exception) {
             MyResult.Error(e)
