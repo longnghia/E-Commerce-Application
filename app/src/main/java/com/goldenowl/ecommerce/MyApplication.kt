@@ -9,7 +9,9 @@ import com.facebook.FacebookSdk
 import com.facebook.appevents.AppEventsLogger
 import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.ECommerceDatabase
-import com.goldenowl.ecommerce.models.repo.*
+import com.goldenowl.ecommerce.models.repo.AuthRepository
+import com.goldenowl.ecommerce.models.repo.ProductsRepository
+import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.models.repo.datasource.*
 import com.goldenowl.ecommerce.utils.Constants
 import com.google.firebase.FirebaseApp
@@ -60,9 +62,16 @@ class MyApplication : Application() {
             val channel = NotificationChannel(Constants.CHANNEL_CHANGE_PASSWORD_ID, name, importance).apply {
                 description = descriptionText
             }
+            val channelCloud = NotificationChannel(
+                getString(R.string.channel_cloud_message_id) ,
+                getString(R.string.channel_cloud_message),
+                importance).apply {
+                description = getString(R.string.channel_cloud_message_description)
+            }
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channelCloud)
         }
     }
 }
