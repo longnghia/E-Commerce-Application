@@ -259,6 +259,9 @@
     <string name="retry">Retry?</string>
     <string name="please_select_card">Please select card</string>
     <string name="please_select_address">Please select address!</string>
+    <string name="channel_cloud_message">Cloud message</string>
+    <string name="channel_cloud_message_description">Receive notifications from cloud</string>
+    <string name="channel_cloud_message_id" translatable="false">channel_cloud_message_id</string>
 
     <plurals name="num_promo">
         <item quantity="one">You have 1 promocode</item>
