@@ -1,8 +1,10 @@
 package com.goldenowl.ecommerce.ui.global.home
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
@@ -17,10 +19,15 @@ import com.goldenowl.ecommerce.models.data.Favorite
 import com.goldenowl.ecommerce.models.data.Product
 import com.goldenowl.ecommerce.models.data.ProductData
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
+import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 import com.goldenowl.ecommerce.utils.Utils.prepareForTwoWayPaging
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLink
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 
 
 class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
@@ -30,53 +37,59 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     private lateinit var productData: ProductData
 
     private var favorite: Favorite? = null
+    private var ready = false
     private var relateList: List<ProductData> = emptyList()
     private val handler = Handler(Looper.getMainLooper())
 
+    private lateinit var productId: String
     private var listProductData: List<ProductData> = emptyList()
 
     override fun setObservers() {
-        viewModel.listProductData.observe(viewLifecycleOwner) { it ->
-            listProductData = it
-            listProductData.find {
-                it.product.id == product.id
-            }.also {
-                favorite = it?.favorite
-                if (favorite != null)
-                    binding.ivFavorite.setImageResource(R.drawable.ic_favorites_selected)
-                else
-                    binding.ivFavorite.setImageResource(R.drawable.ic_favorites_bold)
+        super.setObservers()
+        viewModel.dataReady.observe(viewLifecycleOwner) {
+            if (it == BaseLoadingStatus.SUCCEEDED) {
+                ready = true
+                binding.layoutLoading.loadingFrameLayout.visibility = View.GONE
+                viewModel.listProductData.observe(viewLifecycleOwner) { it ->
+                    if (it.isEmpty()) return@observe
+                    listProductData = it
+                    productData = it.find { it.product.id == productId }!!
+                    product = productData.product
+                    favorite = productData.favorite
+
+                    listProductData.find {
+                        it.product.id == product.id
+                    }.also {
+                        favorite = it?.favorite
+                        if (favorite != null)
+                            binding.ivFavorite.setImageResource(R.drawable.ic_favorites_selected)
+                        else
+                            binding.ivFavorite.setImageResource(R.drawable.ic_favorites_bold)
+                    }
+                    setUI()
+                    relateList = viewModel.getRelateProducts(product.tags)
+                    if (relateProductAdapter != null)
+                        relateProductAdapter.setData(relateList, null)
+                }
+
+                viewModel.allFavorite.observe(viewLifecycleOwner) {
+                    viewModel.reloadListProductData()
+                }
+            } else {
+                binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
             }
-            relateList = viewModel.getRelateProducts(product.tags)
-            relateProductAdapter.setData(relateList, null)
         }
-
-        viewModel.allFavorite.observe(viewLifecycleOwner) {
-            viewModel.reloadListProductData()
-        }
-
     }
 
     override fun init() {
-        val data = arguments?.get("product_data")
-        val productId = arguments?.get(Constants.KEY_PRODUCT_ID)
-        if (data != null) {
-            productData = data as ProductData
-
-        } else if (productId != null) {
-            Log.d(TAG, "init: $productId")
-            val pData = viewModel.listProductData.value?.find {
-                it.product.id == productId as String
-            }
-            if (pData != null)
-                productData = pData
-        }
-        product = productData.product
-        favorite = productData.favorite
+        super.init()
+        productId = arguments?.get(Constants.KEY_PRODUCT_ID) as String
     }
 
 
-    override fun setViews() {
+    fun setUI() {
+        if (!ready)
+            return
 
         with(binding) {
 
@@ -138,6 +151,28 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         binding.ivFavorite.setOnClickListener {
             this.onClickFavorite(product, favorite)
         }
+
+        binding.topAppBar.toolbar.apply {
+
+            setNavigationOnClickListener {
+                findNavController().navigateUp()
+            }
+            setOnMenuItemClickListener {
+                val uri = createDynamicLink(product.id).toString()
+                if (it.itemId == R.id.ic_share) {
+                    val sendIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, uri)
+                        type = "text/plain"
+                    }
+
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    startActivity(shareIntent)
+                }
+                false
+            }
+        }
+        binding.topAppBar.toolbar.title = product.categoryName
     }
 
     private fun getRelateProducts(): List<ProductData> {
@@ -146,24 +181,18 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
 
     override fun setAppbar() {
-        binding.topAppBar.toolbar.apply {
+    }
 
-            setNavigationOnClickListener {
-                findNavController().navigateUp()
-            }
-            setOnMenuItemClickListener {
-                false
-            }
+
+    private fun createDynamicLink(productId: String): Uri {
+        val dynamicLink = Firebase.dynamicLinks.dynamicLink {
+            link = Uri.parse("https://shoppaul.page.link?product=$productId")
+            domainUriPrefix = "https://shoppaul.page.link"
+            androidParameters { }
         }
-        Log.d(TAG, "product.categoryName: ${product.categoryName}")
-        binding.topAppBar.toolbar.title = product.categoryName
+
+        return dynamicLink.uri
     }
-
-
-    private fun getListCategory(): List<String> {
-        return viewModel.categoryList.toList()
-    }
-
 
     companion object {
         const val TAG = "ProductDetailFragment"
@@ -181,6 +210,10 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeMessages(0)
+    }
+
+    override fun setViews() {
+
     }
 }
 

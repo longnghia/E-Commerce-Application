@@ -19,6 +19,7 @@ import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertCart
 import com.goldenowl.ecommerce.ui.global.bottomsheet.BottomSheetInsertFavorite
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.ConnectionLiveData
+import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Utils
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -49,7 +50,7 @@ abstract class BaseHomeFragment<VBinding : ViewBinding> : BaseFragment<VBinding>
     override fun onClickItem(productData: ProductData) {
         findNavController().navigate(
             R.id.detail_dest,
-            bundleOf("product_data" to productData)
+            bundleOf(Constants.KEY_PRODUCT_ID to productData.product.id)
         )
     }
 

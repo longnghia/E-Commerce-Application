@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/ic_search"
+        android:id="@+id/ic_share"
         android:icon="@drawable/ic_share"
         android:iconTint="@color/black"
         android:title="@string/search"

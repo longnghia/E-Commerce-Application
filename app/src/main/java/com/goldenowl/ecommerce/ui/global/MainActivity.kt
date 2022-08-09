@@ -16,10 +16,13 @@
 
 package com.goldenowl.ecommerce.ui.global
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -29,8 +32,13 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.databinding.ActivityMainBinding
+import com.goldenowl.ecommerce.utils.Constants
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private val TAG: String = "MainActivity"
 
@@ -45,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment? ?: return
 
-        val navController = host.navController
+        navController = host.navController
 
         appBarConfiguration = AppBarConfiguration(
             setOf(R.id.home_dest, R.id.bag_dest, R.id.shop_dest, R.id.favorites_dest, R.id.profile_dest),
@@ -68,8 +76,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        onDeepLink(intent)
         setContentView(binding.root)
 
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        onDeepLink(intent)
+    }
+
+    private fun onDeepLink(intent: Intent?) {
+        Firebase.dynamicLinks
+            .getDynamicLink(intent)
+            .addOnSuccessListener(this) { pendingDynamicLinkData: PendingDynamicLinkData? ->
+                // Get deep link from result (may be null if no link is found)
+                var deepLink: Uri? = null
+                if (pendingDynamicLinkData != null) {
+                    deepLink = pendingDynamicLinkData.link
+                    val productId = deepLink?.getQueryParameter("product")
+                    Log.d(TAG, "productId: $productId")
+                    if (productId != null)
+                        navController.navigate(R.id.detail_dest, bundleOf(Constants.KEY_PRODUCT_ID to productId))
+                }
+
+            }
+            .addOnFailureListener(this) { e -> Log.w(TAG, "getDynamicLink:onFailure", e) }
     }
 
     fun showNavBar(b: Boolean) {
