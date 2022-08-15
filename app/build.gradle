@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-android-extensions'
     id 'com.google.firebase.crashlytics'
+    id 'dagger.hilt.android.plugin'
 }
 
 def keystorePropertiesFile = rootProject.file("key.properties")
@@ -20,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId "com.goldenowl.paul.ecommerce"
-        minSdk 21
+        minSdk 30
         targetSdk 32
         versionCode rootProject.gitCommitCount
         versionName "1.${gitCommitCount}"
@@ -141,4 +142,11 @@ dependencies {
 
     // dynamic link
     implementation 'com.google.firebase:firebase-dynamic-links-ktx'
+
+    // simple chat
+    implementation project(':simplechat')
+
+    // hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.38.1"
 }
