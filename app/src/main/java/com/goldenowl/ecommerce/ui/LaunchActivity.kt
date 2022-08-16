@@ -11,6 +11,7 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.ui.tutorial.TutorialActivity
 import com.goldenowl.ecommerce.utils.Utils.launchHome
+import com.ln.simplechat.SimpleChatActivity
 
 class LaunchActivity : AppCompatActivity() {
 
@@ -20,6 +21,9 @@ class LaunchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.startActivity(Intent(this, SimpleChatActivity::class.java))
+        finish()
+        return
         setContentView(R.layout.activity_splash)
         userManager = UserManager.getInstance(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

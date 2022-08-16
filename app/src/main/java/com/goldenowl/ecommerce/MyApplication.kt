@@ -15,7 +15,9 @@ import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.models.repo.datasource.*
 import com.goldenowl.ecommerce.utils.Constants
 import com.google.firebase.FirebaseApp
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MyApplication : Application() {
 
     private val TAG = "MyApplication"
