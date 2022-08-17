@@ -95,6 +95,8 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
                 Glide.with(context)
                     .downloadOnly()
                     .load(url)
+                    .submit()
+                    .get()
             }
             when (uploadResult) {
                 is MyResult.Success -> {
