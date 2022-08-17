@@ -85,4 +85,7 @@ dependencies {
     implementation 'io.github.lucksiege:ucrop:v3.10.6'
     // simple camerax library (Not necessary)
     implementation 'io.github.lucksiege:camerax:v3.10.6'
+
+    // flexbox
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
 }

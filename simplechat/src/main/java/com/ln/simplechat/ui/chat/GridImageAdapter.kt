@@ -16,10 +16,10 @@ import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.config.SelectMimeType
 
 
-class GridImageAdapter(context: Context, result: List<ChatMedia>?) :
+class GridImageAdapter(private val context: Context, result: List<ChatMedia>?) :
     RecyclerView.Adapter<GridImageAdapter.ViewHolder>() {
 
-    private val mInflater: LayoutInflater
+    private val mInflater: LayoutInflater = LayoutInflater.from(context)
     val data: ArrayList<ChatMedia> = ArrayList()
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -55,7 +55,7 @@ class GridImageAdapter(context: Context, result: List<ChatMedia>?) :
         if (chooseModel == SelectMimeType.ofAudio()) {
             viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder)
         } else {
-            Glide.with(viewHolder.itemView.context)
+            Glide.with(context)
                 .load(path)
                 .centerCrop()
                 .placeholder(R.drawable.ps_image_placeholder)
@@ -94,7 +94,6 @@ class GridImageAdapter(context: Context, result: List<ChatMedia>?) :
     }
 
     init {
-        mInflater = LayoutInflater.from(context)
         if (result != null) {
             data.addAll(result)
         }

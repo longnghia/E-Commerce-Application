@@ -50,7 +50,11 @@ class ChatRepository @Inject constructor() {
         }
     }
 
-    suspend fun uploadImage(result: ArrayList<LocalMedia>, channelId: String): MyResult<List<String>> {
+    suspend fun uploadImage(
+        result: ArrayList<LocalMedia>,
+        channelId: String,
+        onUploaded: ((String) -> Unit)?
+    ): MyResult<List<String>> {
         val uploadedUrls = MutableList(result.size) { "" }
         return supervisorScope {
             try {
@@ -62,6 +66,7 @@ class ChatRepository @Inject constructor() {
                             .await()
                             .metadata!!.reference!!.downloadUrl
                             .await().toString()
+                        onUploaded?.invoke(url)
                         uploadedUrls[index] = url
                     }
                 }

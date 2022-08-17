@@ -78,7 +78,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
 
     private fun setViews() {
         binding.input.addTextChangedListener(SendButtonObserver(binding.btnSend))
-        binding.input.setOnEditorActionListener { v, actionId, _ ->
+        binding.input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> sendTextMessage()
             }
@@ -97,8 +97,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
                     override fun onResult(result: ArrayList<LocalMedia>) {
-                        viewModel.sendImagesMessage(result)
+                        viewModel.sendImagesMessage(requireContext(), result)
                     }
+
                     override fun onCancel() {}
                 })
         }

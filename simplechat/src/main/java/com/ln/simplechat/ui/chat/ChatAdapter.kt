@@ -9,8 +9,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.VideoView
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.Glide
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.R
@@ -28,6 +33,10 @@ class ChatAdapter(
     private val chatListener: ChatListener
 ) :
     ListAdapter<Message, ChatAdapter.MessageViewHolder>(DIFF_CALLBACK) {
+
+    private val scale = context.resources.displayMetrics.density
+    private val imageSpacing = context.resources.getDimension(R.dimen.image_spacing)
+    private val imageSize = context.resources.getDimension(R.dimen.image_size)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -67,12 +76,13 @@ class ChatAdapter(
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
 
         fun bind(item: Message) {
+            val outGoing = item.sender == currentUserId
             toggleVisibility(item)
             if (item.text != null) {
                 messageText.text = item.text
                 setTextColor(item.sender, messageText)
             } else if (item.listImageUrl != null) {
-                loadImages(messageImageRcv, item.listImageUrl)
+                loadImages(messageImageRcv, outGoing, item.listImageUrl)
             } else if (item.videoUrl != null) {
 
             }
@@ -115,15 +125,22 @@ class ChatAdapter(
         }
     }
 
-    private fun loadImages(rcv: RecyclerView, urls: List<ChatMedia>?) {
+    private fun loadImages(rcv: RecyclerView, outGoing: Boolean = false, urls: List<ChatMedia>?) {
         if (urls.isNullOrEmpty()) return
         val spanCount = when (urls.size) {
             1 -> 1
             2, 4 -> 2
             else -> 3
         }
-        val manager = GridLayoutManager(context, spanCount)
+        val flexWidth = spanCount * (imageSize + imageSpacing + 5) // extra pixel due to pixel conversion
+        rcv.layoutParams = rcv.layoutParams.apply { width = flexWidth.toInt() }
+
+        val manager = FlexboxLayoutManager(context)
+        if (outGoing)
+            manager.justifyContent = JustifyContent.FLEX_END
+
         rcv.layoutManager = manager
+
         val itemAnimator: RecyclerView.ItemAnimator? = rcv.itemAnimator
         if (itemAnimator != null) {
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
@@ -131,7 +148,7 @@ class ChatAdapter(
         rcv.addItemDecoration(
             GridSpacingItemDecoration(
                 spanCount,
-                DensityUtil.dip2px(context, 1F), false
+                DensityUtil.dip2px(context, imageSpacing), false
             )
         )
         val adapter = GridImageAdapter(context, urls)

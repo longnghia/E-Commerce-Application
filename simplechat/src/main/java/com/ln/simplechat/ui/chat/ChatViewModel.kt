@@ -1,10 +1,12 @@
 package com.ln.simplechat.ui.chat
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
@@ -46,17 +48,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     private val db: FirebaseFirestore = Firebase.firestore
     private val messages = db.collection("messages")
-    private var listener: EventListener<QuerySnapshot?>
-
-    init {
-        listener = object : EventListener<QuerySnapshot?> {
-            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                if (error != null) {
-                    return
-                }
-                val messages = value?.toObjects(Message::class.java)
-                _listMessage.postValue(messages)
+    private var listener: EventListener<QuerySnapshot?> = object : EventListener<QuerySnapshot?> {
+        override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+            if (error != null) {
+                return
             }
+            val messages = value?.toObjects(Message::class.java)
+            _listMessage.postValue(messages)
         }
     }
 
@@ -75,13 +73,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
             }
     }
 
-    fun sendImagesMessage(result: ArrayList<LocalMedia>) {
+    fun sendImagesMessage(context: Context, result: ArrayList<LocalMedia>) {
         if (result.isEmpty()) return
 
         val tmpList = result.map { it.toChatMedia() }
         val tmpMessage = Message(userId, listImageUrl = tmpList)
         sendMessage(channelId, tmpMessage) { ref ->
-            uploadImage(result) { listImg ->
+            uploadImage(context, result) { listImg ->
                 val list = tmpList.mapIndexed { index, chatMedia ->
                     chatMedia.apply { path = listImg[index] }
                 }
@@ -91,10 +89,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         }
     }
 
-    private fun uploadImage(result: ArrayList<LocalMedia>, callback: (List<String>) -> Unit) {
-        Log.d(TAG, "uploadImage")
+    private fun uploadImage(context: Context, result: ArrayList<LocalMedia>, callback: (List<String>) -> Unit) {
         viewModelScope.launch(Dispatchers.Main) {
-            val uploadResult = chatRepository.uploadImage(result, channelId)
+            val uploadResult = chatRepository.uploadImage(result, channelId) { url ->
+                Glide.with(context)
+                    .downloadOnly()
+                    .load(url)
+            }
             when (uploadResult) {
                 is MyResult.Success -> {
                     val listImg = uploadResult.data
