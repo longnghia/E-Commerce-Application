@@ -20,7 +20,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-
+        android:usesCleartextTraffic="true"
         android:name="com.goldenowl.ecommerce.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_ecommerce_launcher"

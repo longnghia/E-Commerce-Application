@@ -33,7 +33,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         adapter = ChannelAdapter { channel ->
             activity?.supportFragmentManager?.commit {
-                addToBackStack("FRAGMENT_CHAT")
+                addToBackStack(ChatFragment.TAG)
                 replace(R.id.container, ChatFragment.newInstance(channel))
             }
         }

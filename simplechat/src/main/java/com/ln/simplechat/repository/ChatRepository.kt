@@ -1,21 +1,25 @@
 package com.ln.simplechat.repository
 
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.utils.MyResult
-import kotlinx.coroutines.Dispatchers
+import com.luck.picture.lib.entity.LocalMedia
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class ChatRepository @Inject constructor() {
     private val dispatcherIO = Dispatchers.IO
-    val db: FirebaseFirestore = Firebase.firestore
+    private val db: FirebaseFirestore = Firebase.firestore
+    private val storageReference = Firebase.storage
 
     suspend fun getListMember(listId: List<String>): List<Member> {
         val listMember: MutableList<Member> = mutableListOf()
@@ -28,7 +32,7 @@ class ChatRepository @Inject constructor() {
                 }
                 listMember
             } catch (e: Exception) {
-                Log.e("TAG", "getListMember: Fail ", e)
+                Log.e("TAG", "getListMember ERROR", e)
                 emptyList()
             }
         }
@@ -44,5 +48,30 @@ class ChatRepository @Inject constructor() {
                 MyResult.Error(e)
             }
         }
+    }
+
+    suspend fun uploadImage(result: ArrayList<LocalMedia>, channelId: String): MyResult<List<String>> {
+        val uploadedUrls = MutableList(result.size) { "" }
+        return supervisorScope {
+            try {
+                val uploadTask = result.mapIndexed { index, localMedia ->
+                    async {
+                        val file = Uri.fromFile(File(localMedia.availablePath))
+                        val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
+                        val url = ref.putFile(file)
+                            .await()
+                            .metadata!!.reference!!.downloadUrl
+                            .await().toString()
+                        uploadedUrls[index] = url
+                    }
+                }
+                uploadTask.awaitAll()
+                Log.d("TAG", "uploadImage:$uploadedUrls ")
+                MyResult.Success(uploadedUrls)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+
     }
 }

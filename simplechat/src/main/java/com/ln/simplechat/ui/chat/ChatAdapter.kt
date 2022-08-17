@@ -1,5 +1,6 @@
 package com.ln.simplechat.ui.chat
 
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,25 +9,28 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.VideoView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.R
+import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
+import com.luck.picture.lib.decoration.GridSpacingItemDecoration
+import com.luck.picture.lib.utils.DensityUtil
 import java.text.SimpleDateFormat
 
 class ChatAdapter(
+    private val context: Context,
     private val currentUserId: String,
-    private val listUser: List<Member>
+    private val listUser: List<Member>,
+    private val chatListener: ChatListener
 ) :
     ListAdapter<Message, ChatAdapter.MessageViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
+        val inflater = LayoutInflater.from(context)
         return when (viewType) {
             MESSAGE_OUTGOING -> {
                 val view = inflater.inflate(R.layout.item_message_outgoing, parent, false)
@@ -58,7 +62,7 @@ class ChatAdapter(
         var messageText: TextView = itemView.findViewById(R.id.message_text)
         var messenger: TextView = itemView.findViewById(R.id.messenger)
         var messengerAvatar: ImageView = itemView.findViewById(R.id.messenger_avatar)
-        var messageImage: ImageView = itemView.findViewById(R.id.message_image)
+        var messageImageRcv: RecyclerView = itemView.findViewById(R.id.rcv_message_image)
         var messageVideo: VideoView = itemView.findViewById(R.id.message_video)
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
 
@@ -67,8 +71,8 @@ class ChatAdapter(
             if (item.text != null) {
                 messageText.text = item.text
                 setTextColor(item.sender, messageText)
-            } else if (item.imageUrl != null) {
-                loadImageIntoView(messageImage, item.imageUrl!!)
+            } else if (item.listImageUrl != null) {
+                loadImages(messageImageRcv, item.listImageUrl)
             } else if (item.videoUrl != null) {
 
             }
@@ -76,7 +80,10 @@ class ChatAdapter(
             val user = listUser.find { it.id == item.sender }
             if (user != null) {
                 messenger.text = user.name
-                loadImageIntoView(messengerAvatar, user.avatar)
+                if (user.id == currentUserId)
+                    messengerAvatar.visibility = View.GONE
+                else
+                    loadImageIntoView(messengerAvatar, user.avatar)
             } else {
                 messenger.text = item.sender
                 messengerAvatar.setImageResource(R.drawable.ic_account_circle_black_36dp)
@@ -86,15 +93,15 @@ class ChatAdapter(
         private fun toggleVisibility(item: Message) {
             if (item.text != null) {
                 messageText.visibility = View.VISIBLE
-                messageImage.visibility = View.GONE
+                messageImageRcv.visibility = View.GONE
                 messageVideo.visibility = View.GONE
-            } else if (item.imageUrl != null) {
+            } else if (item.listImageUrl != null) {
                 messageText.visibility = View.GONE
-                messageImage.visibility = View.VISIBLE
+                messageImageRcv.visibility = View.VISIBLE
                 messageVideo.visibility = View.GONE
             } else if (item.videoUrl != null) {
                 messageText.visibility = View.GONE
-                messageImage.visibility = View.GONE
+                messageImageRcv.visibility = View.GONE
                 messageVideo.visibility = View.VISIBLE
             }
         }
@@ -108,6 +115,32 @@ class ChatAdapter(
         }
     }
 
+    private fun loadImages(rcv: RecyclerView, urls: List<ChatMedia>?) {
+        if (urls.isNullOrEmpty()) return
+        val spanCount = when (urls.size) {
+            1 -> 1
+            2, 4 -> 2
+            else -> 3
+        }
+        val manager = GridLayoutManager(context, spanCount)
+        rcv.layoutManager = manager
+        val itemAnimator: RecyclerView.ItemAnimator? = rcv.itemAnimator
+        if (itemAnimator != null) {
+            (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+        rcv.addItemDecoration(
+            GridSpacingItemDecoration(
+                spanCount,
+                DensityUtil.dip2px(context, 1F), false
+            )
+        )
+        val adapter = GridImageAdapter(context, urls)
+        adapter.setOnItemClickListener { _, position ->
+            chatListener.openPreview(position, urls)
+        }
+
+        rcv.adapter = adapter
+    }
 
     private fun loadImageIntoView(view: ImageView, url: String) {
         if (url.startsWith("gs://")) {
@@ -115,19 +148,15 @@ class ChatAdapter(
             storageReference.downloadUrl
                 .addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
-                    Glide.with(view.context)
+                    Glide.with(context)
                         .load(downloadUrl)
                         .into(view)
                 }
                 .addOnFailureListener { e ->
-                    Log.w(
-                        TAG,
-                        "Getting download url was not successful.",
-                        e
-                    )
+                    Log.e(TAG, "loadImageIntoView: ERROR", e)
                 }
         } else {
-            Glide.with(view.context).load(url).into(view)
+            Glide.with(context).load(url).into(view)
         }
     }
 
@@ -136,10 +165,9 @@ class ChatAdapter(
         const val MESSAGE_INCOMING = 0
         const val MESSAGE_OUTGOING = 1
 
-
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.timestamp == newItem.timestamp
             }
 
             override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
@@ -147,13 +175,12 @@ class ChatAdapter(
             }
         }
 
-        val dateFormatter = SimpleDateFormat("MMMM dd, YYYY")
-
-        interface ChatCallback {
-
-        }
+        val dateFormatter = SimpleDateFormat("MMMM dd")
     }
 
+    interface ChatListener {
+        fun openPreview(position: Int, data: List<ChatMedia>)
+    }
 }
 
 

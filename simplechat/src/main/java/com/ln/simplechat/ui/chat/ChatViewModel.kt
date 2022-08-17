@@ -1,15 +1,22 @@
 package com.ln.simplechat.ui.chat
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.model.Status
 import com.ln.simplechat.repository.ChatRepository
+import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.toChatMedia
+import com.luck.picture.lib.entity.LocalMedia
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,60 +25,87 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(private val chatRepository: ChatRepository) : ViewModel() {
 
+    private lateinit var channelId: String
+    private lateinit var query: Query
+
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
+
     private var listenerRegistration: ListenerRegistration? = null
-    private var query: Query
 
     private var _listMessage = MutableLiveData<List<Message>>()
-    val listMessage = _listMessage
+    val listMessage: LiveData<List<Message>> = _listMessage
 
     private var _sendStatus = MutableLiveData<Status>()
-    val sendStatus = _listMessage
+    val sendStatus: LiveData<Status> = _sendStatus
 
     private var _toastMessage = MutableLiveData<String?>()
-    val toastMessage = _toastMessage
+    val toastMessage: LiveData<String?> = _toastMessage
 
     private var _listMember = MutableLiveData<List<Member>>()
-    val listMember = _listMember
+    val listMember: LiveData<List<Member>> = _listMember
 
-    val db: FirebaseFirestore = Firebase.firestore
+    private val db: FirebaseFirestore = Firebase.firestore
+    private val messages = db.collection("messages")
+    private var listener: EventListener<QuerySnapshot?>
 
-    fun sendTextMessage(channelId: String, message: Message) {
-        if (message.text.isNullOrEmpty())
-            return
+    init {
+        listener = object : EventListener<QuerySnapshot?> {
+            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                if (error != null) {
+                    return
+                }
+                val messages = value?.toObjects(Message::class.java)
+                _listMessage.postValue(messages)
+            }
+        }
+    }
 
-        var messages = db.collection("messages")
+    fun sendMessage(channelId: String, message: Message, callback: ((DocumentReference) -> Unit)? = null) {
         _sendStatus.postValue(Status.LOADING)
         messages.document(channelId).collection("list-message")
             .add(message)
             .addOnSuccessListener {
+                callback?.invoke(it)
                 _sendStatus.postValue(Status.SUCCESS)
             }
             .addOnFailureListener {
+                Log.e(TAG, "sendMessage: ERROR", it)
                 _sendStatus.postValue(Status.FAIL)
                 _toastMessage.postValue(it.message)
             }
     }
 
-    val listener = object : EventListener<QuerySnapshot?> {
-        override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-            if (error != null) {
-                return
+    fun sendImagesMessage(result: ArrayList<LocalMedia>) {
+        if (result.isEmpty()) return
+
+        val tmpList = result.map { it.toChatMedia() }
+        val tmpMessage = Message(userId, listImageUrl = tmpList)
+        sendMessage(channelId, tmpMessage) { ref ->
+            uploadImage(result) { listImg ->
+                val list = tmpList.mapIndexed { index, chatMedia ->
+                    chatMedia.apply { path = listImg[index] }
+                }
+                tmpMessage.listImageUrl = list
+                ref.set(tmpMessage)
             }
-            val messages = value?.toObjects(Message::class.java)
-            _listMessage.postValue(messages)
         }
     }
 
-    init {
-        val channelId = "4be9efc7-69e1-47aa-990c-1ddaafaf0500"
-        query = FirebaseFirestore.getInstance()
-            .collection("messages")
-            .document(channelId)
-            .collection("list-message")
-            .orderBy("timestamp", Query.Direction.ASCENDING)
+    private fun uploadImage(result: ArrayList<LocalMedia>, callback: (List<String>) -> Unit) {
+        Log.d(TAG, "uploadImage")
+        viewModelScope.launch(Dispatchers.Main) {
+            val uploadResult = chatRepository.uploadImage(result, channelId)
+            when (uploadResult) {
+                is MyResult.Success -> {
+                    val listImg = uploadResult.data
+                    callback(listImg)
+                }
+                is MyResult.Error -> toastMessage
+            }
+        }
     }
 
-    fun getListMember(listUser: List<String>) {
+    private fun getListMember(listUser: List<String>) {
         viewModelScope.launch(Dispatchers.Main) {
             val list = chatRepository.getListMember(listUser)
             _listMember.postValue(list)
@@ -86,6 +120,18 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     fun stopListening() {
         listenerRegistration?.remove()
+    }
+
+    fun initData(channel: Channel) {
+        channelId = channel.id
+
+        query = FirebaseFirestore.getInstance()
+            .collection("messages")
+            .document(channelId)
+            .collection("list-message")
+            .orderBy("timestamp", Query.Direction.ASCENDING)
+
+        getListMember(channel.listUser)
     }
 
     companion object {
