@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(private val repository: ChatRepository) : ViewModel() {
 
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid!! // recheck
+    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
 
     val listChannel = flow {
         emit(userId.let { repository.getListChannel(it) })

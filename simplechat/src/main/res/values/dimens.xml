@@ -10,4 +10,6 @@
     <dimen name="message_padding_horizontal_short">16dp</dimen>
     <dimen name="message_padding_horizontal_long">24dp</dimen>
     <dimen name="bubble_height">400dp</dimen>
+    <dimen name="image_spacing">1dp</dimen>
+    <dimen name="image_size">80dp</dimen>
 </resources>

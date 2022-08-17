@@ -12,4 +12,6 @@
     <string name="channel_new_messages_description">All new incoming messages.</string>
     <string name="chat_with_contact">Chat with %s</string>
     <string name="voice_call_explanation">This is a dummy voice call screen.</string>
+    <string name="sc_current_week">This week</string>
+    <string name="sc_current_month">This month</string>
 </resources>
