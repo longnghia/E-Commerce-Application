@@ -22,6 +22,7 @@ import com.ln.simplechat.R
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
+import com.ln.simplechat.model.MessageType
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.utils.DensityUtil
 import java.text.SimpleDateFormat
@@ -78,13 +79,15 @@ class ChatAdapter(
         fun bind(item: Message) {
             val outGoing = item.sender == currentUserId
             toggleVisibility(item)
-            if (item.text != null) {
-                messageText.text = item.text
-                setTextColor(item.sender, messageText)
-            } else if (item.listImageUrl != null) {
-                loadImages(messageImageRcv, outGoing, item.listImageUrl)
-            } else if (item.videoUrl != null) {
-
+            when (item.getMessageType()) {
+                MessageType.TEXT -> {
+                    messageText.text = item.text
+                    setTextColor(item.sender, messageText)
+                }
+                MessageType.IMAGE -> {
+                    loadImages(messageImageRcv, outGoing, item.listImageUrl)
+                }
+                MessageType.VIDEO -> {}
             }
             timestamp.text = dateFormatter.format(item.timestamp)
             val user = listUser.find { it.id == item.sender }
@@ -101,18 +104,22 @@ class ChatAdapter(
         }
 
         private fun toggleVisibility(item: Message) {
-            if (item.text != null) {
-                messageText.visibility = View.VISIBLE
-                messageImageRcv.visibility = View.GONE
-                messageVideo.visibility = View.GONE
-            } else if (item.listImageUrl != null) {
-                messageText.visibility = View.GONE
-                messageImageRcv.visibility = View.VISIBLE
-                messageVideo.visibility = View.GONE
-            } else if (item.videoUrl != null) {
-                messageText.visibility = View.GONE
-                messageImageRcv.visibility = View.GONE
-                messageVideo.visibility = View.VISIBLE
+            when (item.getMessageType()) {
+                MessageType.TEXT -> {
+                    messageText.visibility = View.VISIBLE
+                    messageImageRcv.visibility = View.GONE
+                    messageVideo.visibility = View.GONE
+                }
+                MessageType.IMAGE -> {
+                    messageText.visibility = View.GONE
+                    messageImageRcv.visibility = View.VISIBLE
+                    messageVideo.visibility = View.GONE
+                }
+                MessageType.VIDEO -> {
+                    messageText.visibility = View.GONE
+                    messageImageRcv.visibility = View.GONE
+                    messageVideo.visibility = View.VISIBLE
+                }
             }
         }
 

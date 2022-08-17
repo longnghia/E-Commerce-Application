@@ -133,9 +133,11 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
     }
 
     override fun openPreview(position: Int, data: List<ChatMedia>) {
-//        activity?.supportFragmentManager?.commit {
-//            addToBackStack(PicturePreviewFragment.TAG)
-//            replace(R.id.container, PicturePreviewFragment.newInstance(position, java.util.ArrayList(data)))
-//        }
+/*      TODO open preview images and videos
+        activity?.supportFragmentManager?.commit {
+            addToBackStack(PicturePreviewFragment.TAG)
+            replace(R.id.container, PicturePreviewFragment.newInstance(position, java.util.ArrayList(data)))
+        }*/
+
     }
 }
