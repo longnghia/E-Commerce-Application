@@ -1,6 +1,5 @@
 package com.ln.simplechat.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
@@ -31,7 +30,6 @@ class ChatRepository @Inject constructor() {
                 }
                 listMember
             } catch (e: Exception) {
-                Log.e("TAG", "getListMember ERROR", e)
                 emptyList()
             }
         }
