@@ -98,12 +98,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
                     .submit()
                     .get()
             }
+            Log.d(TAG, "uploadImage: $uploadResult")
             when (uploadResult) {
                 is MyResult.Success -> {
                     val listImg = uploadResult.data
                     callback(listImg)
                 }
-                is MyResult.Error -> toastMessage
+                is MyResult.Error -> _toastMessage.postValue(uploadResult.exception.message)
             }
         }
     }

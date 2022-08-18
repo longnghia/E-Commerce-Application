@@ -56,27 +56,27 @@ class ChatRepository @Inject constructor() {
         onUploaded: ((String) -> Unit)?
     ): MyResult<List<String>> {
         val uploadedUrls = MutableList(result.size) { "" }
-        return supervisorScope {
-            try {
-                val uploadTask = result.mapIndexed { index, localMedia ->
-                    async {
-                        val file = Uri.fromFile(File(localMedia.availablePath))
-                        val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
-                        val url = ref.putFile(file)
-                            .await()
-                            .metadata!!.reference!!.downloadUrl
-                            .await().toString()
-                        onUploaded?.invoke(url)
-                        uploadedUrls[index] = url
+        return withContext(dispatcherIO) {
+            supervisorScope {
+                try {
+                    val uploadTask = result.mapIndexed { index, localMedia ->
+                        async {
+                            val file = Uri.fromFile(File(localMedia.availablePath))
+                            val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
+                            val url = ref.putFile(file)
+                                .await()
+                                .metadata!!.reference!!.downloadUrl
+                                .await().toString()
+                            onUploaded?.invoke(url)
+                            uploadedUrls[index] = url
+                        }
                     }
+                    uploadTask.awaitAll()
+                    MyResult.Success(uploadedUrls)
+                } catch (e: Exception) {
+                    MyResult.Error(e)
                 }
-                uploadTask.awaitAll()
-                Log.d("TAG", "uploadImage:$uploadedUrls ")
-                MyResult.Success(uploadedUrls)
-            } catch (e: Exception) {
-                MyResult.Error(e)
             }
         }
-
     }
 }

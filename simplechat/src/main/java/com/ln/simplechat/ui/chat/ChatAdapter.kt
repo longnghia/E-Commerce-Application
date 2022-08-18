@@ -201,10 +201,6 @@ class ChatAdapter(
 
         val dateFormatter = SimpleDateFormat("MMMM dd")
     }
-
-    interface ChatListener {
-        fun openPreview(position: Int, data: List<ChatMedia>)
-    }
 }
 
 
