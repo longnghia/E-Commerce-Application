@@ -77,13 +77,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         if (result.isEmpty()) return
 
         val tmpList = result.map { it.toChatMedia() }
-        val tmpMessage = Message(userId, listImageUrl = tmpList)
+        val tmpMessage = Message(userId, medias = tmpList)
         sendMessage(channelId, tmpMessage) { ref ->
             uploadImage(context, result) { listImg ->
                 val list = tmpList.mapIndexed { index, chatMedia ->
                     chatMedia.apply { path = listImg[index] }
                 }
-                tmpMessage.listImageUrl = list
+                tmpMessage.medias = list
                 ref.set(tmpMessage)
             }
         }

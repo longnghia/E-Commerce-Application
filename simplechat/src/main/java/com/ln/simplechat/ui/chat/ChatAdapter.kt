@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.VideoView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -73,21 +72,22 @@ class ChatAdapter(
         var messenger: TextView = itemView.findViewById(R.id.messenger)
         var messengerAvatar: ImageView = itemView.findViewById(R.id.messenger_avatar)
         var messageImageRcv: RecyclerView = itemView.findViewById(R.id.rcv_message_image)
-        var messageVideo: VideoView = itemView.findViewById(R.id.message_video)
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
 
         fun bind(item: Message) {
             val outGoing = item.sender == currentUserId
-            toggleVisibility(item)
             when (item.getMessageType()) {
                 MessageType.TEXT -> {
+                    messageText.visibility = View.VISIBLE
+                    messageImageRcv.visibility = View.GONE
                     messageText.text = item.text
                     setTextColor(item.sender, messageText)
                 }
-                MessageType.IMAGE -> {
-                    loadImages(messageImageRcv, outGoing, item.listImageUrl)
+                MessageType.MEDIA -> {
+                    messageText.visibility = View.GONE
+                    messageImageRcv.visibility = View.VISIBLE
+                    loadImages(messageImageRcv, outGoing, item.medias)
                 }
-                MessageType.VIDEO -> {}
             }
             timestamp.text = dateFormatter.format(item.timestamp)
             val user = listUser.find { it.id == item.sender }
@@ -100,26 +100,6 @@ class ChatAdapter(
             } else {
                 messenger.text = item.sender
                 messengerAvatar.setImageResource(R.drawable.ic_account_circle_black_36dp)
-            }
-        }
-
-        private fun toggleVisibility(item: Message) {
-            when (item.getMessageType()) {
-                MessageType.TEXT -> {
-                    messageText.visibility = View.VISIBLE
-                    messageImageRcv.visibility = View.GONE
-                    messageVideo.visibility = View.GONE
-                }
-                MessageType.IMAGE -> {
-                    messageText.visibility = View.GONE
-                    messageImageRcv.visibility = View.VISIBLE
-                    messageVideo.visibility = View.GONE
-                }
-                MessageType.VIDEO -> {
-                    messageText.visibility = View.GONE
-                    messageImageRcv.visibility = View.GONE
-                    messageVideo.visibility = View.VISIBLE
-                }
             }
         }
 
