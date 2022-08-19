@@ -3,6 +3,7 @@ package com.ln.simplechat.model
 import com.google.firebase.firestore.Exclude
 
 data class Message @JvmOverloads constructor(
+    val id: String = "",
     val sender: String = "",
     val text: String? = null,
     var medias: List<ChatMedia>? = null,
