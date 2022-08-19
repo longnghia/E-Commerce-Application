@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.Member
@@ -60,10 +61,10 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     fun sendMessage(channelId: String, message: Message, callback: ((DocumentReference) -> Unit)? = null) {
         _sendStatus.postValue(Status.LOADING)
-        messages.document(channelId).collection("list-message")
-            .add(message)
+        val messageRef = messages.document(channelId).collection("list-message").document(message.id)
+        messageRef.set(message)
             .addOnSuccessListener {
-                callback?.invoke(it)
+                callback?.invoke(messageRef)
                 _sendStatus.postValue(Status.SUCCESS)
             }
             .addOnFailureListener {
@@ -77,13 +78,13 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         if (result.isEmpty()) return
 
         val tmpList = result.map { it.toChatMedia() }
-        val tmpMessage = Message(userId, listImageUrl = tmpList)
+        val tmpMessage = Message(Util.autoId(), userId, medias = tmpList)
         sendMessage(channelId, tmpMessage) { ref ->
             uploadImage(context, result) { listImg ->
                 val list = tmpList.mapIndexed { index, chatMedia ->
                     chatMedia.apply { path = listImg[index] }
                 }
-                tmpMessage.listImageUrl = list
+                tmpMessage.medias = list
                 ref.set(tmpMessage)
             }
         }

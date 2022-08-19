@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.model.Channel
@@ -111,7 +112,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun sendTextMessage() {
-        viewModel.sendMessage(channelId, Message(currentUserId, binding.input.text.toString().trim()))
+        viewModel.sendMessage(channelId, Message(Util.autoId(), currentUserId, binding.input.text.toString().trim()))
         binding.input.setText("")
     }
 
