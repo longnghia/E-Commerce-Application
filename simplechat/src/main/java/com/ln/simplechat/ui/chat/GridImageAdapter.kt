@@ -11,9 +11,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.ln.simplechat.R
 import com.ln.simplechat.model.ChatMedia
+import com.ln.simplechat.model.MediaType
 import com.ln.simplechat.utils.DateUtils
-import com.luck.picture.lib.config.PictureMimeType
-import com.luck.picture.lib.config.SelectMimeType
 
 
 class GridImageAdapter(private val context: Context, result: List<ChatMedia>?) :
@@ -41,26 +40,36 @@ class GridImageAdapter(private val context: Context, result: List<ChatMedia>?) :
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val media = data[position]
-        val chooseModel = media.chooseModel
         val path = media.path
-        val duration = media.duration
-        viewHolder.tvDuration.visibility = if (PictureMimeType.isHasVideo(media.mimeType)) View.VISIBLE else View.GONE
-        if (chooseModel == SelectMimeType.ofAudio()) {
-            viewHolder.tvDuration.visibility = View.VISIBLE
-            viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ps_ic_audio, 0, 0, 0)
-        } else {
-            viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ps_ic_video, 0, 0, 0)
-        }
-        viewHolder.tvDuration.text = DateUtils.formatDurationTime(duration)
-        if (chooseModel == SelectMimeType.ofAudio()) {
-            viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder)
-        } else {
-            Glide.with(context)
-                .load(path)
-                .centerCrop()
-                .placeholder(R.drawable.ps_image_placeholder)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(viewHolder.mImg)
+
+        viewHolder.mImg.contentDescription = media.description
+
+        when (media.getMediaType()) {
+            MediaType.AUDIO -> {
+                viewHolder.tvDuration.visibility = View.VISIBLE
+                viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder)
+                viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ps_ic_audio, 0, 0, 0)
+            }
+            MediaType.VIDEO -> {
+                viewHolder.tvDuration.visibility = View.VISIBLE
+                viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ps_ic_video, 0, 0, 0)
+                viewHolder.tvDuration.text = DateUtils.formatDurationTime(media.duration)
+
+                Glide.with(context)
+                    .load(path)
+                    .centerCrop()
+                    .placeholder(R.drawable.ps_image_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.mImg)
+            }
+            MediaType.IMAGE -> {
+                Glide.with(context)
+                    .load(path)
+                    .centerCrop()
+                    .placeholder(R.drawable.ps_image_placeholder)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(viewHolder.mImg)
+            }
         }
 
         if (mItemClickListener != null) {

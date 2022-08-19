@@ -95,7 +95,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofAll())
                 .setImageEngine(GlideEngine.createGlideEngine())
-                .setMaxSelectNum(10)
+                .isWithSelectVideoImage(true)
+                .setMaxSelectNum(MAX_MEDIA)
+                .setMaxVideoSelectNum(MAX_VIDEO)
+                .isGif(true)
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
                     override fun onResult(result: ArrayList<LocalMedia>) {
@@ -125,6 +128,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     companion object {
         const val TAG = "CHAT_FRAGMENT"
         const val CHANNEL = "CHANNEL"
+
+        const val MAX_MEDIA = 10
+        const val MAX_VIDEO = 10
 
         fun newInstance(channel: Channel) =
             ChatFragment().apply {

@@ -1,6 +1,5 @@
 package com.ln.simplechat.repository
 
-import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
@@ -10,10 +9,10 @@ import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.getFileUri
 import com.luck.picture.lib.entity.LocalMedia
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import java.io.File
 import javax.inject.Inject
 
 class ChatRepository @Inject constructor() {
@@ -61,7 +60,7 @@ class ChatRepository @Inject constructor() {
                 try {
                     val uploadTask = result.mapIndexed { index, localMedia ->
                         async {
-                            val file = Uri.fromFile(File(localMedia.availablePath))
+                            val file = getFileUri(localMedia.availablePath) ?: return@async
                             val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
                             val url = ref.putFile(file)
                                 .await()

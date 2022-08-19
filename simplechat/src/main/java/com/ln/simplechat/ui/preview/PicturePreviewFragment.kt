@@ -41,7 +41,7 @@ class PicturePreviewFragment : Fragment(R.layout.preview_fragment) {
         val dataSize = data.size
 
         viewPager = binding.viewpager
-        viewPager.adapter = PreviewPagerAdapter(requireContext(), position, data)
+        viewPager.adapter = PreviewPagerAdapter(data)
         viewPager.setCurrentItem(position, false)
         binding.tvTitle.text = "${position + 1}/$dataSize"
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
