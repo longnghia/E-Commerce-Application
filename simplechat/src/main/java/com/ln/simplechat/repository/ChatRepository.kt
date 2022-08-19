@@ -1,6 +1,5 @@
 package com.ln.simplechat.repository
 
-import android.net.Uri
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
@@ -10,10 +9,10 @@ import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.getFileUri
 import com.luck.picture.lib.entity.LocalMedia
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import java.io.File
 import javax.inject.Inject
 
 class ChatRepository @Inject constructor() {
@@ -56,27 +55,27 @@ class ChatRepository @Inject constructor() {
         onUploaded: ((String) -> Unit)?
     ): MyResult<List<String>> {
         val uploadedUrls = MutableList(result.size) { "" }
-        return supervisorScope {
-            try {
-                val uploadTask = result.mapIndexed { index, localMedia ->
-                    async {
-                        val file = Uri.fromFile(File(localMedia.availablePath))
-                        val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
-                        val url = ref.putFile(file)
-                            .await()
-                            .metadata!!.reference!!.downloadUrl
-                            .await().toString()
-                        onUploaded?.invoke(url)
-                        uploadedUrls[index] = url
+        return withContext(dispatcherIO) {
+            supervisorScope {
+                try {
+                    val uploadTask = result.mapIndexed { index, localMedia ->
+                        async {
+                            val file = getFileUri(localMedia.availablePath) ?: return@async
+                            val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
+                            val url = ref.putFile(file)
+                                .await()
+                                .metadata!!.reference!!.downloadUrl
+                                .await().toString()
+                            onUploaded?.invoke(url)
+                            uploadedUrls[index] = url
+                        }
                     }
+                    uploadTask.awaitAll()
+                    MyResult.Success(uploadedUrls)
+                } catch (e: Exception) {
+                    MyResult.Error(e)
                 }
-                uploadTask.awaitAll()
-                Log.d("TAG", "uploadImage:$uploadedUrls ")
-                MyResult.Success(uploadedUrls)
-            } catch (e: Exception) {
-                MyResult.Error(e)
             }
         }
-
     }
 }

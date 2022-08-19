@@ -5,6 +5,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +18,7 @@ import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
 import com.ln.simplechat.observer.chat.SendButtonObserver
+import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.GlideEngine
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
@@ -28,7 +30,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener {
+class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private val binding by viewBindings(ChatFragmentBinding::bind)
 
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
@@ -93,7 +95,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
             PictureSelector.create(this)
                 .openGallery(SelectMimeType.ofAll())
                 .setImageEngine(GlideEngine.createGlideEngine())
-                .setMaxSelectNum(10)
+                .isWithSelectVideoImage(true)
+                .setMaxSelectNum(MAX_MEDIA)
+                .setMaxVideoSelectNum(MAX_VIDEO)
+                .isGif(true)
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
                     override fun onResult(result: ArrayList<LocalMedia>) {
@@ -124,6 +129,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
         const val TAG = "CHAT_FRAGMENT"
         const val CHANNEL = "CHANNEL"
 
+        const val MAX_MEDIA = 10
+        const val MAX_VIDEO = 10
+
         fun newInstance(channel: Channel) =
             ChatFragment().apply {
                 arguments = Bundle().apply {
@@ -133,11 +141,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatAdapter.ChatListener 
     }
 
     override fun openPreview(position: Int, data: List<ChatMedia>) {
-/*      TODO open preview images and videos
         activity?.supportFragmentManager?.commit {
             addToBackStack(PicturePreviewFragment.TAG)
             replace(R.id.container, PicturePreviewFragment.newInstance(position, java.util.ArrayList(data)))
-        }*/
-
+        }
     }
+}
+
+interface ChatListener {
+    fun openPreview(position: Int, data: List<ChatMedia>)
 }
