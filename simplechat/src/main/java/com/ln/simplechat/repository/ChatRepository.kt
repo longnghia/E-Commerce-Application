@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.model.Channel
+import com.ln.simplechat.model.ChannelAndMember
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.getFileUri
@@ -41,6 +42,28 @@ class ChatRepository @Inject constructor() {
                 val task = db.collection("channels").whereArrayContains("listUser", userId).get().await()
                 val list: List<Channel> = task.toObjects(Channel::class.java)
                 MyResult.Success(list)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    suspend fun getListChannelAndMember(channelId: String): MyResult<List<ChannelAndMember>> {
+        return withContext(dispatcherIO) {
+            try {
+                when (val listChannel = getListChannel(channelId)) {
+                    is MyResult.Success -> {
+                        val listChannelAndMember = listChannel.data.map { channel ->
+                            async {
+                                val listMember = getListMember(channel.listUser)
+                                ChannelAndMember(channel, listMember)
+                            }
+                        }.awaitAll()
+                        MyResult.Success(listChannelAndMember)
+                    }
+                    is MyResult.Error -> MyResult.Error(listChannel.exception)
+                    else -> MyResult.Loading
+                }
             } catch (e: Exception) {
                 MyResult.Error(e)
             }
