@@ -74,6 +74,38 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
             }
     }
 
+    fun sendAudio(result: ArrayList<LocalMedia>) {
+        if (result.isEmpty()) return
+
+        val tmpList = result.map { it.toChatMedia() }
+        Log.d(TAG, "sendAudio tmpList=$tmpList")
+        val tmpMessage = Message(Util.autoId(), userId, medias = tmpList)
+        sendMessage(channelId, tmpMessage) { ref ->
+            uploadAudio(result) { listAudio ->
+                Log.d(TAG, "sendAudio listAudio=$listAudio")
+                val list = tmpList.mapIndexed { index, chatMedia ->
+                    chatMedia.apply { path = listAudio[index] }
+                }
+                tmpMessage.medias = list
+                ref.set(tmpMessage)
+            }
+        }
+    }
+
+    private fun uploadAudio(result: ArrayList<LocalMedia>, callback: (List<String>) -> Unit) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val uploadResult = chatRepository.uploadFiles(result, channelId) {}
+            Log.d(TAG, "uploadAudio: $uploadResult")
+            when (uploadResult) {
+                is MyResult.Success -> {
+                    val listAudio = uploadResult.data
+                    callback(listAudio)
+                }
+                is MyResult.Error -> _toastMessage.postValue(uploadResult.exception.message)
+            }
+        }
+    }
+
     fun sendImagesMessage(context: Context, result: ArrayList<LocalMedia>) {
         if (result.isEmpty()) return
 
@@ -92,7 +124,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     private fun uploadImage(context: Context, result: ArrayList<LocalMedia>, callback: (List<String>) -> Unit) {
         viewModelScope.launch(Dispatchers.Main) {
-            val uploadResult = chatRepository.uploadImage(result, channelId) { url ->
+            val uploadResult = chatRepository.uploadFiles(result, channelId) { url ->
                 Glide.with(context)
                     .downloadOnly()
                     .load(url)

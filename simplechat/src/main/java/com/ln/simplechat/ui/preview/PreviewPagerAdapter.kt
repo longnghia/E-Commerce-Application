@@ -8,13 +8,29 @@ class PreviewPagerAdapter(
     private val data: ArrayList<ChatMedia>
 ) :
     RecyclerView.Adapter<PreviewHolder>() {
+
+    private val listHolder: MutableList<PreviewHolder> = mutableListOf()
+
+    override fun onViewAttachedToWindow(holder: PreviewHolder) {
+        holder.onViewAttachedToWindow()
+        super.onViewAttachedToWindow(holder)
+    }
+
+
+    override fun onViewDetachedFromWindow(holder: PreviewHolder) {
+        holder.onViewDetachedFromWindow()
+        super.onViewDetachedFromWindow(holder)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreviewHolder {
-        return PreviewHolder.getHolder(parent, viewType)
+        val holder = PreviewHolder.getHolder(parent, viewType)
+        listHolder.add(holder)
+        return holder
     }
 
     override fun getItemViewType(position: Int): Int {
         val media = data[position]
-        return media.getMediaType()?.ordinal ?: 0
+        return media.getMediaType().ordinal
     }
 
     override fun onBindViewHolder(holder: PreviewHolder, position: Int) {
@@ -23,4 +39,12 @@ class PreviewPagerAdapter(
     }
 
     override fun getItemCount() = data.size
+
+    fun onDestroy() {
+        for (holder in listHolder) {
+            if (holder is AudioPreviewHolder) {
+                holder.releaseAudio()
+            }
+        }
+    }
 }

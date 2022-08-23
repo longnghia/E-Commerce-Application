@@ -1,15 +1,10 @@
 package com.ln.simplechat.ui.main
 
-import android.graphics.drawable.InsetDrawable
-import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.MenuRes
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -22,6 +17,7 @@ import com.ln.simplechat.databinding.MainFragmentBinding
 import com.ln.simplechat.ui.chat.ChatFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.buildMenu
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -68,46 +64,14 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
-        val popup = PopupMenu(context!!, v)
-        popup.menuInflater.inflate(menuRes, popup.menu)
-        if (popup.menu is MenuBuilder) {
-            val menuBuilder = popup.menu as MenuBuilder
-            menuBuilder.setOptionalIconsVisible(true)
-            for (item in menuBuilder.visibleItems) {
-                val iconMarginPx =
-                    TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, ICON_MARGIN.toFloat(), resources.displayMetrics
-                    )
-                        .toInt()
-                if (item.icon != null) {
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                        item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
-                    } else {
-                        item.icon =
-                            object : InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0) {
-                                override fun getIntrinsicWidth(): Int {
-                                    return intrinsicHeight + iconMarginPx + iconMarginPx
-                                }
-                            }
-                    }
-                }
-            }
-        }
-
+        val popup = buildMenu(v, menuRes)
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            when(menuItem.itemId){
-                R.id.option_create_group->{
+            when (menuItem.itemId) {
+                R.id.option_create_group -> {
                 }
             }
             true
         }
-        popup.setOnDismissListener {
-        }
-
         popup.show()
-    }
-
-    companion object {
-        const val ICON_MARGIN = 8
     }
 }

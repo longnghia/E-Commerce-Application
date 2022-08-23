@@ -3,6 +3,7 @@ package com.ln.simplechat.repository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.model.Channel
@@ -70,7 +71,7 @@ class ChatRepository @Inject constructor() {
         }
     }
 
-    suspend fun uploadImage(
+    suspend fun uploadFiles(
         result: ArrayList<LocalMedia>,
         channelId: String,
         onUploaded: ((String) -> Unit)?
@@ -82,7 +83,7 @@ class ChatRepository @Inject constructor() {
                     val uploadTask = result.mapIndexed { index, localMedia ->
                         async {
                             val file = getFileUri(localMedia.availablePath) ?: return@async
-                            val ref = storageReference.reference.child("messages/$channelId/${file.lastPathSegment}")
+                            val ref = storageReference.reference.child("messages/$channelId/${Util.autoId()}")
                             val url = ref.putFile(file)
                                 .await()
                                 .metadata!!.reference!!.downloadUrl

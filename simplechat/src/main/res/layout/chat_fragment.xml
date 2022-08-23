@@ -2,7 +2,6 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,49 +26,53 @@
         android:elevation="@dimen/app_bar_elevation"
         android:minHeight="?attr/actionBarSize">
 
-        <ImageButton
-            android:id="@+id/btn_gallery"
-            style="?attr/buttonBarNeutralButtonStyle"
+        <LinearLayout
+            android:id="@+id/chat_media_layout"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/input"
             app:layout_constraintEnd_toStartOf="@id/input"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_gallery"
-             />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_more"
+                style="?attr/buttonBarNeutralButtonStyle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                app:srcCompat="@drawable/ic_more" />
+
+            <ImageButton
+                android:id="@+id/btn_gallery"
+                style="?attr/buttonBarNeutralButtonStyle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                app:srcCompat="@drawable/ic_gallery" />
+        </LinearLayout>
+
 
         <com.ln.simplechat.ui.chat.ChatEditText
             android:id="@+id/input"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:hint="@string/hint_input"
             android:imeOptions="actionSend"
             android:importantForAutofill="no"
             android:inputType="textCapSentences"
-            app:layout_constraintBottom_toTopOf="@id/photo"
             app:layout_constraintEnd_toStartOf="@id/btn_send"
-            app:layout_constraintStart_toEndOf="@id/btn_gallery"
+            app:layout_constraintStart_toEndOf="@id/chat_media_layout"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/photo"
-            android:layout_width="@dimen/photo_size"
-            android:layout_height="@dimen/photo_size"
-            android:contentDescription="@string/description_photo"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/input"
-            app:layout_constraintTop_toBottomOf="@id/input"
-            tools:src="@drawable/ic_message"
-            tools:visibility="visible" />
 
         <ImageButton
             android:id="@+id/btn_send"
             style="?attr/buttonBarNeutralButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="@string/description_send"
             app:layout_constraintBottom_toBottomOf="@id/input"
             app:layout_constraintEnd_toEndOf="parent"
@@ -77,8 +80,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_send"
             app:tint="?attr/colorAccent" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

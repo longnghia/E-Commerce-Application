@@ -16,4 +16,6 @@
     <string name="sc_current_month">This month</string>
     <string name="search">Search</string>
     <string name="create_new_group">New group</string>
+    <string name="select_audio">Audio</string>
+    <string name="select_gif">Gif</string>
 </resources>

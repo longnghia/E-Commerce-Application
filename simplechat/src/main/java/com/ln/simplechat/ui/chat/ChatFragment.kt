@@ -1,9 +1,13 @@
 package com.ln.simplechat.ui.chat
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -22,6 +26,7 @@ import com.ln.simplechat.observer.chat.SendButtonObserver
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.GlideEngine
+import com.ln.simplechat.utils.buildMenu
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
@@ -43,6 +48,8 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private val viewModel: ChatViewModel by viewModels()
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +106,8 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 .isWithSelectVideoImage(true)
                 .setMaxSelectNum(MAX_MEDIA)
                 .setMaxVideoSelectNum(MAX_VIDEO)
+                .setSelectMaxFileSize(MAX_FILE_SIZE)
+                .setSelectMaxDurationSecond(MAX_VIDEO_LENGTH)
                 .isGif(true)
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
@@ -108,6 +117,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
                     override fun onCancel() {}
                 })
+        }
+
+        binding.btnMore.setOnClickListener {
+            showMenu(it, R.menu.popup_menu_chat_more)
         }
     }
 
@@ -132,6 +145,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
         const val MAX_MEDIA = 10
         const val MAX_VIDEO = 10
+        const val MAX_AUDIO = 5
+        const val MAX_FILE_SIZE = 20 * 1024L
+        const val MAX_VIDEO_LENGTH = 60
 
         fun newInstance(channel: Channel) =
             ChatFragment().apply {
@@ -144,8 +160,44 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     override fun openPreview(position: Int, data: List<ChatMedia>) {
         activity?.supportFragmentManager?.commit {
             addToBackStack(PicturePreviewFragment.TAG)
-            replace(R.id.container, PicturePreviewFragment.newInstance(position, java.util.ArrayList(data)))
+            replace(
+                R.id.container,
+                PicturePreviewFragment.newInstance(position, java.util.ArrayList(data))
+            )
         }
+    }
+
+    override fun onDestroy() {
+        handler.removeMessages(0)
+        super.onDestroy()
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = buildMenu(v, menuRes)
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.option_select_audio -> {
+                    selectAudio()
+                }
+            }
+            true
+        }
+        popup.show()
+    }
+
+    private fun selectAudio() {
+        PictureSelector.create(this)
+            .openGallery(SelectMimeType.ofAudio())
+            .setMaxSelectNum(MAX_AUDIO)
+            .setSelectMaxFileSize(MAX_FILE_SIZE)
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .forResult(object : OnResultCallbackListener<LocalMedia> {
+                override fun onResult(result: ArrayList<LocalMedia>) {
+                    viewModel.sendAudio(result)
+                }
+
+                override fun onCancel() {}
+            })
     }
 }
 
