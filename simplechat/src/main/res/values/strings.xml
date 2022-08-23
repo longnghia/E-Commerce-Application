@@ -18,4 +18,5 @@
     <string name="create_new_group">New group</string>
     <string name="select_audio">Audio</string>
     <string name="select_gif">Gif</string>
+    <string name="need_record_permission">Need permission to record audio!</string>
 </resources>

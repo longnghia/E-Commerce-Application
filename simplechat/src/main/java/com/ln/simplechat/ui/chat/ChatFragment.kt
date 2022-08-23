@@ -28,6 +28,7 @@ import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.GlideEngine
 import com.ln.simplechat.utils.buildMenu
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
+import com.ln.simplechat.utils.media.MyOnRecordAudioInterceptListener
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
@@ -191,6 +192,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             .setMaxSelectNum(MAX_AUDIO)
             .setSelectMaxFileSize(MAX_FILE_SIZE)
             .setImageEngine(GlideEngine.createGlideEngine())
+            .setRecordAudioInterceptListener(MyOnRecordAudioInterceptListener())
             .forResult(object : OnResultCallbackListener<LocalMedia> {
                 override fun onResult(result: ArrayList<LocalMedia>) {
                     viewModel.sendAudio(result)
