@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <!--transparent-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/fui_transparent</item>
         <item name="android:navigationBarColor">@color/fui_transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>

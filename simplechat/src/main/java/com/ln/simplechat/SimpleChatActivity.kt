@@ -20,4 +20,11 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat) {
             }
         }
     }
+
+    fun setSystemBarColor(colorRes: Int) {
+        window.apply {
+            statusBarColor = getColor(colorRes)
+            navigationBarColor = getColor(colorRes)
+        }
+    }
 }

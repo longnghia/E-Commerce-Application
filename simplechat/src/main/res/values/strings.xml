@@ -14,4 +14,6 @@
     <string name="voice_call_explanation">This is a dummy voice call screen.</string>
     <string name="sc_current_week">This week</string>
     <string name="sc_current_month">This month</string>
+    <string name="search">Search</string>
+    <string name="create_new_group">New group</string>
 </resources>

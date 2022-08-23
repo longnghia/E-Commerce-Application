@@ -89,6 +89,13 @@ dependencies {
     // flexbox
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
 
+    // switchmap
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleVersion"
+
     // leakcanary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
+
+    // avatarview
+    implementation "io.getstream:avatarview-coil:1.0.6"
 }
