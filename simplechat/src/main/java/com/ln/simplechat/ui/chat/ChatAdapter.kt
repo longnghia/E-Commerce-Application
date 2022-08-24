@@ -57,7 +57,7 @@ class ChatAdapter(
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val model = getItem(position)
         var nextModel: Message? = if (position + 1 >= itemCount) null else getItem(position + 1)
-        val beforeModel: Message? = if (position - 1 > 0) getItem(position - 1) else null
+        val beforeModel: Message? = if (position - 1 >= 0) getItem(position - 1) else null
 
         holder.bind(model, nextModel, beforeModel)
     }
@@ -85,10 +85,10 @@ class ChatAdapter(
             nextItem: Message?,
             beforeItem: Message?,
         ) {
-            var isDayAfter = beforeItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
-            var isDayBefore = nextItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
+            var sameDateBefore = beforeItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
+            var sameDateAfter = nextItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
             /* if item is different date, show timeline header */
-            if (isDayAfter) {
+            if (sameDateBefore) {
                 layoutTimeline.visibility = View.GONE
             } else {
                 layoutTimeline.visibility = View.VISIBLE
@@ -113,7 +113,7 @@ class ChatAdapter(
             timestamp.text = DateUtils.SDF_HOUR.format(item.timestamp)
             /* if next message is from the same sender, hide timestamp, show on item long clicked */
             var nextMessengerSame = nextItem?.sender == item.sender
-            timestamp.visibility = if (nextMessengerSame && isDayBefore) View.GONE else View.VISIBLE
+            timestamp.visibility = if (nextMessengerSame && sameDateAfter) View.GONE else View.VISIBLE
 
             val user = listUser.find { it.id == item.sender }
             if (user != null) {
