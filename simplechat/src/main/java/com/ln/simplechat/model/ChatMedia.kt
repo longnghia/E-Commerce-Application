@@ -15,10 +15,17 @@ data class ChatMedia(
     fun getMediaType(): MediaType {
         val type = mimeType.split('/')
         return when (type[0]) {
-            "audio" -> MediaType.AUDIO
-            "video" -> MediaType.VIDEO
+            MIME_AUDIO -> MediaType.AUDIO
+            MIME_VIDEO -> MediaType.VIDEO
+            MIME_IMAGE -> MediaType.IMAGE
             else -> MediaType.IMAGE
         }
+    }
+
+    companion object {
+        const val MIME_AUDIO = "audio"
+        const val MIME_VIDEO = "video"
+        const val MIME_IMAGE = "image"
     }
 }
 

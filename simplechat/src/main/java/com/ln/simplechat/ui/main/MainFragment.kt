@@ -68,6 +68,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.option_create_group -> {
+//                    Implement later
                 }
             }
             true
