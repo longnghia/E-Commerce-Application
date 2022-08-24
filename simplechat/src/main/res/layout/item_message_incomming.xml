@@ -6,20 +6,62 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_timestamp"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/black_600"
+            app:layout_constraintBottom_toBottomOf="@id/timeline"
+            app:layout_constraintEnd_toStartOf="@id/timeline"
+            app:layout_constraintTop_toTopOf="@id/timeline" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/black_600"
+            app:layout_constraintBottom_toBottomOf="@id/timeline"
+            app:layout_constraintStart_toEndOf="@id/timeline"
+            app:layout_constraintTop_toTopOf="@id/timeline" />
+
+        <TextView
+            android:id="@+id/timeline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_chat_timeline"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="Today"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="start"
         android:orientation="vertical"
         app:layout_constraintStart_toEndOf="@id/messenger_avatar"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/layout_timestamp">
 
         <TextView
             android:id="@+id/messenger"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="@style/SimpleChat.Chat.Messenger"
             app:layout_constraintStart_toStartOf="@id/message_text"
             app:layout_constraintTop_toBottomOf="@id/message_text"
             tools:text="Name" />
@@ -46,8 +88,7 @@
             android:id="@+id/tv_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textAppearance="@style/SimpleChat.Chat.Timeline"
             tools:text="Time" />
     </LinearLayout>
 

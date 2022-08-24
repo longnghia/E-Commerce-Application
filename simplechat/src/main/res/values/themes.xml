@@ -22,4 +22,13 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <style name="SimpleChat.Chat.Timeline" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/neutral_500</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+    <style name="SimpleChat.Chat.Messenger" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/neutral_500</item>
+        <item name="android:textSize">14sp</item>
+    </style>
 </resources>

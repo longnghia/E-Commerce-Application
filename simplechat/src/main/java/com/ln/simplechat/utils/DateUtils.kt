@@ -1,6 +1,7 @@
 package com.ln.simplechat.utils
 
 import android.content.Context
+import android.text.format.DateUtils
 import com.ln.simplechat.R
 import com.luck.picture.lib.utils.ValueOf
 import java.text.SimpleDateFormat
@@ -12,6 +13,9 @@ object DateUtils {
     private val SF: SimpleDateFormat = SimpleDateFormat("yyyyMMddHHmmssSSS")
 
     private val SDF: SimpleDateFormat = SimpleDateFormat("yyyy-MM")
+
+    val SDF_HOUR: SimpleDateFormat = SimpleDateFormat("HH:mm")
+    val SDF_DAY: SimpleDateFormat = SimpleDateFormat("dd-MM-yyyy")
 
     private val SDF_YEAR: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     val currentTimeMillis: Long
@@ -58,6 +62,28 @@ object DateUtils {
         return duration / 1000 * 1000
     }
 
+    fun isYesterday(time: Long): Boolean {
+        val calendar: Calendar = Calendar.getInstance()
+        val currentDay: Int = calendar.get(Calendar.DAY_OF_YEAR)
+        calendar.setTime(Date(time))
+        val paramDay: Int = calendar.get(Calendar.DAY_OF_YEAR)
+        return currentDay - paramDay == 1
+    }
+
+    fun isToday(time: Long): Boolean {
+        return DateUtils.isToday(time)
+    }
+
+    fun isSameDate(date1: Long, date2: Long): Boolean {
+        val calender1 = Calendar.getInstance()
+        calender1.time = Date(date1)
+        val calender2 = Calendar.getInstance()
+        calender2.time = Date(date2)
+        return (calender1.get(Calendar.ERA) == calender2.get(Calendar.ERA) &&
+                calender1.get(Calendar.YEAR) == calender2.get(Calendar.YEAR) &&
+                calender1.get(Calendar.DAY_OF_YEAR) == calender2.get(Calendar.DAY_OF_YEAR))
+    }
+
     fun dateDiffer(d: Long): Int {
         return try {
             val l1 = currentTimeMillis
@@ -90,6 +116,14 @@ object DateUtils {
     fun getCreateFileName(prefix: String): String {
         val millis = System.currentTimeMillis()
         return prefix + SF.format(millis)
+    }
+
+    fun getTimeline(context: Context, timestamp: Long): String {
+        if (isToday(timestamp))
+            return context.getString(R.string.today)
+        if (isYesterday(timestamp))
+            return context.getString(R.string.yesterday)
+        return SDF_DAY.format(timestamp)
     }
 
     val createFileName: String

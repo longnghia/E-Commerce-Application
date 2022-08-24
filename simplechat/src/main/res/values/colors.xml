@@ -42,4 +42,8 @@
         <item>@color/violet</item>
         <item>@color/magenta</item>
     </array>
+
+    <color name="black_600">#40000000</color>
+    <color name="neutral_500">#72808e</color>
+
 </resources>

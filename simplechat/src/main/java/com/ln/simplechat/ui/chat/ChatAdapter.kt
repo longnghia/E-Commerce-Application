@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,9 +24,10 @@ import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.model.MessageType
+import com.ln.simplechat.utils.DateUtils
+import com.ln.simplechat.utils.DateUtils.isSameDate
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.utils.DensityUtil
-import java.text.SimpleDateFormat
 
 class ChatAdapter(
     private val context: Context,
@@ -54,7 +57,10 @@ class ChatAdapter(
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val model = getItem(position)
-        holder.bind(model)
+        var nextModel: Message? = if (position + 1 >= itemCount) null else getItem(position + 1)
+        val beforeModel: Message? = if (position - 1 >= 0) getItem(position - 1) else null
+
+        holder.bind(model, nextModel, beforeModel)
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -73,8 +79,24 @@ class ChatAdapter(
         var messengerAvatar: ImageView = itemView.findViewById(R.id.messenger_avatar)
         var messageImageRcv: RecyclerView = itemView.findViewById(R.id.rcv_message_image)
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
+        var layoutTimeline: ConstraintLayout = itemView.findViewById(R.id.layout_timestamp)
+        var timeline: TextView = itemView.findViewById(R.id.timeline)
+        fun bind(
+            item: Message,
+            nextItem: Message?,
+            beforeItem: Message?,
+        ) {
+            var sameDateBefore = beforeItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
+            var sameDateAfter = nextItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
+            /* if item is different date, show timeline header */
+            if (sameDateBefore) {
+                layoutTimeline.visibility = View.GONE
+            } else {
+                layoutTimeline.visibility = View.VISIBLE
+                val date = DateUtils.getTimeline(context, item.timestamp)
+                timeline.text = "${DateUtils.SDF_HOUR.format(item.timestamp)} $date"
+            }
 
-        fun bind(item: Message) {
             val outGoing = item.sender == currentUserId
             when (item.getMessageType()) {
                 MessageType.TEXT -> {
@@ -89,7 +111,10 @@ class ChatAdapter(
                     loadImages(messageImageRcv, outGoing, item.medias)
                 }
             }
-            timestamp.text = dateFormatter.format(item.timestamp)
+            timestamp.text = DateUtils.SDF_HOUR.format(item.timestamp)
+            /* if next message is from the same sender, hide timestamp, show on item long clicked */
+            var nextMessengerSame = nextItem?.sender == item.sender
+            timestamp.isVisible = !(nextMessengerSame && sameDateAfter)
             val user = listUser.find { it.id == item.sender }
             if (user != null) {
                 messenger.text = user.name
@@ -178,8 +203,6 @@ class ChatAdapter(
                 return oldItem == newItem
             }
         }
-
-        val dateFormatter = SimpleDateFormat("MMMM dd")
     }
 }
 
