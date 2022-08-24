@@ -19,4 +19,6 @@
     <string name="select_audio">Audio</string>
     <string name="select_gif">Gif</string>
     <string name="need_record_permission">Need permission to record audio!</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
 </resources>
