@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -113,8 +114,7 @@ class ChatAdapter(
             timestamp.text = DateUtils.SDF_HOUR.format(item.timestamp)
             /* if next message is from the same sender, hide timestamp, show on item long clicked */
             var nextMessengerSame = nextItem?.sender == item.sender
-            timestamp.visibility = if (nextMessengerSame && sameDateAfter) View.GONE else View.VISIBLE
-
+            timestamp.isVisible = !(nextMessengerSame && sameDateAfter)
             val user = listUser.find { it.id == item.sender }
             if (user != null) {
                 messenger.text = user.name
