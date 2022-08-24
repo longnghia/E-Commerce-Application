@@ -12,16 +12,20 @@ data class ChatMedia(
     val description: String = ""
 ) : Parcelable {
     @Exclude
-    fun getMediaType(): MediaType? {
+    fun getMediaType(): MediaType {
         val type = mimeType.split('/')
-        if (type.size == 1)
-            return null
         return when (type[0]) {
-            "audio" -> MediaType.AUDIO
-            "video" -> MediaType.VIDEO
-            "image" -> MediaType.IMAGE
-            else -> null
+            MIME_AUDIO -> MediaType.AUDIO
+            MIME_VIDEO -> MediaType.VIDEO
+            MIME_IMAGE -> MediaType.IMAGE
+            else -> MediaType.IMAGE
         }
+    }
+
+    companion object {
+        const val MIME_AUDIO = "audio"
+        const val MIME_VIDEO = "video"
+        const val MIME_IMAGE = "image"
     }
 }
 

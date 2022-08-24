@@ -12,6 +12,8 @@ import com.ln.simplechat.model.MediaType
 
 abstract class PreviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun bind(media: ChatMedia)
+    open fun onViewDetachedFromWindow(){}
+    open fun onViewAttachedToWindow(){}
 
     companion object {
         fun getHolder(parent: ViewGroup, viewType: Int): PreviewHolder {

@@ -15,9 +15,7 @@ import com.ln.simplechat.ui.viewBindings
 class PicturePreviewFragment : Fragment(R.layout.preview_fragment) {
     private val binding by viewBindings(PreviewFragmentBinding::bind)
     private lateinit var viewPager: ViewPager2
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var pagerAdapter: PreviewPagerAdapter
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
         val loadAnimation: Animation
@@ -39,9 +37,9 @@ class PicturePreviewFragment : Fragment(R.layout.preview_fragment) {
         val position = arguments?.getInt(EXTRA_POSITION) ?: 0
         val data = (arguments?.get(EXTRA_DATA) ?: return) as ArrayList<ChatMedia>
         val dataSize = data.size
-
+        pagerAdapter = PreviewPagerAdapter(data)
         viewPager = binding.viewpager
-        viewPager.adapter = PreviewPagerAdapter(data)
+        viewPager.adapter = pagerAdapter
         viewPager.setCurrentItem(position, false)
         binding.tvTitle.text = "${position + 1}/$dataSize"
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
@@ -60,6 +58,11 @@ class PicturePreviewFragment : Fragment(R.layout.preview_fragment) {
         binding.ivBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+    }
+
+    override fun onDestroy() {
+        pagerAdapter.onDestroy()
+        super.onDestroy()
     }
 
     companion object {

@@ -48,6 +48,7 @@ class GridImageAdapter(private val context: Context, result: List<ChatMedia>?) :
             MediaType.AUDIO -> {
                 viewHolder.tvDuration.visibility = View.VISIBLE
                 viewHolder.mImg.setImageResource(R.drawable.ps_audio_placeholder)
+                viewHolder.tvDuration.text = DateUtils.formatDurationTime(media.duration)
                 viewHolder.tvDuration.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.ps_ic_audio, 0, 0, 0)
             }
             MediaType.VIDEO -> {
