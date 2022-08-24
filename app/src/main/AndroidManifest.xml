@@ -101,7 +101,61 @@
 
         <activity
             android:name="com.ln.simplechat.SimpleChatActivity"
-            android:theme="@style/SimpleChat.NoActionBar" />
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/SimpleChat.NoActionBar">
+            <!--
+                This activity is the one that's shown on the launcher.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--
+                This is used as the content URI of notifications. It navigates directly to the
+                specified chat screen.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="android.example.com"
+                    android:pathPattern="/chat/*"
+                    android:scheme="https" />
+            </intent-filter>
+            <!--
+                This opens the chat screen with the message field filled with the passed text.
+                This is necessary for making our dynamic shortcuts appear in Direct Share.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
+
+        <service
+            android:name="com.ln.simplechat.services.OnTaskRemoveService"
+            android:stopWithTask="false" />
+
+        <activity
+            android:name="com.ln.simplechat.ui.bubble.BubbleActivity"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:exported="true"
+            android:resizeableActivity="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="android.example.com"
+                    android:pathPattern="/chat/*"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.facebook.CustomTabActivity"

@@ -1,8 +1,6 @@
 package com.ln.simplechat.ui.chat
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -18,7 +16,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
-import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
@@ -26,6 +23,7 @@ import com.ln.simplechat.observer.chat.SendButtonObserver
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.GlideEngine
+import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.buildMenu
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
 import com.ln.simplechat.utils.media.MyOnRecordAudioInterceptListener
@@ -45,29 +43,46 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private lateinit var mItemsCollection: CollectionReference
     private lateinit var mFirestore: FirebaseFirestore
     private lateinit var channelId: String
-    private lateinit var channel: Channel
     private val viewModel: ChatViewModel by viewModels()
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
 
-    private val handler = Handler(Looper.getMainLooper())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channel = (arguments?.get(CHANNEL) ?: return) as Channel
-        channelId = channel.id
-        viewModel.initData(channel)
+
+
+        arguments?.getString(CHANNEL_ID)?.let {
+            channelId = it
+        }
+        if (channelId == null) {
+            parentFragmentManager.popBackStack()
+            return
+        }
         mFirestore = FirebaseFirestore.getInstance();
         mItemsCollection = mFirestore.collection("items");
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initData(channelId)
+
         setViews()
         setObservers()
     }
 
     private fun setObservers() {
+        viewModel.channel.observe(viewLifecycleOwner) {
+            when (it) {
+                is MyResult.Error -> {
+                    Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                }
+            }
+        }
+        viewModel.listMember.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty())
+                viewModel.startListening()
+        }
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
                 return@observe
@@ -93,7 +108,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> sendTextMessage()
             }
-            false
+            true
         }
 
         binding.btnSend.setOnClickListener {
@@ -107,8 +122,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 .isWithSelectVideoImage(true)
                 .setMaxSelectNum(MAX_MEDIA)
                 .setMaxVideoSelectNum(MAX_VIDEO)
-                .setSelectMaxFileSize(MAX_FILE_SIZE)
-                .setSelectMaxDurationSecond(MAX_VIDEO_LENGTH)
                 .isGif(true)
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
@@ -119,7 +132,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                     override fun onCancel() {}
                 })
         }
-
         binding.btnMore.setOnClickListener {
             showMenu(it, R.menu.popup_menu_chat_more)
         }
@@ -137,12 +149,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.startListening()
+        viewModel.resumeListening()
     }
 
     companion object {
         const val TAG = "CHAT_FRAGMENT"
-        const val CHANNEL = "CHANNEL"
+        const val CHANNEL_ID = "channel_id"
+        const val IS_BUBBLE = "is_bubble"
 
         const val MAX_MEDIA = 10
         const val MAX_VIDEO = 10
@@ -150,10 +163,11 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         const val MAX_FILE_SIZE = 20 * 1024L
         const val MAX_VIDEO_LENGTH = 60
 
-        fun newInstance(channel: Channel) =
+        fun newInstance(channelID: String, isBubble: Boolean = false) =
             ChatFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(CHANNEL, channel)
+                    putString(CHANNEL_ID, channelID)
+                    putBoolean(IS_BUBBLE, isBubble)
                 }
             }
     }
@@ -161,16 +175,8 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     override fun openPreview(position: Int, data: List<ChatMedia>) {
         activity?.supportFragmentManager?.commit {
             addToBackStack(PicturePreviewFragment.TAG)
-            replace(
-                R.id.container,
-                PicturePreviewFragment.newInstance(position, java.util.ArrayList(data))
-            )
+            replace(R.id.container, PicturePreviewFragment.newInstance(position, ArrayList(data)))
         }
-    }
-
-    override fun onDestroy() {
-        handler.removeMessages(0)
-        super.onDestroy()
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

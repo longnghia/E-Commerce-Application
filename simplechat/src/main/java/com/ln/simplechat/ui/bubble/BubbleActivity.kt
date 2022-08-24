@@ -1,33 +1,26 @@
-package com.ln.simplechat
+package com.ln.simplechat.ui.bubble
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commitNow
+import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ActivitySimpleChatBinding
-import com.ln.simplechat.services.OnTaskRemoveService
-import com.ln.simplechat.ui.main.MainFragment
+import com.ln.simplechat.ui.chat.ChatFragment
 import com.ln.simplechat.ui.viewBindings
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat) {
+class BubbleActivity : AppCompatActivity(R.layout.activity_simple_chat) {
     private val binding by viewBindings(ActivitySimpleChatBinding::bind)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val channelID = intent.data?.lastPathSegment ?: return
         if (savedInstanceState == null) {
             supportFragmentManager.commitNow {
-                replace(R.id.container, MainFragment())
+                setCustomAnimations(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_out)
+                replace(R.id.container, ChatFragment.newInstance(channelID))
             }
-        }
-        startService(Intent(this, OnTaskRemoveService::class.java))
-    }
-
-    fun setSystemBarColor(colorRes: Int) {
-        window.apply {
-            statusBarColor = getColor(colorRes)
-            navigationBarColor = getColor(colorRes)
         }
     }
 }

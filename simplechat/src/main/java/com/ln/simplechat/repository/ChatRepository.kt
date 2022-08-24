@@ -1,25 +1,45 @@
 package com.ln.simplechat.repository
 
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.ln.simplechat.ChannelNotFoundException
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChannelAndMember
+import com.ln.simplechat.model.Chat
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.bubble.NotificationHelper
 import com.ln.simplechat.utils.getFileUri
 import com.luck.picture.lib.entity.LocalMedia
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ChatRepository @Inject constructor() {
+class ChatRepository @Inject constructor(
+    private val notificationHelper: NotificationHelper
+) {
     private val dispatcherIO = Dispatchers.IO
     private val db: FirebaseFirestore = Firebase.firestore
     private val storageReference = Firebase.storage
+
+
+    init {
+        Log.d("0000", "bubble setup: ")
+        notificationHelper.setUpNotificationChannels()
+    }
+
+    fun showChat(chat: Chat) {
+        notificationHelper.showNotification(chat, true)
+    }
+
+    fun dismissNotification(channelId: Long){
+        notificationHelper.dismissNotification(channelId)
+    }
 
     suspend fun getListMember(listId: List<String>): List<Member> {
         val listMember: MutableList<Member> = mutableListOf()
@@ -97,6 +117,21 @@ class ChatRepository @Inject constructor() {
                 } catch (e: Exception) {
                     MyResult.Error(e)
                 }
+            }
+        }
+    }
+
+    suspend fun getChannel(id: String): MyResult<Channel> {
+        return withContext(dispatcherIO) {
+            try {
+                val task = db.collection("channels").document(id).get().await()
+                val channel = task.toObject(Channel::class.java)
+                if (channel == null)
+                    MyResult.Error(ChannelNotFoundException(id))
+                else
+                    MyResult.Success(channel)
+            } catch (e: Exception) {
+                MyResult.Error(e)
             }
         }
     }
