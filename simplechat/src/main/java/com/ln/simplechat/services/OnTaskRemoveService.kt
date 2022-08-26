@@ -21,7 +21,7 @@ class OnTaskRemoveService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        notificationHelper.dismissNotification(NotificationHelper.NOTIFY_ID.toLong())
+        notificationHelper.dismissNotification(NotificationHelper.NOTIFY_ID)
         stopSelf()
     }
 }

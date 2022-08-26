@@ -1,6 +1,5 @@
 package com.ln.simplechat.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
@@ -10,8 +9,8 @@ import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.ChannelNotFoundException
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChannelAndMember
-import com.ln.simplechat.model.Chat
 import com.ln.simplechat.model.Member
+import com.ln.simplechat.model.Message
 import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.bubble.NotificationHelper
 import com.ln.simplechat.utils.getFileUri
@@ -27,17 +26,11 @@ class ChatRepository @Inject constructor(
     private val db: FirebaseFirestore = Firebase.firestore
     private val storageReference = Firebase.storage
 
-
-    init {
-        Log.d("0000", "bubble setup: ")
-        notificationHelper.setUpNotificationChannels()
+    fun showChat(message: Message) {
+        notificationHelper.showNotification(message, true)
     }
 
-    fun showChat(chat: Chat) {
-        notificationHelper.showNotification(chat, true)
-    }
-
-    fun dismissNotification(channelId: Long){
+    fun dismissNotification(channelId: Int) {
         notificationHelper.dismissNotification(channelId)
     }
 
@@ -72,14 +65,15 @@ class ChatRepository @Inject constructor(
     suspend fun getListChannelAndMember(channelId: String): MyResult<List<ChannelAndMember>> {
         return withContext(dispatcherIO) {
             try {
+                val setUser: MutableSet<String> = mutableSetOf()
                 when (val listChannel = getListChannel(channelId)) {
                     is MyResult.Success -> {
+                        listChannel.data.forEach { channel -> setUser.addAll(channel.listUser) }
+                        val listMember = getListMember(setUser.toList())
                         val listChannelAndMember = listChannel.data.map { channel ->
-                            async {
-                                val listMember = getListMember(channel.listUser)
-                                ChannelAndMember(channel, listMember)
-                            }
-                        }.awaitAll()
+                            val listChannelMember = listMember.filter { member -> member.id in channel.listUser }
+                            ChannelAndMember(channel, listChannelMember)
+                        }
                         MyResult.Success(listChannelAndMember)
                     }
                     is MyResult.Error -> MyResult.Error(listChannel.exception)
@@ -134,5 +128,10 @@ class ChatRepository @Inject constructor(
                 MyResult.Error(e)
             }
         }
+    }
+
+    fun initNotificationHelper(channel: Channel) {
+        notificationHelper.initData(channel)
+        notificationHelper.setUpNotificationChannels()
     }
 }

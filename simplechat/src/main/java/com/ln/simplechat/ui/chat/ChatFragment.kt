@@ -1,18 +1,20 @@
 package com.ln.simplechat.ui.chat
 
+import android.app.NotificationManager
 import android.os.Bundle
+import android.transition.TransitionInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.MenuRes
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
@@ -22,9 +24,7 @@ import com.ln.simplechat.observer.chat.ChatAdapterObserver
 import com.ln.simplechat.observer.chat.SendButtonObserver
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
-import com.ln.simplechat.utils.GlideEngine
-import com.ln.simplechat.utils.MyResult
-import com.ln.simplechat.utils.buildMenu
+import com.ln.simplechat.utils.*
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
 import com.ln.simplechat.utils.media.MyOnRecordAudioInterceptListener
 import com.luck.picture.lib.basic.PictureSelector
@@ -32,6 +32,7 @@ import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import dagger.hilt.android.AndroidEntryPoint
+import io.getstream.avatarview.coil.loadImage
 
 
 @AndroidEntryPoint
@@ -40,26 +41,23 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
 
-    private lateinit var mItemsCollection: CollectionReference
-    private lateinit var mFirestore: FirebaseFirestore
     private lateinit var channelId: String
     private val viewModel: ChatViewModel by viewModels()
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
+    var bubble = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enterTransition =
+            TransitionInflater.from(context).inflateTransition(R.transition.slide_bottom)
 
-
-        arguments?.getString(CHANNEL_ID)?.let {
-            channelId = it
-        }
-        if (channelId == null) {
+        bubble = arguments?.getBoolean(IS_BUBBLE) ?: false
+        channelId = arguments?.getString(CHANNEL_ID) ?: ""
+        if (channelId.isEmpty()) {
             parentFragmentManager.popBackStack()
             return
         }
-        mFirestore = FirebaseFirestore.getInstance();
-        mItemsCollection = mFirestore.collection("items");
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -77,11 +75,18 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                     Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT).show()
                     parentFragmentManager.popBackStack()
                 }
+                is MyResult.Success -> {
+                    viewModel.initNotificationHelper(it.data)
+                }
             }
         }
         viewModel.listMember.observe(viewLifecycleOwner) {
-            if (it.isNotEmpty())
+            if (it.isNotEmpty()) {
+                binding.avatarView.loadImage(
+                    data = it.filter { member -> member.id != currentUserId }.map { member -> member.avatar }
+                )
                 viewModel.startListening()
+            }
         }
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
@@ -103,6 +108,24 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun setViews() {
+        binding.appbar.isGone = bubble
+        binding.btnOpenInNew.isVisible = requireContext().canDeviceDisplayBubbles()
+        if (!bubble) {
+            binding.btnOpenInNew.setOnClickListener {
+                if (requireActivity().getBubblePreference() == NotificationManager.BUBBLE_PREFERENCE_NONE)
+                    requestBubblePermissions()
+                else {
+                    viewModel.showAsBubble()
+                    if (isAdded) {
+                        parentFragmentManager.popBackStack()
+                    }
+                }
+            }
+            binding.btnMoreFeature.setOnClickListener {
+                /* implement later: change group name, change group avatar, search message */
+            }
+        }
+
         binding.input.addTextChangedListener(SendButtonObserver(binding.btnSend))
         binding.input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
@@ -122,6 +145,8 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 .isWithSelectVideoImage(true)
                 .setMaxSelectNum(MAX_MEDIA)
                 .setMaxVideoSelectNum(MAX_VIDEO)
+                .setSelectMaxFileSize(MAX_FILE_SIZE)
+                .setSelectMaxDurationSecond(MAX_VIDEO_LENGTH)
                 .isGif(true)
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
@@ -132,6 +157,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                     override fun onCancel() {}
                 })
         }
+
         binding.btnMore.setOnClickListener {
             showMenu(it, R.menu.popup_menu_chat_more)
         }
@@ -175,7 +201,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     override fun openPreview(position: Int, data: List<ChatMedia>) {
         activity?.supportFragmentManager?.commit {
             addToBackStack(PicturePreviewFragment.TAG)
-            replace(R.id.container, PicturePreviewFragment.newInstance(position, ArrayList(data)))
+            replace(
+                R.id.container,
+                PicturePreviewFragment.newInstance(position, java.util.ArrayList(data))
+            )
         }
     }
 

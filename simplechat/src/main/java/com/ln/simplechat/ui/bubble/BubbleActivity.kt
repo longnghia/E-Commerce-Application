@@ -19,7 +19,7 @@ class BubbleActivity : AppCompatActivity(R.layout.activity_simple_chat) {
         if (savedInstanceState == null) {
             supportFragmentManager.commitNow {
                 setCustomAnimations(R.anim.ps_anim_fade_in, R.anim.ps_anim_fade_out)
-                replace(R.id.container, ChatFragment.newInstance(channelID))
+                replace(R.id.container, ChatFragment.newInstance(channelID, isBubble = true))
             }
         }
     }

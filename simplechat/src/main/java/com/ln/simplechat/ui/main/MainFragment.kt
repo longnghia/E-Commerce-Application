@@ -1,6 +1,5 @@
 package com.ln.simplechat.ui.main
 
-import android.app.NotificationManager
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -19,9 +18,6 @@ import com.ln.simplechat.databinding.MainFragmentBinding
 import com.ln.simplechat.ui.chat.ChatFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.MyResult
-import com.ln.simplechat.utils.bubble.canDisplayBubbles
-import com.ln.simplechat.utils.bubble.getBubblePreference
-import com.ln.simplechat.utils.bubble.requestBubblePermissions
 import com.ln.simplechat.utils.buildMenu
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,8 +38,8 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ChannelAdapter { channel ->
-            activity?.supportFragmentManager?.popBackStack(ChatFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            activity?.supportFragmentManager?.commit {
+            parentFragmentManager.popBackStack(ChatFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            parentFragmentManager.commit {
                 addToBackStack(ChatFragment.TAG)
                 replace(R.id.container, ChatFragment.newInstance(channel.id))
             }
@@ -65,13 +61,6 @@ class MainFragment : Fragment(R.layout.main_fragment) {
                     result.exception.message,
                     Toast.LENGTH_SHORT
                 ).show()
-            }
-        }
-
-
-        requireActivity().let {
-            if (it.canDisplayBubbles() && it.getBubblePreference() == NotificationManager.BUBBLE_PREFERENCE_NONE) {
-                requireActivity().requestBubblePermissions()
             }
         }
     }

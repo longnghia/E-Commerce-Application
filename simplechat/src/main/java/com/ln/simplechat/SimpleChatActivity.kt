@@ -2,6 +2,7 @@ package com.ln.simplechat
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.commitNow
 import com.ln.simplechat.databinding.ActivitySimpleChatBinding
@@ -21,7 +22,11 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat) {
                 replace(R.id.container, MainFragment())
             }
         }
-        startService(Intent(this, OnTaskRemoveService::class.java))
+        try {
+            startService(Intent(this, OnTaskRemoveService::class.java))
+        } catch (e: Exception) {
+            Log.e(SimpleChatActivity::class.java.simpleName, "onCreate: Fail to start Service", e)
+        }
     }
 
     fun setSystemBarColor(colorRes: Int) {
