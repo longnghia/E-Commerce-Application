@@ -5,7 +5,8 @@
     <corners
         android:bottomLeftRadius="@dimen/bubble_radius_round"
         android:bottomRightRadius="@dimen/bubble_radius_round"
-        android:topLeftRadius="@dimen/bubble_radius_round"
+        android:topLeftRadius="@dimen/bubble_radius"
         android:topRightRadius="@dimen/bubble_radius_round" />
     <solid android:color="@color/colorGray" />
 </shape>
+

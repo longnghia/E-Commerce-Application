@@ -14,4 +14,7 @@
     <dimen name="image_spacing">1dp</dimen>
     <dimen name="image_size">80dp</dimen>
     <dimen name="popup_icon_margin">8dp</dimen>
+    <dimen name="bubble_radius_round">20dp</dimen>
+    <dimen name="bubble_radius">5dp</dimen>
+    <dimen name="chat_avatar">36dp</dimen>
 </resources>
