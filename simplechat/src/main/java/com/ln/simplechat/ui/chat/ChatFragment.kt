@@ -179,23 +179,21 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         val timeIdle = timestamp - lastTimestamp
         val idleBreak = timeIdle > TIME_IDLE_BREAK
 
-        if (timestamp - lastTimestamp > TIME_LINE_BREAK)
+        if (timestamp - lastTimestamp > TIME_LINE_BREAK) {
             viewModel.sendMessage(
                 channelId,
                 Message(Util.autoId(), isTimeline = true, timestamp = timestamp)
-            ) {
-                viewModel.sendMessage(
-                    channelId,
-                    Message(
-                        Util.autoId(),
-                        currentUserId,
-                        binding.input.text.toString().trim(),
-                        timestamp = timestamp,
-                        idleBreak = idleBreak
-                    )
+            )
+            viewModel.sendMessage(
+                channelId,
+                Message(
+                    Util.autoId(),
+                    currentUserId,
+                    binding.input.text.toString().trim(),
+                    idleBreak = idleBreak
                 )
-            }
-        else
+            )
+        } else
             viewModel.sendMessage(
                 channelId,
                 Message(
