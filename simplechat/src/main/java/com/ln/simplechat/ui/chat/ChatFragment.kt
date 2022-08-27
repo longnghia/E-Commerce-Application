@@ -33,6 +33,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import dagger.hilt.android.AndroidEntryPoint
 import io.getstream.avatarview.coil.loadImage
+import java.util.concurrent.TimeUnit
 
 
 @AndroidEntryPoint
@@ -91,7 +92,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
                 return@observe
-            adapter = ChatAdapter(requireContext(), currentUserId, viewModel.listMember.value!!, this)
+            val mapMember = viewModel.listMember.value!!.map { it.id to it }.toMap()
+            adapter = ChatAdapter(
+                requireContext(),
+                currentUserId,
+                mapMember,
+                this
+            )
             adapter.submitList(it)
             manager = LinearLayoutManager(requireContext()).apply {
                 stackFromEnd = true
@@ -164,7 +171,39 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun sendTextMessage() {
-        viewModel.sendMessage(channelId, Message(Util.autoId(), currentUserId, binding.input.text.toString().trim()))
+        val timestamp = System.currentTimeMillis()
+
+        val lastItem = viewModel.listMessage.value?.lastOrNull()
+        val lastTimestamp = lastItem?.timestamp ?: timestamp
+
+        val timeIdle = timestamp - lastTimestamp
+        val idleBreak = timeIdle > TIME_IDLE_BREAK
+
+        if (timestamp - lastTimestamp > TIME_LINE_BREAK) {
+            viewModel.sendMessage(
+                channelId,
+                Message(Util.autoId(), isTimeline = true, timestamp = timestamp)
+            )
+            viewModel.sendMessage(
+                channelId,
+                Message(
+                    Util.autoId(),
+                    currentUserId,
+                    binding.input.text.toString().trim(),
+                    idleBreak = idleBreak
+                )
+            )
+        } else
+            viewModel.sendMessage(
+                channelId,
+                Message(
+                    Util.autoId(),
+                    currentUserId,
+                    binding.input.text.toString().trim(),
+                    timestamp = timestamp,
+                    idleBreak = idleBreak
+                )
+            )
         binding.input.setText("")
     }
 
@@ -188,6 +227,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         const val MAX_AUDIO = 5
         const val MAX_FILE_SIZE = 20 * 1024L
         const val MAX_VIDEO_LENGTH = 60
+
+        val TIME_LINE_BREAK = TimeUnit.HOURS.toMillis(6)  // add new message timeline for 6 hours
+        val TIME_IDLE_BREAK = TimeUnit.MINUTES.toMillis(2)  // set chat idle for 2 min
 
         fun newInstance(channelID: String, isBubble: Boolean = false) =
             ChatFragment().apply {

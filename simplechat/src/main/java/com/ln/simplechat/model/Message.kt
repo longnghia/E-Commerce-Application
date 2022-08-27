@@ -7,7 +7,10 @@ data class Message @JvmOverloads constructor(
     val sender: String = "",
     val text: String? = null,
     var medias: List<ChatMedia>? = null,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    @field:JvmField
+    var isTimeline: Boolean = false, /* check to add timeline */
+    var idleBreak: Boolean = false  /* check if message is idle */
 ) {
     @Exclude
     fun getMessageType(): MessageType {
@@ -20,4 +23,8 @@ data class Message @JvmOverloads constructor(
 enum class MessageType {
     TEXT,
     MEDIA
+}
+
+enum class MessageState {
+    TOP, MIDDLE, BOTTOM, NORMAL
 }

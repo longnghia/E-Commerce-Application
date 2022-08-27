@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -20,55 +19,58 @@ import com.google.android.flexbox.JustifyContent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.R
-import com.ln.simplechat.model.ChatMedia
-import com.ln.simplechat.model.Member
-import com.ln.simplechat.model.Message
-import com.ln.simplechat.model.MessageType
+import com.ln.simplechat.databinding.ItemTimelineBinding
+import com.ln.simplechat.model.*
 import com.ln.simplechat.utils.DateUtils
-import com.ln.simplechat.utils.DateUtils.isSameDate
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.utils.DensityUtil
 
 class ChatAdapter(
     private val context: Context,
     private val currentUserId: String,
-    private val listUser: List<Member>,
+    private val mapMember: Map<String, Member>,
     private val chatListener: ChatListener
 ) :
-    ListAdapter<Message, ChatAdapter.MessageViewHolder>(DIFF_CALLBACK) {
+    ListAdapter<Message, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
 
-    private val scale = context.resources.displayMetrics.density
     private val imageSpacing = context.resources.getDimension(R.dimen.image_spacing)
     private val imageSize = context.resources.getDimension(R.dimen.image_size)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(context)
         return when (viewType) {
             MESSAGE_OUTGOING -> {
                 val view = inflater.inflate(R.layout.item_message_outgoing, parent, false)
                 MessageViewHolder(view)
             }
-            else -> {
+            MESSAGE_INCOMING -> {
                 val view = inflater.inflate(R.layout.item_message_incomming, parent, false)
                 MessageViewHolder(view)
+            }
+            else -> {
+                val view = inflater.inflate(R.layout.item_timeline, parent, false)
+                TimelineViewHolder(ItemTimelineBinding.bind(view))
             }
         }
     }
 
-    override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val model = getItem(position)
         var nextModel: Message? = if (position + 1 >= itemCount) null else getItem(position + 1)
         val beforeModel: Message? = if (position - 1 >= 0) getItem(position - 1) else null
-
-        holder.bind(model, nextModel, beforeModel)
+        when (holder) {
+            is MessageViewHolder ->
+                holder.bind(model, position, nextModel, beforeModel)
+            is TimelineViewHolder -> holder.bind(model)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {
-        return getType(getItem(position))
-    }
-
-    private fun getType(model: Message): Int {
-        return if (model.sender == currentUserId) MESSAGE_OUTGOING else MESSAGE_INCOMING
+        val item = getItem(position)
+        if (item.isTimeline)
+            return MESSAGE_TIMELINE
+        return if (item.sender == currentUserId) MESSAGE_OUTGOING else MESSAGE_INCOMING
     }
 
     inner class MessageViewHolder(
@@ -79,27 +81,40 @@ class ChatAdapter(
         var messengerAvatar: ImageView = itemView.findViewById(R.id.messenger_avatar)
         var messageImageRcv: RecyclerView = itemView.findViewById(R.id.rcv_message_image)
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
-        var layoutTimeline: ConstraintLayout = itemView.findViewById(R.id.layout_timestamp)
-        var timeline: TextView = itemView.findViewById(R.id.timeline)
+
         fun bind(
             item: Message,
+            index: Int,
             nextItem: Message?,
             beforeItem: Message?,
         ) {
-            var sameDateBefore = beforeItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
-            var sameDateAfter = nextItem?.let { isSameDate(it.timestamp, item.timestamp) } ?: false
-            /* if item is different date, show timeline header */
-            if (sameDateBefore) {
-                layoutTimeline.visibility = View.GONE
-            } else {
-                layoutTimeline.visibility = View.VISIBLE
-                val date = DateUtils.getTimeline(context, item.timestamp)
-                timeline.text = "${DateUtils.SDF_HOUR.format(item.timestamp)} $date"
-            }
-
             val outGoing = item.sender == currentUserId
+
+            /* UI message background top-mid-bot */
+            val layout = mapOf(
+                MessageState.TOP to if (outGoing) R.drawable.message_outgoing_top else R.drawable.message_incoming_top,
+                MessageState.MIDDLE to if (outGoing) R.drawable.message_outgoing_mid else R.drawable.message_incoming_mid,
+                MessageState.BOTTOM to if (outGoing) R.drawable.message_outgoing_bot else R.drawable.message_incoming_bot,
+                MessageState.NORMAL to if (outGoing) R.drawable.message_outgoing else R.drawable.message_incoming,
+            )
+            val below =
+                if (index == 0 || beforeItem!!.isTimeline || item.idleBreak)
+                    false
+                else item.sender == beforeItem.sender
+            val upper =
+                if (index == itemCount - 1 || nextItem!!.isTimeline || nextItem.idleBreak)
+                    false
+                else item.sender == nextItem.sender
+
+            val state =
+                if (upper)
+                    if (below) MessageState.MIDDLE else MessageState.TOP
+                else
+                    if (below) MessageState.BOTTOM else MessageState.NORMAL
+
             when (item.getMessageType()) {
                 MessageType.TEXT -> {
+                    messageText.setBackgroundResource(layout[state]!!)
                     messageText.visibility = View.VISIBLE
                     messageImageRcv.visibility = View.GONE
                     messageText.text = item.text
@@ -112,28 +127,37 @@ class ChatAdapter(
                 }
             }
             timestamp.text = DateUtils.SDF_HOUR.format(item.timestamp)
-            /* if next message is from the same sender, hide timestamp, show on item long clicked */
-            var nextMessengerSame = nextItem?.sender == item.sender
-            timestamp.isVisible = !(nextMessengerSame && sameDateAfter)
-            val user = listUser.find { it.id == item.sender }
-            if (user != null) {
-                messenger.text = user.name
-                if (user.id == currentUserId)
-                    messengerAvatar.visibility = View.GONE
-                else
-                    loadImageIntoView(messengerAvatar, user.avatar)
+            timestamp.isVisible = state == MessageState.BOTTOM || state == MessageState.NORMAL
+
+            if (outGoing) {
+                messenger.visibility = View.GONE
+                messengerAvatar.visibility = View.GONE
             } else {
-                messenger.text = item.sender
-                messengerAvatar.setImageResource(R.drawable.ic_account_circle_black_36dp)
+                val user = mapMember[item.sender]!!
+                messengerAvatar.isVisible = state == MessageState.BOTTOM || state == MessageState.NORMAL
+                if (messengerAvatar.isVisible) loadImageIntoView(messengerAvatar, user.avatar)
+                messenger.isVisible = state == MessageState.TOP || state == MessageState.NORMAL
+                messenger.text = user.name
             }
         }
+    }
 
-        private fun setTextColor(userId: String?, textView: TextView) {
-            if (currentUserId == userId) {
-                textView.setTextColor(Color.WHITE)
-            } else {
-                textView.setTextColor(Color.BLACK)
-            }
+    private fun setTextColor(userId: String?, textView: TextView) {
+        if (currentUserId == userId) {
+            textView.setTextColor(Color.WHITE)
+        } else {
+            textView.setTextColor(Color.BLACK)
+        }
+    }
+
+
+    class TimelineViewHolder(
+        private val binding: ItemTimelineBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: Message) {
+            val date = DateUtils.getTimeline(itemView.context, item.timestamp)
+            binding.timeline.text = "${DateUtils.SDF_HOUR.format(item.timestamp)} $date"
         }
     }
 
@@ -193,6 +217,7 @@ class ChatAdapter(
         const val TAG = "MessageAdapter"
         const val MESSAGE_INCOMING = 0
         const val MESSAGE_OUTGOING = 1
+        const val MESSAGE_TIMELINE = 2
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
