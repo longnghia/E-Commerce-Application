@@ -6,20 +6,33 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import com.ln.simplechat.ChannelNotFoundException
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChannelAndMember
 import com.ln.simplechat.model.Member
+import com.ln.simplechat.model.Message
 import com.ln.simplechat.utils.MyResult
+import com.ln.simplechat.utils.bubble.NotificationHelper
 import com.ln.simplechat.utils.getFileUri
 import com.luck.picture.lib.entity.LocalMedia
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class ChatRepository @Inject constructor() {
+class ChatRepository @Inject constructor(
+    private val notificationHelper: NotificationHelper
+) {
     private val dispatcherIO = Dispatchers.IO
     private val db: FirebaseFirestore = Firebase.firestore
     private val storageReference = Firebase.storage
+
+    fun showChat(message: Message) {
+        notificationHelper.showNotification(message, true)
+    }
+
+    fun dismissNotification(channelId: Int) {
+        notificationHelper.dismissNotification(channelId)
+    }
 
     suspend fun getListMember(listId: List<String>): List<Member> {
         val listMember: MutableList<Member> = mutableListOf()
@@ -52,14 +65,15 @@ class ChatRepository @Inject constructor() {
     suspend fun getListChannelAndMember(channelId: String): MyResult<List<ChannelAndMember>> {
         return withContext(dispatcherIO) {
             try {
+                val setUser: MutableSet<String> = mutableSetOf()
                 when (val listChannel = getListChannel(channelId)) {
                     is MyResult.Success -> {
+                        listChannel.data.forEach { channel -> setUser.addAll(channel.listUser) }
+                        val listMember = getListMember(setUser.toList())
                         val listChannelAndMember = listChannel.data.map { channel ->
-                            async {
-                                val listMember = getListMember(channel.listUser)
-                                ChannelAndMember(channel, listMember)
-                            }
-                        }.awaitAll()
+                            val listChannelMember = listMember.filter { member -> member.id in channel.listUser }
+                            ChannelAndMember(channel, listChannelMember)
+                        }
                         MyResult.Success(listChannelAndMember)
                     }
                     is MyResult.Error -> MyResult.Error(listChannel.exception)
@@ -99,5 +113,25 @@ class ChatRepository @Inject constructor() {
                 }
             }
         }
+    }
+
+    suspend fun getChannel(id: String): MyResult<Channel> {
+        return withContext(dispatcherIO) {
+            try {
+                val task = db.collection("channels").document(id).get().await()
+                val channel = task.toObject(Channel::class.java)
+                if (channel == null)
+                    MyResult.Error(ChannelNotFoundException(id))
+                else
+                    MyResult.Success(channel)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    fun initNotificationHelper(channel: Channel) {
+        notificationHelper.initData(channel)
+        notificationHelper.setUpNotificationChannels()
     }
 }

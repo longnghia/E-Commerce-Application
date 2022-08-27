@@ -1,32 +1,30 @@
 package com.ln.simplechat.ui.chat
 
+import android.app.NotificationManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.transition.TransitionInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.annotation.MenuRes
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
-import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
 import com.ln.simplechat.observer.chat.SendButtonObserver
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
-import com.ln.simplechat.utils.GlideEngine
-import com.ln.simplechat.utils.buildMenu
+import com.ln.simplechat.utils.*
 import com.ln.simplechat.utils.media.ImageFileCompressEngine
 import com.ln.simplechat.utils.media.MyOnRecordAudioInterceptListener
 import com.luck.picture.lib.basic.PictureSelector
@@ -34,6 +32,7 @@ import com.luck.picture.lib.config.SelectMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import dagger.hilt.android.AndroidEntryPoint
+import io.getstream.avatarview.coil.loadImage
 
 
 @AndroidEntryPoint
@@ -42,32 +41,53 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
 
-    private lateinit var mItemsCollection: CollectionReference
-    private lateinit var mFirestore: FirebaseFirestore
     private lateinit var channelId: String
-    private lateinit var channel: Channel
     private val viewModel: ChatViewModel by viewModels()
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
-
-    private val handler = Handler(Looper.getMainLooper())
+    var bubble = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channel = (arguments?.get(CHANNEL) ?: return) as Channel
-        channelId = channel.id
-        viewModel.initData(channel)
-        mFirestore = FirebaseFirestore.getInstance();
-        mItemsCollection = mFirestore.collection("items");
+        enterTransition =
+            TransitionInflater.from(context).inflateTransition(R.transition.slide_bottom)
+
+        bubble = arguments?.getBoolean(IS_BUBBLE) ?: false
+        channelId = arguments?.getString(CHANNEL_ID) ?: ""
+        if (channelId.isEmpty()) {
+            parentFragmentManager.popBackStack()
+            return
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.initData(channelId)
+
         setViews()
         setObservers()
     }
 
     private fun setObservers() {
+        viewModel.channel.observe(viewLifecycleOwner) {
+            when (it) {
+                is MyResult.Error -> {
+                    Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.popBackStack()
+                }
+                is MyResult.Success -> {
+                    viewModel.initNotificationHelper(it.data)
+                }
+            }
+        }
+        viewModel.listMember.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                binding.avatarView.loadImage(
+                    data = it.filter { member -> member.id != currentUserId }.map { member -> member.avatar }
+                )
+                viewModel.startListening()
+            }
+        }
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
                 return@observe
@@ -88,12 +108,30 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun setViews() {
+        binding.appbar.isGone = bubble
+        binding.btnOpenInNew.isVisible = requireContext().canDeviceDisplayBubbles()
+        if (!bubble) {
+            binding.btnOpenInNew.setOnClickListener {
+                if (requireActivity().getBubblePreference() == NotificationManager.BUBBLE_PREFERENCE_NONE)
+                    requestBubblePermissions()
+                else {
+                    viewModel.showAsBubble()
+                    if (isAdded) {
+                        parentFragmentManager.popBackStack()
+                    }
+                }
+            }
+            binding.btnMoreFeature.setOnClickListener {
+                /* implement later: change group name, change group avatar, search message */
+            }
+        }
+
         binding.input.addTextChangedListener(SendButtonObserver(binding.btnSend))
         binding.input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> sendTextMessage()
             }
-            false
+            true
         }
 
         binding.btnSend.setOnClickListener {
@@ -137,12 +175,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     override fun onResume() {
         super.onResume()
-        viewModel.startListening()
+        viewModel.resumeListening()
     }
 
     companion object {
         const val TAG = "CHAT_FRAGMENT"
-        const val CHANNEL = "CHANNEL"
+        const val CHANNEL_ID = "channel_id"
+        const val IS_BUBBLE = "is_bubble"
 
         const val MAX_MEDIA = 10
         const val MAX_VIDEO = 10
@@ -150,10 +189,11 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         const val MAX_FILE_SIZE = 20 * 1024L
         const val MAX_VIDEO_LENGTH = 60
 
-        fun newInstance(channel: Channel) =
+        fun newInstance(channelID: String, isBubble: Boolean = false) =
             ChatFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(CHANNEL, channel)
+                    putString(CHANNEL_ID, channelID)
+                    putBoolean(IS_BUBBLE, isBubble)
                 }
             }
     }
@@ -166,11 +206,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 PicturePreviewFragment.newInstance(position, java.util.ArrayList(data))
             )
         }
-    }
-
-    override fun onDestroy() {
-        handler.removeMessages(0)
-        super.onDestroy()
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {

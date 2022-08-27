@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,9 +38,10 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = ChannelAdapter { channel ->
-            activity?.supportFragmentManager?.commit {
+            parentFragmentManager.popBackStack(ChatFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            parentFragmentManager.commit {
                 addToBackStack(ChatFragment.TAG)
-                replace(R.id.container, ChatFragment.newInstance(channel))
+                replace(R.id.container, ChatFragment.newInstance(channel.id))
             }
         }
         binding.contacts.apply {

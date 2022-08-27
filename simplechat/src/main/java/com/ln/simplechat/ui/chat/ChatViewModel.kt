@@ -2,10 +2,7 @@ package com.ln.simplechat.ui.chat
 
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
@@ -35,6 +32,27 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     private var listenerRegistration: ListenerRegistration? = null
 
+    val channel: LiveData<MyResult<Channel>> = liveData {
+        emit(chatRepository.getChannel(channelId))
+    }
+
+    val listMember: LiveData<List<Member>> = channel.switchMap { channel ->
+        liveData {
+            when (channel) {
+                is MyResult.Success -> {
+                    val list = chatRepository.getListMember(channel.data.listUser)
+                    emit(list)
+                }
+                is MyResult.Error -> {
+                    _toastMessage.postValue(channel.exception.message)
+                    emit(emptyList())
+                }
+                else -> emit(emptyList())
+            }
+        }
+    }
+
+
     private var _listMessage = MutableLiveData<List<Message>>()
     val listMessage: LiveData<List<Message>> = _listMessage
 
@@ -44,8 +62,6 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
     private var _toastMessage = MutableLiveData<String?>()
     val toastMessage: LiveData<String?> = _toastMessage
 
-    private var _listMember = MutableLiveData<List<Member>>()
-    val listMember: LiveData<List<Member>> = _listMember
 
     private val db: FirebaseFirestore = Firebase.firestore
     private val messages = db.collection("messages")
@@ -56,6 +72,25 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
             }
             val messages = value?.toObjects(Message::class.java)
             _listMessage.postValue(messages)
+        }
+    }
+
+    fun showAsBubble() {
+        _listMessage.value?.last()?.let {
+            notifyMessage(it)
+        }
+    }
+
+    fun initNotificationHelper(channel: Channel) {
+        chatRepository.initNotificationHelper(channel)
+    }
+
+    fun notifyMessage(mess: Message) {
+        val sender = mess.sender.let { sender ->
+            listMember.value?.find { it.id == sender }
+        }
+        if (sender != null) {
+            chatRepository.showChat(mess)
         }
     }
 
@@ -142,33 +177,28 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         }
     }
 
-    private fun getListMember(listUser: List<String>) {
-        viewModelScope.launch(Dispatchers.Main) {
-            val list = chatRepository.getListMember(listUser)
-            _listMember.postValue(list)
-            listenerRegistration = query.addSnapshotListener(listener)
-        }
-    }
-
     fun startListening() {
-        if (listenerRegistration == null) return
-        query.addSnapshotListener(listener)
+        listenerRegistration = query.addSnapshotListener(listener)
     }
 
     fun stopListening() {
         listenerRegistration?.remove()
     }
 
-    fun initData(channel: Channel) {
-        channelId = channel.id
+    fun resumeListening() {
+        if (listenerRegistration == null)
+            return
+        listenerRegistration = query.addSnapshotListener(listener)
+    }
 
+    fun initData(channelId: String) {
         query = FirebaseFirestore.getInstance()
             .collection("messages")
             .document(channelId)
             .collection("list-message")
             .orderBy("timestamp", Query.Direction.ASCENDING)
 
-        getListMember(channel.listUser)
+        this.channelId = channelId
     }
 
     companion object {

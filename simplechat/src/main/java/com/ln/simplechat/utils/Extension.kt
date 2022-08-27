@@ -1,7 +1,12 @@
 package com.ln.simplechat.utils
 
+import android.app.Activity
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
+import android.provider.Settings
 import android.view.View
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
@@ -37,4 +42,40 @@ fun Fragment.buildMenu(v: View, @MenuRes menuRes: Int): PopupMenu {
         }
     }
     return popup
+}
+
+const val REQUEST_CODE_BUBBLES_PERMISSION = 200
+const val NOTIFICATION_BUBBLE_RESOLVE = "notification_bubbles"
+
+fun Context.canDeviceDisplayBubbles(): Boolean {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+        return false
+    }
+    val bubblesEnabledGlobally: Boolean = try {
+        Settings.Global.getInt(contentResolver, NOTIFICATION_BUBBLE_RESOLVE) == 1
+    } catch (e: Settings.SettingNotFoundException) {
+        false
+    }
+    return bubblesEnabledGlobally
+}
+
+fun Context.getBubblePreference(): Int {
+    val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
+    return notificationManager.bubblePreference
+}
+
+fun Context.areBubblesAllowed(): Boolean {
+    return canDeviceDisplayBubbles() && getBubblePreference() != NotificationManager.BUBBLE_PREFERENCE_NONE
+}
+
+fun Activity.requestBubblePermissions() {
+    startActivityForResult(
+        Intent(Settings.ACTION_APP_NOTIFICATION_BUBBLE_SETTINGS)
+            .putExtra(Settings.EXTRA_APP_PACKAGE, packageName),
+        REQUEST_CODE_BUBBLES_PERMISSION
+    )
+}
+
+fun Fragment.requestBubblePermissions() {
+    requireActivity().requestBubblePermissions()
 }
