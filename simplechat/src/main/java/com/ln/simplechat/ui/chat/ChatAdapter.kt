@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.bumptech.glide.Glide
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.firebase.ktx.Firebase
@@ -22,6 +21,7 @@ import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ItemTimelineBinding
 import com.ln.simplechat.model.*
 import com.ln.simplechat.utils.DateUtils
+import com.ln.simplechat.utils.setImageUrl
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.utils.DensityUtil
 
@@ -201,15 +201,13 @@ class ChatAdapter(
             storageReference.downloadUrl
                 .addOnSuccessListener { uri ->
                     val downloadUrl = uri.toString()
-                    Glide.with(context)
-                        .load(downloadUrl)
-                        .into(view)
+                    view.setImageUrl(downloadUrl)
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "loadImageIntoView: ERROR", e)
                 }
         } else {
-            Glide.with(context).load(url).into(view)
+            view.setImageUrl(url)
         }
     }
 

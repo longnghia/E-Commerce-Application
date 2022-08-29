@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatItemBinding
 import com.ln.simplechat.model.Channel
 import com.ln.simplechat.model.ChannelAndMember
+import com.ln.simplechat.utils.setImageUrl
 import io.getstream.avatarview.coil.loadImage
 
 class ChannelAdapter(private val onClickChannel: (Channel) -> Unit) :
@@ -26,7 +26,9 @@ class ChannelAdapter(private val onClickChannel: (Channel) -> Unit) :
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val channelAndMember = getItem(position)
         val (channel, listMember) = channelAndMember
-        Glide.with(holder.itemView.context).load(channel.icon).into(holder.binding.icon)
+        channel.icon?.let {
+            holder.binding.icon.setImageUrl(it)
+        }
         holder.binding.name.text = channel.name
         holder.itemView.setOnClickListener {
             onClickChannel(channel)
