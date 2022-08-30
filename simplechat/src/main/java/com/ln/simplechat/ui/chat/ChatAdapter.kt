@@ -23,7 +23,10 @@ import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ItemReactBinding
 import com.ln.simplechat.databinding.ItemTimelineBinding
-import com.ln.simplechat.model.*
+import com.ln.simplechat.model.Member
+import com.ln.simplechat.model.Message
+import com.ln.simplechat.model.MessageState
+import com.ln.simplechat.model.MessageType
 import com.ln.simplechat.utils.DateUtils
 import com.ln.simplechat.utils.setImageUrl
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
@@ -41,6 +44,7 @@ class ChatAdapter(
     private val imageSpacing = context.resources.getDimension(R.dimen.image_spacing)
     private val imageSize = context.resources.getDimension(R.dimen.image_size)
 
+    var onMessageLongClickListener: ((View, String) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -92,7 +96,8 @@ class ChatAdapter(
         var messengerAvatar: ImageView = itemView.findViewById(R.id.messenger_avatar)
         var messageImageRcv: RecyclerView = itemView.findViewById(R.id.rcv_message_image)
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
-
+        var reactionRcv: RecyclerView = itemView.findViewById(R.id.rcv_reaction)
+        var reactionCount: TextView = itemView.findViewById(R.id.reaction_count)
         fun bind(
             item: Message,
             index: Int,
@@ -130,11 +135,17 @@ class ChatAdapter(
                     messageImageRcv.visibility = View.GONE
                     messageText.text = item.text
                     setTextColor(item.sender, messageText)
+                    /* on long click reaction */
+                    messageText.setOnLongClickListener { view ->
+                        Log.d(TAG, "onBindViewHolder:setOnLongClickListener=$view ")
+                        onMessageLongClickListener?.invoke(view, item.id)
+                        true
+                    }
                 }
                 MessageType.MEDIA -> {
                     messageText.visibility = View.GONE
                     messageImageRcv.visibility = View.VISIBLE
-                    loadImages(messageImageRcv, outGoing, item.medias)
+                    loadImages(messageImageRcv, outGoing, item, onMessageLongClickListener)
                 }
             }
             timestamp.text = DateUtils.SDF_HOUR.format(item.timestamp)
@@ -150,6 +161,17 @@ class ChatAdapter(
                 messenger.isVisible = state == MessageState.TOP || state == MessageState.NORMAL
                 messenger.text = user.name
             }
+
+            val data = item.reactions.getNonEmptyReaction()
+            reactionRcv.adapter = ReactionAdapter(data)
+            if (data.size > 1)
+                reactionCount.apply {
+                    visibility = View.VISIBLE
+                    val count = data.map { it.second.size }.sum()
+                    text = count.toString()
+                }
+            else
+                reactionCount.visibility = View.GONE
         }
     }
 
@@ -194,7 +216,13 @@ class ChatAdapter(
         }
     }
 
-    private fun loadImages(rcv: RecyclerView, outGoing: Boolean = false, urls: List<ChatMedia>?) {
+    private fun loadImages(
+        rcv: RecyclerView,
+        outGoing: Boolean = false,
+        item: Message,
+        onMessageLongClickListener: ((View, String) -> Unit)?
+    ) {
+        val urls = item.medias
         if (urls.isNullOrEmpty()) return
         val spanCount = when (urls.size) {
             1 -> 1
@@ -224,7 +252,12 @@ class ChatAdapter(
         adapter.setOnItemClickListener { _, position ->
             chatListener.openPreview(position, urls)
         }
-
+        onMessageLongClickListener?.let {
+            adapter.setOnItemLongClickListener { view ->
+                Log.d(TAG, "loadImages: setOnItemLongClickListener=$view")
+                it.invoke(view, item.id)
+            }
+        }
         rcv.adapter = adapter
     }
 

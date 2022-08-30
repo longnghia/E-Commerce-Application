@@ -7,10 +7,7 @@ import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.ChannelNotFoundException
-import com.ln.simplechat.model.Channel
-import com.ln.simplechat.model.ChannelAndMember
-import com.ln.simplechat.model.Member
-import com.ln.simplechat.model.Message
+import com.ln.simplechat.model.*
 import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.bubble.NotificationHelper
 import com.ln.simplechat.utils.getFileUri
@@ -25,6 +22,7 @@ class ChatRepository @Inject constructor(
     private val dispatcherIO = Dispatchers.IO
     private val db: FirebaseFirestore = Firebase.firestore
     private val storageReference = Firebase.storage
+    private val messages = db.collection("messages")
 
     fun showChat(message: Message) {
         notificationHelper.showNotification(message, true)
@@ -133,5 +131,16 @@ class ChatRepository @Inject constructor(
     fun initNotificationHelper(channel: Channel) {
         notificationHelper.initData(channel)
         notificationHelper.setUpNotificationChannels()
+    }
+
+    fun pushReact(channelId: String, messageId: String, userId: String, react: Reaction, reactId: Int) {
+        val reactName = Reaction.reactOrder[reactId]
+        val list = react.getArray(reactName).toMutableList()
+        if (list.contains(userId))
+            list.remove(userId)
+        else
+            list.add(userId)
+        messages.document(channelId).collection("list-message").document(messageId)
+            .update("reactions.$reactName", list)
     }
 }

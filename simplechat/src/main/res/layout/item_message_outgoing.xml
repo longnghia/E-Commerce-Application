@@ -42,6 +42,27 @@
             android:textColor="@android:color/black"
             tools:text="This is a message" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:orientation="horizontal">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rcv_reaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            <TextView
+                android:id="@+id/reaction_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tv_timestamp"
             android:layout_width="wrap_content"
@@ -57,6 +78,7 @@
         android:layout_height="@dimen/chat_avatar"
         android:layout_marginBottom="15dp"
         android:src="@drawable/ic_account_circle_black_36dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

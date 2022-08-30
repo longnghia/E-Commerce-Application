@@ -1,11 +1,15 @@
 package com.ln.simplechat.ui.chat
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.app.NotificationManager
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.core.view.isGone
@@ -19,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
+import com.ln.simplechat.databinding.DialogReactionBinding
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
@@ -99,6 +104,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 mapMember,
                 this
             )
+            adapter.onMessageLongClickListener = { view, messageId ->
+                createReactionDialog(view, messageId)
+            }
             adapter.submitList(it)
             manager = LinearLayoutManager(requireContext()).apply {
                 stackFromEnd = true
@@ -287,6 +295,82 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
                 override fun onCancel() {}
             })
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun createReactionDialog(message: View, messageId: String) {
+        val dialog = Dialog(requireActivity())
+        val reactionBinding = DialogReactionBinding.inflate(layoutInflater, null, false)
+        val reaction = reactionBinding.reaction
+        dialog.window?.attributes?.gravity = Gravity.TOP
+        val location = IntArray(2)
+        message.getLocationOnScreen(location)
+        val marginTop = location[1] - 250
+        val param = reaction.layoutParams as LinearLayout.LayoutParams
+        param.setMargins(0, marginTop, 0, 0)
+        reaction.layoutParams = param
+        reactionBinding.layoutReact.setOnClickListener {
+            dialog.dismiss()
+        }
+        message.alpha = 0.5f
+
+        val delay: Long = 150
+        val reactions = listOf(
+            reactionBinding.r1,
+            reactionBinding.r2,
+            reactionBinding.r3,
+            reactionBinding.r4,
+            reactionBinding.r5,
+            reactionBinding.r6,
+        )
+        reactions.forEachIndexed { index, imageView ->
+            imageView.fadeIn(delay * (index + 1))
+        }
+
+        var lastFocusedReact: ImageView? = null
+
+        reaction.setOnTouchListener { _, event ->
+            var react: ImageView?
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    react = checkTouch(event, reactions)
+                    if (react != null) {
+                        if (lastFocusedReact != react)
+                            lastFocusedReact?.animate()?.setDuration(100)?.rotation(0f)
+                        lastFocusedReact = react
+                        react.rotation = -30f
+                    }
+                }
+                MotionEvent.ACTION_UP -> {
+                    lastFocusedReact?.animate()?.setDuration(100)?.rotation(0f)?.withEndAction {
+                        viewModel.pushReact(messageId, reactions.indexOf(lastFocusedReact))
+                        dialog.dismiss()
+                    }
+                }
+            }
+
+            false
+        }
+
+        dialog.apply {
+            setContentView(reactionBinding.root)
+            setOnDismissListener {
+                message.alpha = 1f
+            }
+            setCancelable(true)
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window?.setBackgroundDrawable(ColorDrawable(android.R.color.transparent))
+            show()
+        }
+    }
+
+    private fun checkTouch(event: MotionEvent, reactions: List<ImageView>): ImageView? {
+        for (index in reactions.lastIndex downTo 0) {
+            if (event.x >= reactions[index].x) {
+                return reactions[index]
+            }
+        }
+        return null
     }
 }
 
