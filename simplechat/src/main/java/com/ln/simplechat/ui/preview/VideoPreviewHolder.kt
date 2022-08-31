@@ -2,9 +2,9 @@ package com.ln.simplechat.ui.preview
 
 import android.net.Uri
 import android.view.View
-import com.bumptech.glide.Glide
 import com.ln.simplechat.databinding.LayoutPreviewVideoBinding
 import com.ln.simplechat.model.ChatMedia
+import com.ln.simplechat.utils.setImageUrl
 
 class VideoPreviewHolder(binding: LayoutPreviewVideoBinding) : PreviewHolder(binding.root) {
     private val previewVideo = binding.previewVideo
@@ -13,9 +13,7 @@ class VideoPreviewHolder(binding: LayoutPreviewVideoBinding) : PreviewHolder(bin
     private val ivPlayVideo = binding.ivPlayVideo
 
     override fun bind(media: ChatMedia) {
-        Glide.with(itemView.context)
-            .load(media.path)
-            .into(previewImage)
+        previewImage.setImageUrl(media.path)
 
         ivPlayVideo.apply {
             setOnClickListener { previewVideo.start() }
