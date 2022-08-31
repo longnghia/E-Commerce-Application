@@ -206,6 +206,12 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         this.channelId = channelId
     }
 
+    fun pushReact(messageId: String, reactId: Int) {
+        val message = _listMessage.value?.find { it.id == messageId }
+        val react = message!!.reactions
+        chatRepository.pushReact(channelId, messageId, userId, react, reactId)
+    }
+
     companion object {
         val TAG = "ChatViewModel"
     }

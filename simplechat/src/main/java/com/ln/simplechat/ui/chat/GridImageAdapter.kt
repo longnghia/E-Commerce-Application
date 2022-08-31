@@ -69,8 +69,8 @@ class GridImageAdapter(private val context: Context, result: List<ChatMedia>?) :
             }
         }
         if (mItemLongClickListener != null) {
-            viewHolder.itemView.setOnLongClickListener { v: View? ->
-                val adapterPosition = viewHolder.absoluteAdapterPosition
+            viewHolder.itemView.setOnLongClickListener { v: View ->
+                mItemLongClickListener!!.invoke(v.parent as ViewGroup)
                 true
             }
         }

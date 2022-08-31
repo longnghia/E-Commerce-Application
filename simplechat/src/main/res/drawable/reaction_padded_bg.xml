@@ -1,0 +1,3 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="20px" android:right="20px" android:left="20px" android:bottom="20px" android:drawable="@drawable/reaction_bg"/>
+</layer-list>

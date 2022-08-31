@@ -91,6 +91,11 @@ fun Fragment.requestBubblePermissions() {
     requireActivity().requestBubblePermissions()
 }
 
+fun View.fadeIn(duration: Long) {
+    alpha = 0f
+    animate().setDuration(duration).alpha(1f)
+}
+
 fun ImageView.setImageUrl(url: String, loadingLayout: FrameLayout? = null, centerCrop: Boolean = false) {
     Glide
         .with(context)

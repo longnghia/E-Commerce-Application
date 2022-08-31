@@ -12,7 +12,8 @@ data class Message @JvmOverloads constructor(
     var isTimeline: Boolean = false, /* check to add timeline */
     var idleBreak: Boolean = false,  /* check if message is idle */
     @field:JvmField
-    var isReact: Boolean = false
+    var isReact: Boolean = false,
+    var reactions: Reaction = Reaction()
 ) {
     @Exclude
     fun getMessageType(): MessageType {
@@ -24,7 +25,7 @@ data class Message @JvmOverloads constructor(
 
 enum class MessageType {
     TEXT,
-    MEDIA,
+    MEDIA
 }
 
 enum class MessageState {

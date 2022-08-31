@@ -43,6 +43,14 @@
             android:textColor="@android:color/black"
             tools:text="This is a message" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv_reaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-5dp"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
         <TextView
             android:id="@+id/tv_timestamp"
             android:layout_width="wrap_content"
