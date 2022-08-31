@@ -17,4 +17,6 @@
     <dimen name="bubble_radius_round">20dp</dimen>
     <dimen name="bubble_radius">5dp</dimen>
     <dimen name="chat_avatar">36dp</dimen>
+    <dimen name="react_size">32dp</dimen>
+    <dimen name="chat_margin">10dp</dimen>
 </resources>

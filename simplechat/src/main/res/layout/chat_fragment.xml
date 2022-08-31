@@ -126,17 +126,17 @@
             app:layout_constraintStart_toEndOf="@id/chat_media_layout"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
+        <ImageView
             android:id="@+id/btn_send"
-            style="?attr/buttonBarNeutralButtonStyle"
             android:layout_width="24dp"
             android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@string/description_send"
             app:layout_constraintBottom_toBottomOf="@id/input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/input"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_send"
+            app:layout_constraintTop_toTopOf="@id/input"
+            app:srcCompat="@drawable/ic_like"
             app:tint="?attr/colorAccent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
