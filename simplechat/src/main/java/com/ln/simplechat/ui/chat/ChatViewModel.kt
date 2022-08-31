@@ -94,6 +94,11 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         }
     }
 
+    fun sendReactMessage() {
+        val tmpMessage = Message(Util.autoId(), userId, isReact = true)
+        sendMessage(channelId, tmpMessage)
+    }
+
     fun sendMessage(channelId: String, message: Message, callback: ((DocumentReference) -> Unit)? = null) {
         _sendStatus.postValue(Status.LOADING)
         val messageRef = messages.document(channelId).collection("list-message").document(message.id)

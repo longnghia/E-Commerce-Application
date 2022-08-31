@@ -3,12 +3,15 @@ package com.ln.simplechat.ui.chat
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,11 +22,13 @@ import com.google.android.flexbox.JustifyContent
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.ln.simplechat.R
+import com.ln.simplechat.databinding.ItemReactBinding
 import com.ln.simplechat.databinding.ItemTimelineBinding
 import com.ln.simplechat.model.*
 import com.ln.simplechat.utils.DateUtils
 import com.luck.picture.lib.decoration.GridSpacingItemDecoration
 import com.luck.picture.lib.utils.DensityUtil
+
 
 class ChatAdapter(
     private val context: Context,
@@ -48,6 +53,9 @@ class ChatAdapter(
                 val view = inflater.inflate(R.layout.item_message_incomming, parent, false)
                 MessageViewHolder(view)
             }
+            MESSAGE_REACT -> {
+                ReactViewHolder(ItemReactBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+            }
             else -> {
                 val view = inflater.inflate(R.layout.item_timeline, parent, false)
                 TimelineViewHolder(ItemTimelineBinding.bind(view))
@@ -63,11 +71,14 @@ class ChatAdapter(
             is MessageViewHolder ->
                 holder.bind(model, position, nextModel, beforeModel)
             is TimelineViewHolder -> holder.bind(model)
+            is ReactViewHolder -> holder.bind(model)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
+        if (item.isReact)
+            return MESSAGE_REACT
         if (item.isTimeline)
             return MESSAGE_TIMELINE
         return if (item.sender == currentUserId) MESSAGE_OUTGOING else MESSAGE_INCOMING
@@ -98,11 +109,11 @@ class ChatAdapter(
                 MessageState.NORMAL to if (outGoing) R.drawable.message_outgoing else R.drawable.message_incoming,
             )
             val below =
-                if (index == 0 || beforeItem!!.isTimeline || item.idleBreak)
+                if (index == 0 || beforeItem!!.isTimeline || item.idleBreak || item.isReact || beforeItem.isReact)
                     false
                 else item.sender == beforeItem.sender
             val upper =
-                if (index == itemCount - 1 || nextItem!!.isTimeline || nextItem.idleBreak)
+                if (index == itemCount - 1 || nextItem!!.isTimeline || nextItem.idleBreak || nextItem.isReact)
                     false
                 else item.sender == nextItem.sender
 
@@ -150,6 +161,28 @@ class ChatAdapter(
         }
     }
 
+    inner class ReactViewHolder(binding: ItemReactBinding) : RecyclerView.ViewHolder(binding.root) {
+        val image = binding.ivReact
+        private val chatMargin = context.resources.getDimensionPixelSize(R.dimen.chat_margin)
+        fun bind(item: Message) {
+            val outGoing = item.sender == currentUserId
+            val layoutParams = image.layoutParams as FrameLayout.LayoutParams
+            if (outGoing) {
+                image.layoutParams = layoutParams.apply {
+                    setMargins(chatMargin)
+                    gravity = Gravity.END
+                }
+            } else {
+                image.layoutParams = layoutParams.apply {
+                    setMargins(chatMargin)
+                    gravity = Gravity.START
+                }
+            }
+
+
+            image.setImageResource(R.drawable.ic_like)
+        }
+    }
 
     class TimelineViewHolder(
         private val binding: ItemTimelineBinding
@@ -218,6 +251,7 @@ class ChatAdapter(
         const val MESSAGE_INCOMING = 0
         const val MESSAGE_OUTGOING = 1
         const val MESSAGE_TIMELINE = 2
+        const val MESSAGE_REACT = 3
 
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Message>() {
             override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {

@@ -10,7 +10,9 @@ data class Message @JvmOverloads constructor(
     val timestamp: Long = System.currentTimeMillis(),
     @field:JvmField
     var isTimeline: Boolean = false, /* check to add timeline */
-    var idleBreak: Boolean = false  /* check if message is idle */
+    var idleBreak: Boolean = false,  /* check if message is idle */
+    @field:JvmField
+    var isReact: Boolean = false
 ) {
     @Exclude
     fun getMessageType(): MessageType {
@@ -22,7 +24,7 @@ data class Message @JvmOverloads constructor(
 
 enum class MessageType {
     TEXT,
-    MEDIA
+    MEDIA,
 }
 
 enum class MessageState {

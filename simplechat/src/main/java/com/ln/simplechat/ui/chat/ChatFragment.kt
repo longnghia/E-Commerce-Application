@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
@@ -21,7 +22,6 @@ import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
-import com.ln.simplechat.observer.chat.SendButtonObserver
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.*
@@ -133,7 +133,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             }
         }
 
-        binding.input.addTextChangedListener(SendButtonObserver(binding.btnSend))
+        binding.input.doAfterTextChanged {
+            if (binding.input.text.toString().isEmpty()) {
+                binding.btnSend.setImageResource(R.drawable.ic_like)
+            } else {
+                binding.btnSend.setImageResource(R.drawable.ic_send)
+            }
+        }
         binding.input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
                 EditorInfo.IME_ACTION_SEND -> sendTextMessage()
@@ -142,7 +148,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
 
         binding.btnSend.setOnClickListener {
-            sendTextMessage()
+            if (binding.input.text.toString().isEmpty())
+                viewModel.sendReactMessage()
+            else
+                sendTextMessage()
         }
 
         binding.btnGallery.setOnClickListener {
@@ -170,7 +179,8 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
     }
 
-    private fun sendTextMessage() {
+    private fun sendTextMessage(msg: String? = null) {
+        val msg = msg ?: binding.input.text.toString().trim()
         val timestamp = System.currentTimeMillis()
 
         val lastItem = viewModel.listMessage.value?.lastOrNull()
@@ -189,7 +199,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 Message(
                     Util.autoId(),
                     currentUserId,
-                    binding.input.text.toString().trim(),
+                    msg,
                     idleBreak = idleBreak
                 )
             )
@@ -199,7 +209,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 Message(
                     Util.autoId(),
                     currentUserId,
-                    binding.input.text.toString().trim(),
+                    msg,
                     timestamp = timestamp,
                     idleBreak = idleBreak
                 )
