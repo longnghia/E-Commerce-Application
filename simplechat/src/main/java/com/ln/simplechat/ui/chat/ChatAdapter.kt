@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
@@ -98,6 +99,7 @@ class ChatAdapter(
         var timestamp: TextView = itemView.findViewById(R.id.tv_timestamp)
         var reactionRcv: RecyclerView = itemView.findViewById(R.id.rcv_reaction)
         var reactionCount: TextView = itemView.findViewById(R.id.reaction_count)
+        val reactLayout: LinearLayout = itemView.findViewById(R.id.layout_react)
         fun bind(
             item: Message,
             index: Int,
@@ -163,15 +165,20 @@ class ChatAdapter(
             }
 
             val data = item.reactions.getNonEmptyReaction()
-            reactionRcv.adapter = ReactionAdapter(data)
-            if (data.size > 1)
-                reactionCount.apply {
-                    visibility = View.VISIBLE
-                    val count = data.map { it.second.size }.sum()
-                    text = count.toString()
-                }
-            else
-                reactionCount.visibility = View.GONE
+            if (data.isEmpty())
+                reactLayout.visibility = View.GONE
+            else {
+                reactLayout.visibility = View.VISIBLE
+                reactionRcv.adapter = ReactionAdapter(data)
+                if (data.size > 1)
+                    reactionCount.apply {
+                        visibility = View.VISIBLE
+                        val count = data.sumOf { it.second.size }
+                        text = count.toString()
+                    }
+                else
+                    reactionCount.visibility = View.GONE
+            }
         }
     }
 

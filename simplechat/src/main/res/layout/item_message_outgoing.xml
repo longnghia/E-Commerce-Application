@@ -46,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-5dp"
+            android:id="@+id/layout_react"
             android:orientation="horizontal">
 
             <androidx.recyclerview.widget.RecyclerView
