@@ -21,4 +21,8 @@
     <string name="need_record_permission">Need permission to record audio!</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <plurals name="num_new_message">
+        <item quantity="one">%d new message</item>
+        <item quantity="other">%d new messages</item>
+    </plurals>
 </resources>

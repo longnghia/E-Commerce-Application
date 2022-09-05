@@ -10,6 +10,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.core.view.isGone
@@ -19,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.util.Util
 import com.ln.simplechat.R
@@ -52,6 +54,14 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
     var bubble = false
+
+    private lateinit var messageRcv: RecyclerView
+    private lateinit var bottomScroll: ImageView
+    private lateinit var tvNewMessage: TextView
+
+    private var isAtBottom = true
+    private var firstLoad = true
+    private var showNewMessage = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,31 +101,65 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 binding.avatarView.loadImage(
                     data = it.filter { member -> member.id != currentUserId }.map { member -> member.avatar }
                 )
+
+                val mapMember = it.associateBy { member -> member.id }
+                adapter = ChatAdapter(
+                    requireContext(),
+                    currentUserId,
+                    mapMember,
+                    this
+                )
+                adapter.onMessageLongClickListener = { view, messageId ->
+                    createReactionDialog(view, messageId)
+                }
+
+                manager = LinearLayoutManager(requireContext()).apply {
+                    stackFromEnd = true
+                }
+                val observer = ChatAdapterObserver(
+                    messageRcv,
+                    adapter,
+                    manager
+                ) { unSeenMessages ->
+                    if (unSeenMessages > 0) {
+                        showNewMessage = true
+                        showNewMessage()
+                        tvNewMessage.text =
+                            resources.getQuantityString(R.plurals.num_new_message, unSeenMessages, unSeenMessages)
+                    }
+                }
+
+                adapter.registerAdapterDataObserver(observer)
+                messageRcv.apply {
+                    layoutManager = manager
+                    adapter = this@ChatFragment.adapter
+                }
+                messageRcv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        isAtBottom =
+                            manager.findLastCompletelyVisibleItemPosition() >= manager.itemCount - HIDDEN_AMOUNT
+                        if (isAtBottom) {
+                            observer.unSeenMessages = 0
+                            showNewMessage = false
+                            tvNewMessage.visibility = View.GONE
+                            hideBottomScroll()
+                        } else {
+                            showBottomScroll()
+                        }
+                    }
+                })
                 viewModel.startListening()
             }
         }
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
                 return@observe
-            val mapMember = viewModel.listMember.value!!.map { it.id to it }.toMap()
-            adapter = ChatAdapter(
-                requireContext(),
-                currentUserId,
-                mapMember,
-                this
-            )
-            adapter.onMessageLongClickListener = { view, messageId ->
-                createReactionDialog(view, messageId)
-            }
             adapter.submitList(it)
-            manager = LinearLayoutManager(requireContext()).apply {
-                stackFromEnd = true
+            if (firstLoad) {
+                firstLoad = false
+                messageRcv.scrollToPosition(adapter.itemCount - 1)
             }
-            binding.rcvMessages.apply {
-                layoutManager = manager
-                binding.rcvMessages.adapter = this@ChatFragment.adapter
-            }
-            adapter.registerAdapterDataObserver(ChatAdapterObserver(binding.rcvMessages, adapter, manager))
         }
         viewModel.toastMessage.observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -123,6 +167,10 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun setViews() {
+        messageRcv = binding.rcvMessages
+        bottomScroll = binding.bottomScroll
+        tvNewMessage = binding.tvNewMessage
+
         binding.appbar.isGone = bubble
         binding.btnOpenInNew.isVisible = requireContext().canDeviceDisplayBubbles()
         if (!bubble) {
@@ -156,6 +204,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
 
         binding.btnSend.setOnClickListener {
+            if (!isAtBottom) messageRcv.scrollToPosition(adapter.itemCount - 1)
             if (binding.input.text.toString().isEmpty())
                 viewModel.sendReactMessage()
             else
@@ -185,6 +234,31 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         binding.btnMore.setOnClickListener {
             showMenu(it, R.menu.popup_menu_chat_more)
         }
+
+        bottomScroll.setOnClickListener {
+            viewModel.listMessage.value?.let {
+                messageRcv.scrollToPosition(it.size - 1)
+            }
+        }
+    }
+
+    private fun hideBottomScroll() {
+        bottomScroll.animate().setDuration(50).translationY(50f).alpha(0f).withEndAction {
+            bottomScroll.visibility = View.GONE
+        }
+        tvNewMessage.animate().setDuration(50).translationY(50f).alpha(0f).withEndAction {
+            bottomScroll.visibility = View.GONE
+        }
+    }
+
+    private fun showBottomScroll() {
+        bottomScroll.visibility = View.VISIBLE
+        bottomScroll.animate().setDuration(100).translationY(0f).alpha(1f)
+    }
+
+    private fun showNewMessage() {
+        tvNewMessage.visibility = View.VISIBLE
+        tvNewMessage.animate().setDuration(100).translationY(0f).alpha(1f)
     }
 
     private fun sendTextMessage(msg: String? = null) {
@@ -245,6 +319,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         const val MAX_AUDIO = 5
         const val MAX_FILE_SIZE = 20 * 1024L
         const val MAX_VIDEO_LENGTH = 60
+        const val HIDDEN_AMOUNT = 6
 
         val TIME_LINE_BREAK = TimeUnit.HOURS.toMillis(6)  // add new message timeline for 6 hours
         val TIME_IDLE_BREAK = TimeUnit.MINUTES.toMillis(2)  // set chat idle for 2 min

@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId "com.goldenowl.paul.ecommerce"
-        minSdk 30
+        minSdk 25
         targetSdk 32
         versionCode rootProject.gitCommitCount
         versionName "1.${gitCommitCount}"
