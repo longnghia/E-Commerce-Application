@@ -1,6 +1,7 @@
 package com.ln.simplechat.ui.chat
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
@@ -82,7 +83,8 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
     }
 
     fun initNotificationHelper(channel: Channel) {
-        chatRepository.initNotificationHelper(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            chatRepository.initNotificationHelper(channel)
     }
 
     fun notifyMessage(mess: Message) {
