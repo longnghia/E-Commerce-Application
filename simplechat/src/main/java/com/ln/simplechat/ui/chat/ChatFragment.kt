@@ -3,11 +3,16 @@ package com.ln.simplechat.ui.chat
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.NotificationManager
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextUtils
 import android.transition.TransitionInflater
+import android.util.Log
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +24,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -27,8 +33,11 @@ import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.databinding.DialogReactionBinding
 import com.ln.simplechat.model.ChatMedia
+import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
 import com.ln.simplechat.observer.chat.ChatAdapterObserver
+import com.ln.simplechat.ui.chat.swipe.MessageSwipeActions
+import com.ln.simplechat.ui.chat.swipe.MessageSwipeCallback
 import com.ln.simplechat.ui.preview.PicturePreviewFragment
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.*
@@ -40,6 +49,7 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import dagger.hilt.android.AndroidEntryPoint
 import io.getstream.avatarview.coil.loadImage
+import kotlinx.android.synthetic.main.item_message_quote.view.*
 import java.util.concurrent.TimeUnit
 
 
@@ -58,10 +68,17 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private lateinit var messageRcv: RecyclerView
     private lateinit var bottomScroll: ImageView
     private lateinit var tvNewMessage: TextView
+    private lateinit var quoteLayout: LinearLayout
 
     private var isAtBottom = true
     private var firstLoad = true
     private var showNewMessage = false
+
+    private var showingQuote: Boolean = false
+    private var mQuoted: Message? = null
+
+    private var messages: List<Message> = emptyList()
+    private var mapMember: Map<String, Member> = emptyMap()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +119,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                     data = it.filter { member -> member.id != currentUserId }.map { member -> member.avatar }
                 )
 
-                val mapMember = it.associateBy { member -> member.id }
+                mapMember = it.associateBy { member -> member.id }
                 adapter = ChatAdapter(
                     requireContext(),
                     currentUserId,
@@ -112,7 +129,20 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 adapter.onMessageLongClickListener = { view, messageId ->
                     createReactionDialog(view, messageId)
                 }
-
+                adapter.onQuoteClickListener = { position ->
+                    messageRcv.scrollToPosition(position)
+                    messageRcv.postDelayed(
+                        {
+                            val viewHolder = messageRcv.findViewHolderForAdapterPosition(position)
+                            viewHolder?.itemView?.startAnimation(
+                                AnimationUtils.loadAnimation(
+                                    context,
+                                    R.anim.anim_wobble
+                                )
+                            )
+                        }, 100
+                    )
+                }
                 manager = LinearLayoutManager(requireContext()).apply {
                     stackFromEnd = true
                 }
@@ -149,12 +179,14 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                         }
                     }
                 })
+                setupSwipeToReply()
                 viewModel.startListening()
             }
         }
         viewModel.listMessage.observe(viewLifecycleOwner) {
             if (viewModel.listMember.value == null)
                 return@observe
+            messages = it
             adapter.submitList(it)
             if (firstLoad) {
                 firstLoad = false
@@ -167,6 +199,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun setViews() {
+        quoteLayout = binding.inputBar.findViewById(R.id.item_message_quote)
         messageRcv = binding.rcvMessages
         bottomScroll = binding.bottomScroll
         tvNewMessage = binding.tvNewMessage
@@ -198,17 +231,14 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
         binding.input.setOnEditorActionListener { _, actionId, _ ->
             when (actionId) {
-                EditorInfo.IME_ACTION_SEND -> sendTextMessage()
+                EditorInfo.IME_ACTION_SEND -> sendMessage()
             }
             true
         }
 
         binding.btnSend.setOnClickListener {
             if (!isAtBottom) messageRcv.scrollToPosition(adapter.itemCount - 1)
-            if (binding.input.text.toString().isEmpty())
-                viewModel.sendReactMessage()
-            else
-                sendTextMessage()
+            sendMessage()
         }
 
         binding.btnGallery.setOnClickListener {
@@ -224,7 +254,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 .setCompressEngine(ImageFileCompressEngine())
                 .forResult(object : OnResultCallbackListener<LocalMedia> {
                     override fun onResult(result: ArrayList<LocalMedia>) {
-                        viewModel.sendImagesMessage(requireContext(), result)
+                        sendImagesMessage(result)
                     }
 
                     override fun onCancel() {}
@@ -236,9 +266,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
 
         bottomScroll.setOnClickListener {
-            viewModel.listMessage.value?.let {
+            messages.let {
                 messageRcv.scrollToPosition(it.size - 1)
             }
+        }
+
+        quoteLayout.cancelReplyButton.setOnClickListener {
+            hideReplyLayout()
         }
     }
 
@@ -261,42 +295,46 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         tvNewMessage.animate().setDuration(100).translationY(0f).alpha(1f)
     }
 
-    private fun sendTextMessage(msg: String? = null) {
-        val msg = msg ?: binding.input.text.toString().trim()
-        val timestamp = System.currentTimeMillis()
 
-        val lastItem = viewModel.listMessage.value?.lastOrNull()
-        val lastTimestamp = lastItem?.timestamp ?: timestamp
+    private fun sendImagesMessage(result: ArrayList<LocalMedia>) {
+        val idle = viewModel.checkIdle()
+        val mediaList = result.map { it.toChatMedia() }
+        val message = Message(
+            id = Util.autoId(),
+            sender = currentUserId,
+            idleBreak = idle,
+            medias = mediaList
+        )
+        if (showingQuote && mQuoted != null) {
+            message.quotedMessage = mQuoted!!.id
+            hideReplyLayout()
+        }
+        viewModel.sendImagesMessage(requireContext(), result, message)
+    }
 
-        val timeIdle = timestamp - lastTimestamp
-        val idleBreak = timeIdle > TIME_IDLE_BREAK
-
-        if (timestamp - lastTimestamp > TIME_LINE_BREAK) {
-            viewModel.sendMessage(
-                channelId,
-                Message(Util.autoId(), isTimeline = true, timestamp = timestamp)
-            )
-            viewModel.sendMessage(
-                channelId,
-                Message(
-                    Util.autoId(),
-                    currentUserId,
-                    msg,
-                    idleBreak = idleBreak
-                )
-            )
-        } else
-            viewModel.sendMessage(
-                channelId,
-                Message(
-                    Util.autoId(),
-                    currentUserId,
-                    msg,
-                    timestamp = timestamp,
-                    idleBreak = idleBreak
-                )
-            )
+    private fun sendMessage() {
+        val idle = viewModel.checkIdle()
+        val message = createMessage()
+        message.apply { this.idleBreak = idle }
+        viewModel.sendMessage(message)
         binding.input.setText("")
+    }
+
+    private fun createMessage(): Message {
+        val text = binding.input.text.toString().trim()
+        val message = Message(
+            id = Util.autoId(),
+            sender = currentUserId,
+            text = text.ifEmpty { null }
+        )
+        if (text.isEmpty())
+            message.apply { isReact = true }
+        if (showingQuote && mQuoted != null) {
+            message.quotedMessage = mQuoted!!.id
+            hideReplyLayout()
+        }
+
+        return message
     }
 
     override fun onPause() {
@@ -323,6 +361,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
         val TIME_LINE_BREAK = TimeUnit.HOURS.toMillis(6)  // add new message timeline for 6 hours
         val TIME_IDLE_BREAK = TimeUnit.MINUTES.toMillis(2)  // set chat idle for 2 min
+
 
         fun newInstance(channelID: String, isBubble: Boolean = false) =
             ChatFragment().apply {
@@ -446,6 +485,67 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             }
         }
         return null
+    }
+
+    private fun setupSwipeToReply() {
+        val messageSwipeController = MessageSwipeCallback(
+            requireContext(),
+            object : MessageSwipeActions {
+                override fun showReplyUI(position: Int) {
+                    val chatMessage = adapter.currentList[position]
+                    showQuotedMessage(chatMessage)
+                }
+            }
+        )
+
+        val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+        try {
+            itemTouchHelper.attachToRecyclerView(messageRcv)
+        } catch (npe: NullPointerException) {
+            Log.i(TAG, "UI already teared down", npe)
+        }
+    }
+
+    private fun showQuotedMessage(message: Message) {
+        binding.input.requestFocus()
+        val inputMethodManager = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.showSoftInput(binding.input, InputMethodManager.SHOW_IMPLICIT)
+        quoteLayout.visibility = View.VISIBLE
+        quoteLayout.animate().setDuration(200).translationY(0f)
+        quoteLayout.cancelReplyButton.visibility = View.VISIBLE
+
+
+        quoteLayout.quotedMessage.apply {
+            isVisible = message.text != null
+            text = message.text
+            maxLines = 1
+            ellipsize = TextUtils.TruncateAt.END
+        }
+        quoteLayout.quoteColoredView.isVisible = true
+        if (message.medias.isNullOrEmpty()) {
+            quoteLayout.quotedMessageImage.visibility = View.GONE
+        } else
+            quoteLayout.quotedMessageImage.apply {
+                val source = message.medias!![0].path
+                visibility = View.VISIBLE
+                setImageUrl(source)
+            }
+
+        val replyTo =
+            if (message.sender == currentUserId)
+                getString(R.string.yourself)
+            else mapMember[message.sender]!!.name.split(' ').last()
+        quoteLayout.quotedMessageAuthor.text = getString(R.string.reply_to, replyTo)
+        showingQuote = true
+        mQuoted = message
+    }
+
+    private fun hideReplyLayout() {
+        showingQuote = false
+        mQuoted = null
+        quoteLayout.animate().setDuration(200).translationY(quoteLayout.height.toFloat()).withEndAction {
+            quoteLayout.visibility = View.GONE
+        }
     }
 }
 

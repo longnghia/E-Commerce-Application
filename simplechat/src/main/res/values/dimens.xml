@@ -21,4 +21,5 @@
     <dimen name="reaction_margin">12dp</dimen>
     <dimen name="react_size">32dp</dimen>
     <dimen name="chat_margin">10dp</dimen>
+    <dimen name="quote_padding">20dp</dimen>
 </resources>

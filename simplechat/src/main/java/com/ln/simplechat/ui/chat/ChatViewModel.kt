@@ -98,10 +98,10 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     fun sendReactMessage() {
         val tmpMessage = Message(Util.autoId(), userId, isReact = true)
-        sendMessage(channelId, tmpMessage)
+        sendMessage(tmpMessage)
     }
 
-    fun sendMessage(channelId: String, message: Message, callback: ((DocumentReference) -> Unit)? = null) {
+    fun sendMessage(message: Message, callback: ((DocumentReference) -> Unit)? = null) {
         _sendStatus.postValue(Status.LOADING)
         val messageRef = messages.document(channelId).collection("list-message").document(message.id)
         messageRef.set(message)
@@ -122,7 +122,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         val tmpList = result.map { it.toChatMedia() }
         Log.d(TAG, "sendAudio tmpList=$tmpList")
         val tmpMessage = Message(Util.autoId(), userId, medias = tmpList)
-        sendMessage(channelId, tmpMessage) { ref ->
+        sendMessage(tmpMessage) { ref ->
             uploadAudio(result) { listAudio ->
                 Log.d(TAG, "sendAudio listAudio=$listAudio")
                 val list = tmpList.mapIndexed { index, chatMedia ->
@@ -148,14 +148,12 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         }
     }
 
-    fun sendImagesMessage(context: Context, result: ArrayList<LocalMedia>) {
+    fun sendImagesMessage(context: Context, result: ArrayList<LocalMedia>, tmpMessage: Message) {
         if (result.isEmpty()) return
-
-        val tmpList = result.map { it.toChatMedia() }
-        val tmpMessage = Message(Util.autoId(), userId, medias = tmpList)
-        sendMessage(channelId, tmpMessage) { ref ->
+        val tmpList = tmpMessage.medias
+        sendMessage(tmpMessage) { ref ->
             uploadImage(context, result) { listImg ->
-                val list = tmpList.mapIndexed { index, chatMedia ->
+                val list = tmpList?.mapIndexed { index, chatMedia ->
                     chatMedia.apply { path = listImg[index] }
                 }
                 tmpMessage.medias = list
@@ -212,6 +210,23 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         val message = _listMessage.value?.find { it.id == messageId }
         val react = message!!.reactions
         chatRepository.pushReact(channelId, messageId, userId, react, reactId)
+    }
+
+    fun checkIdle(): Boolean {
+        val timestamp = System.currentTimeMillis()
+
+        val lastItem = listMessage.value?.lastOrNull()
+        val lastTimestamp = lastItem?.timestamp ?: timestamp
+
+        val timeIdle = timestamp - lastTimestamp
+        val idleBreak = timeIdle > ChatFragment.TIME_IDLE_BREAK
+
+        if (timestamp - lastTimestamp > ChatFragment.TIME_LINE_BREAK) {
+            sendMessage(
+                Message(Util.autoId(), isTimeline = true, timestamp = timestamp)
+            )
+        }
+        return idleBreak
     }
 
     companion object {
