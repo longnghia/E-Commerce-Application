@@ -113,6 +113,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+
     <LinearLayout
         android:id="@+id/input_bar"
         android:layout_width="match_parent"
@@ -121,16 +122,25 @@
         android:elevation="@dimen/app_bar_elevation"
         android:gravity="center_vertical"
         android:minHeight="?attr/actionBarSize"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:paddingStart="8dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <LinearLayout
-            android:id="@+id/layout_pick_media"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        <include
+            layout="@layout/item_message_quote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/btn_more"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
 
             <ImageView
                 android:id="@+id/btn_more"
@@ -138,7 +148,10 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_more" />
+                android:src="@drawable/ic_more"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/btn_gallery"
@@ -146,36 +159,43 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_gallery" />
-        </LinearLayout>
+                android:src="@drawable/ic_gallery"
+                app:layout_constraintBottom_toBottomOf="@id/btn_more"
+                app:layout_constraintStart_toEndOf="@id/btn_more"
+                app:layout_constraintTop_toTopOf="@id/btn_more" />
 
 
-        <com.ln.simplechat.ui.chat.ChatEditText
-            android:id="@+id/input"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_outline"
-            android:hint="@string/hint_input"
-            android:imeOptions="actionSend"
-            android:importantForAutofill="no"
-            android:inputType="textCapSentences"
-            android:maxLines="1"
-            android:paddingLeft="20dp" />
+            <com.ln.simplechat.ui.chat.ChatEditText
+                android:id="@+id/input"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_outline"
+                android:hint="@string/hint_input"
+                android:imeOptions="actionSend"
+                android:importantForAutofill="no"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                android:paddingLeft="20dp"
+                app:layout_constraintBottom_toBottomOf="@id/btn_gallery"
+                app:layout_constraintEnd_toStartOf="@id/btn_send"
+                app:layout_constraintStart_toEndOf="@id/btn_gallery"
+                app:layout_constraintTop_toTopOf="@id/btn_gallery" />
 
-        <ImageView
-            android:id="@+id/btn_send"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/description_send"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="@id/input"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/input"
-            app:layout_constraintTop_toTopOf="@id/input"
-            app:srcCompat="@drawable/ic_like"
-            app:tint="?attr/colorAccent" />
+            <ImageView
+                android:id="@+id/btn_send"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/description_send"
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="@id/input"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/input"
+                app:layout_constraintTop_toTopOf="@id/input"
+                app:srcCompat="@drawable/ic_like"
+                app:tint="?attr/colorAccent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,7 +9,9 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="colorGray">#dedede</color>
+    <color name="colorGrayLight">#EDEDED</color>
     <color name="colorBlue">#2962FF</color>
+    <color name="colorBlueLight">#ADC3FF</color>
 
     <color name="colorPrimaryDark">#E65100</color>
     <color name="colorPrimary">#FFFFFFFF</color>
@@ -46,4 +48,12 @@
     <color name="black_600">#40000000</color>
     <color name="neutral_500">#72808e</color>
 
+    <!-- general text colors -->
+    <color name="no_emphasis_text">#000000</color>
+    <color name="high_emphasis_text">#de000000</color>
+    <color name="medium_emphasis_text">#99000000</color>
+    <color name="low_emphasis_text">#61000000</color>
+
+    <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
+    <color name="bg_message_list_incoming_bubble_deleted">#66EFEFEF</color>
 </resources>

@@ -13,7 +13,8 @@ data class Message @JvmOverloads constructor(
     var idleBreak: Boolean = false,  /* check if message is idle */
     @field:JvmField
     var isReact: Boolean = false,
-    var reactions: Reaction = Reaction()
+    var reactions: Reaction = Reaction(),
+    var quotedMessage: String? = null
 ) {
     @Exclude
     fun getMessageType(): MessageType {

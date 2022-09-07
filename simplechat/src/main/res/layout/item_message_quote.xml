@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2020 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_message_quote"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/quoteColoredView"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="4dp"
+        android:background="@color/high_emphasis_text"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/flexboxQuoted"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/flexboxQuoted"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/bubble_radius"
+        app:alignContent="stretch"
+        app:alignItems="stretch">
+
+        <TextView
+            android:id="@+id/quotedMessageAuthor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:alpha="0.6"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textAlignment="viewEnd"
+            android:textColor="@color/no_emphasis_text"
+            android:textIsSelectable="false"
+            android:textSize="12sp"
+            tools:text="Jane Doe send to Doe Jane" />
+
+        <LinearLayout
+            android:id="@+id/flexboxQuotedContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/quotedMessageImage"
+                android:layout_width="@dimen/image_size"
+                android:layout_height="@dimen/image_size"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                app:layout_wrapBefore="true"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/quotedMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingMultiplier="1.2"
+                android:maxLines="2"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                tools:text="Hello" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/cancelReplyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/nc_message_quote_cancel_reply"
+        android:src="@drawable/ic_cancel_black_24dp"
+        android:visibility="gone" />
+
+</LinearLayout>
