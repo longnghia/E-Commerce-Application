@@ -10,10 +10,8 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
-import com.ln.simplechat.model.Channel
-import com.ln.simplechat.model.Member
-import com.ln.simplechat.model.Message
-import com.ln.simplechat.model.Status
+import com.ln.simplechat.api.TopicAPI
+import com.ln.simplechat.model.*
 import com.ln.simplechat.repository.ChatRepository
 import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.toChatMedia
@@ -32,16 +30,22 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
     private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
 
     private var listenerRegistration: ListenerRegistration? = null
-
+    private var _channel: Channel? = null
     val channel: LiveData<MyResult<Channel>> = liveData {
-        emit(chatRepository.getChannel(channelId))
+        val result = chatRepository.getChannel(channelId)
+        if (result is MyResult.Success) {
+            _channel = result.data
+        }
+        emit(result)
     }
 
+    private var _me: Member? = null
     val listMember: LiveData<List<Member>> = channel.switchMap { channel ->
         liveData {
             when (channel) {
                 is MyResult.Success -> {
                     val list = chatRepository.getListMember(channel.data.listUser)
+                    _me = list.find { it.id == userId }
                     emit(list)
                 }
                 is MyResult.Error -> {
@@ -101,11 +105,24 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         sendMessage(tmpMessage)
     }
 
+    private fun fmSendToTopic(message: Message) {
+        if (_channel == null || _me == null) return
+        val topicData = TopicData(_channel!!, message, _me!!)
+        viewModelScope.launch {
+            try {
+                val result = TopicAPI.retrofitService.sendNotification(topicData)
+            } catch (e: Exception) {
+                Log.e(TAG, "fmSendToTopic: ERROR", e)
+            }
+        }
+    }
+
     fun sendMessage(message: Message, callback: ((DocumentReference) -> Unit)? = null) {
         _sendStatus.postValue(Status.LOADING)
         val messageRef = messages.document(channelId).collection("list-message").document(message.id)
         messageRef.set(message)
             .addOnSuccessListener {
+                fmSendToTopic(message)
                 callback?.invoke(messageRef)
                 _sendStatus.postValue(Status.SUCCESS)
             }

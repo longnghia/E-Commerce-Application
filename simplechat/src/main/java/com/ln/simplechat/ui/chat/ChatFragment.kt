@@ -2,9 +2,14 @@ package com.ln.simplechat.ui.chat
 
 import android.annotation.SuppressLint
 import android.app.Dialog
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.ContentResolver
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.drawable.ColorDrawable
+import android.media.AudioAttributes
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.transition.TransitionInflater
@@ -18,6 +23,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.MenuRes
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
@@ -27,8 +33,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.util.Util
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import com.ln.simplechat.R
 import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.databinding.DialogReactionBinding
@@ -91,6 +100,56 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             parentFragmentManager.popBackStack()
             return
         }
+        setupNotification()
+    }
+
+    private fun setupNotification() {
+
+        val channelId = getString(R.string.channel_chat)
+        val channelName = getString(R.string.channel_chat_name)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = getSystemService(requireContext(), NotificationManager::class.java)
+            val chatChannel = NotificationChannel(
+                channelId,
+                channelName, NotificationManager.IMPORTANCE_HIGH
+            )
+            chatChannel.description = getString(R.string.channel_chat_description)
+            chatChannel.enableLights(false)
+            chatChannel.enableVibration(false)
+            val audioAttributes = AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                .build()
+            val audioUri = Uri.parse(
+                ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + requireContext().packageName + "/" + R.raw.messenger_chat_sound
+            )
+            chatChannel.setSound(audioUri, audioAttributes)
+            notificationManager?.createNotificationChannel(chatChannel)
+        }
+
+/*  todo: notification intent
+
+        intent.extras?.let {
+            for (key in it.keySet()) {
+                val value = intent.extras?.get(key)
+                Log.d(TAG, "Key: $key Value: $value")
+            }
+        }
+*/
+
+        Firebase.messaging.subscribeToTopic(channelId)
+            .addOnCompleteListener { task ->
+                Log.d(TAG, "subscribed To Topic $channelId")
+            }
+        Firebase.messaging.token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            val token = task.result
+            Log.d(TAG, "Get token successfully= $token")
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -33,5 +33,9 @@
     <string name="you">you</string>
     <string name="who_replied_to_who">%s replied to %s</string>
     <string name="reply_to">Reply to %s</string>
+    <string name="channel_chat">channel_chat</string>
+    <string name="channel_chat_name">Chat Notification</string>
+    <string name="channel_chat_description">Notification for chats</string>
+    <string name="symbol_like">👍</string>
 
 </resources>

@@ -6,12 +6,30 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import com.goldenowl.ecommerce.R
+import com.goldenowl.ecommerce.models.auth.UserManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import services.ChatFMService
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    val userManager by lazy { UserManager.getInstance(this) }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        /* config for chat notification */
+        remoteMessage.from?.let {
+            var userId: String
+            userId = try {
+                userManager.id
+            } catch (e: Exception) {
+                Log.e(TAG, "onMessageReceived: ERROR", e)
+                "DPql1uxYezTe4m6HrP0UMlm3Ikh2" //recheck
+            }
+            if (it.contains("/topics/")) {
+                ChatFMService.onMessageReceived(this, remoteMessage, userId, R.mipmap.ic_ecommerce_launcher_round)
+                return
+            }
+        }
+
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: ${remoteMessage.from}")
 

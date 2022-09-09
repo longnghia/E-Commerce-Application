@@ -1,5 +1,7 @@
 package com.ln.simplechat.model
 
+import com.google.firebase.firestore.Exclude
+
 data class Reaction(
     var love: List<String> = emptyList(),
     var haha: List<String> = emptyList(),
@@ -12,6 +14,7 @@ data class Reaction(
         val reactOrder = listOf("love", "haha", "wow", "sad", "angry", "like")
     }
 
+    @Exclude
     fun getNonEmptyReaction(): List<Pair<Int, List<String>>> {
         val list = mutableListOf<Pair<Int, List<String>>>()
         reactOrder.forEachIndexed { index, r ->
@@ -23,6 +26,7 @@ data class Reaction(
         return list
     }
 
+    @Exclude
     fun getArray(reactName: String): List<String> {
         return when (reactName) {
             "love" -> love

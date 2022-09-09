@@ -3,3 +3,4 @@
 /src/androidTest/*
 /src/test/*
 .idea/
+/src/main/java/com/ln/simplechat/api/ServerKey.kt
