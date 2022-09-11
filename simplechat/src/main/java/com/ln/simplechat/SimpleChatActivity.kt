@@ -33,7 +33,7 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat), Nav
         } catch (e: Exception) {
             Log.e(SimpleChatActivity::class.java.simpleName, "onCreate: Fail to start Service", e)
         }
-        onNewIntent(intent);
+        onNewIntent(intent)
     }
 
     fun setSystemBarColor(colorRes: Int) {

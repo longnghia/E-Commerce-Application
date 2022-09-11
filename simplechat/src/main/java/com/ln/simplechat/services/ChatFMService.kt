@@ -30,8 +30,10 @@ object ChatFMService {
     private val typeChannel = object : TypeToken<Channel>() {}.type
     private val typeMember = object : TypeToken<Member>() {}.type
     val notificationId = 201
+    val notifIcon = SimpleChatApp.instance?.applicationInfo?.icon ?: R.drawable.ic_notification
+
     const val REQUEST_CONTENT = 1
-    fun onMessageReceived(context: Context, remoteMessage: RemoteMessage, userId: String, appIconRes: Int) {
+    fun onMessageReceived(context: Context, remoteMessage: RemoteMessage, userId: String) {
         var showNotification: Boolean
         if (remoteMessage.data.isNotEmpty()) {
             remoteMessage.data.also { data ->
@@ -48,7 +50,7 @@ object ChatFMService {
                         gson.fromJson(senderStr, typeMember)
                     showNotification = userId != message.sender && channel.id != currentChannel
                     if (showNotification) {
-                        notifyCloudMessage(context, appIconRes, sender, channel, message)
+                        notifyCloudMessage(context, sender, channel, message)
                     }
                 } catch (e: Exception) {
                     toast(e.message)
@@ -59,7 +61,6 @@ object ChatFMService {
 
     private fun notifyCloudMessage(
         context: Context,
-        appIconRes: Int,
         sender: Member,
         channel: Channel,
         message: Message
@@ -101,14 +102,15 @@ object ChatFMService {
             collapsedView.setTextViewText(R.id.content_text, context.getString(R.string.new_message))
 
         collapsedView.setImageViewBitmap(R.id.big_icon, getBitmap(context, sender.avatar, circle = true))
-        collapsedView.setImageViewBitmap(R.id.small_icon, getBitmap(context, appIconRes))
+        collapsedView.setImageViewBitmap(R.id.small_icon, getBitmap(context, notifIcon))
 
         val contentUri = "https://android.example.com/chat/${channel.id}".toUri()
 
         val notificationBuilder = NotificationCompat.Builder(context, context.getString(R.string.channel_chat))
-            .setSmallIcon(appIconRes)
+            .setSmallIcon(notifIcon)
             .setCustomContentView(collapsedView)
 //            .setCustomBigContentView(expandedView)  // todo: expand user message in group
+            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(
@@ -123,7 +125,13 @@ object ChatFMService {
             )
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-            SimpleChatApp.instance?.applicationInfo?.labelRes?.let { notificationBuilder.setContentTitle(context.getString(it)) }
+            SimpleChatApp.instance?.applicationInfo?.labelRes?.let {
+                notificationBuilder.setContentTitle(
+                    context.getString(
+                        it
+                    )
+                )
+            }
 
         with(NotificationManagerCompat.from(context))
         {

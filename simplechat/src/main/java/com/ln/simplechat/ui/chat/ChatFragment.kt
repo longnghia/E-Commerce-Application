@@ -128,16 +128,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
             notificationManager?.createNotificationChannel(chatChannel)
         }
 
-/*  todo: notification intent
-
-        intent.extras?.let {
-            for (key in it.keySet()) {
-                val value = intent.extras?.get(key)
-                Log.d(TAG, "Key: $key Value: $value")
-            }
-        }
-*/
-
         Firebase.messaging.subscribeToTopic(channelId)
             .addOnCompleteListener { task ->
                 Log.d(TAG, "subscribed To Topic $channelId")

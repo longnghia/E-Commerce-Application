@@ -24,7 +24,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 "DPql1uxYezTe4m6HrP0UMlm3Ikh2" //recheck
             }
             if (it.contains("/topics/")) {
-                ChatFMService.onMessageReceived(this, remoteMessage, userId, R.mipmap.ic_ecommerce_launcher_round)
+                ChatFMService.onMessageReceived(this, remoteMessage, userId)
                 return
             }
         }
