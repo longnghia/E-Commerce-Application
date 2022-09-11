@@ -40,10 +40,12 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Add Messaging Serverkey
-        run: mkdir -p "/src/main/java/com/ln/simplechat/api/" && echo "package com.ln.simplechat.api\n\nconst val BASE_URL = \"${{secrets.MESSAGING_SERVER_KEY}}\"\nconst val NOTIFICATION_PATH = \"${{secrets.NOTIFICATION_PATH}}\"" > /src/main/java/com/ln/simplechat/api/ServerKey.kt
+        run: |
+          mkdir -p "simplechat/src/main/java/com/ln/simplechat/api/"
+          echo "${{secrets.MESSAGING_SERVER_KEY}}"  | base64 -d > simplechat/src/main/java/com/ln/simplechat/api/ServerKey.kt
 
       - name: Execute Gradle build
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug
     
       - run: git log  --pretty=oneline | head -n 10 >> log.txt
           
