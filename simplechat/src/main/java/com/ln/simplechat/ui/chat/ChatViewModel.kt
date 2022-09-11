@@ -10,7 +10,9 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
+import com.ln.simplechat.R
 import com.ln.simplechat.api.TopicAPI
+import com.ln.simplechat.application.toast
 import com.ln.simplechat.model.*
 import com.ln.simplechat.repository.ChatRepository
 import com.ln.simplechat.utils.MyResult
@@ -105,14 +107,17 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         sendMessage(tmpMessage)
     }
 
-    private fun fmSendToTopic(message: Message) {
-        if (_channel == null || _me == null) return
+    fun fmSendToTopic(message: Message) {
+        if (_channel == null || _me == null) {
+            toast(R.string.cant_send_topic_notification)
+            return
+        }
         val topicData = TopicData(_channel!!, message, _me!!)
         viewModelScope.launch {
             try {
                 val result = TopicAPI.retrofitService.sendNotification(topicData)
             } catch (e: Exception) {
-                Log.e(TAG, "fmSendToTopic: ERROR", e)
+                toast(e.message)
             }
         }
     }
@@ -122,7 +127,6 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         val messageRef = messages.document(channelId).collection("list-message").document(message.id)
         messageRef.set(message)
             .addOnSuccessListener {
-                fmSendToTopic(message)
                 callback?.invoke(messageRef)
                 _sendStatus.postValue(Status.SUCCESS)
             }
@@ -147,6 +151,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
                 }
                 tmpMessage.medias = list
                 ref.set(tmpMessage)
+                fmSendToTopic(tmpMessage)
             }
         }
     }
@@ -175,6 +180,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
                 }
                 tmpMessage.medias = list
                 ref.set(tmpMessage)
+                fmSendToTopic(tmpMessage)
             }
         }
     }

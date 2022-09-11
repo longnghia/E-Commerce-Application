@@ -17,8 +17,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         /* config for chat notification */
         remoteMessage.from?.let {
-            var userId: String
-            userId = try {
+            val userId: String = try {
                 userManager.id
             } catch (e: Exception) {
                 Log.e(TAG, "onMessageReceived: ERROR", e)

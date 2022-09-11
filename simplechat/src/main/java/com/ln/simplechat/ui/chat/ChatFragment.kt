@@ -39,6 +39,7 @@ import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 import com.ln.simplechat.R
+import com.ln.simplechat.application.SimpleChatApp
 import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.databinding.DialogReactionBinding
 import com.ln.simplechat.model.ChatMedia
@@ -105,12 +106,12 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     private fun setupNotification() {
 
-        val channelId = getString(R.string.channel_chat)
+        val chatChannelId = getString(R.string.channel_chat)
         val channelName = getString(R.string.channel_chat_name)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = getSystemService(requireContext(), NotificationManager::class.java)
             val chatChannel = NotificationChannel(
-                channelId,
+                chatChannelId,
                 channelName, NotificationManager.IMPORTANCE_HIGH
             )
             chatChannel.description = getString(R.string.channel_chat_description)
@@ -375,7 +376,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         val idle = viewModel.checkIdle()
         val message = createMessage()
         message.apply { this.idleBreak = idle }
-        viewModel.sendMessage(message)
+        viewModel.sendMessage(message) {
+            viewModel.fmSendToTopic(message)
+        }
         binding.input.setText("")
     }
 
@@ -398,12 +401,19 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     override fun onPause() {
         viewModel.stopListening()
+        SimpleChatApp.currentChannel = null
         super.onPause()
     }
 
     override fun onResume() {
         super.onResume()
+        SimpleChatApp.currentChannel = channelId
         viewModel.resumeListening()
+    }
+
+    override fun onDestroy() {
+        SimpleChatApp.currentChannel = null
+        super.onDestroy()
     }
 
     companion object {

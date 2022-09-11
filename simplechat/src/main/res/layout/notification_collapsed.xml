@@ -48,15 +48,13 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Notification.Title"
             android:textColor="@color/black" />
 
-
         <ImageView
             android:id="@+id/content_image"
-            android:layout_width="104dp"
-            android:layout_height="104dp"
-            android:layout_gravity="start"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_launcher_foreground" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/content_text"

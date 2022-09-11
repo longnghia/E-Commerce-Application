@@ -13,7 +13,7 @@ import retrofit2.http.POST
 interface TopicApiService {
 
     @Headers("Content-Type: application/json")
-    @POST
+    @POST(NOTIFICATION_PATH)
     suspend fun sendNotification(@Body data: TopicData): TopicNotificationResult
 }
 
