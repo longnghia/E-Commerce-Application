@@ -1,0 +1,3 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:top="8px" android:right="8px" android:left="8px" android:bottom="8px" android:drawable="@drawable/ic_more"/>
+</layer-list>

@@ -289,7 +289,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
 
         binding.btnSend.setOnClickListener {
-            if (!isAtBottom) messageRcv.scrollToPosition(adapter.itemCount - 1)
             sendMessage()
         }
 
@@ -365,6 +364,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun sendMessage() {
+        messageRcv.scrollToPosition(adapter.itemCount - 1)
         val idle = viewModel.checkIdle()
         val message = createMessage()
         message.apply { this.idleBreak = idle }

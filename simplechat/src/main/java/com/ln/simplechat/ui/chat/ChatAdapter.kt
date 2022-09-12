@@ -304,6 +304,7 @@ class ChatAdapter(
     inner class ReactViewHolder(binding: ItemReactBinding) : RecyclerView.ViewHolder(binding.root) {
         val image = binding.ivReact
         private val chatMargin = context.resources.getDimensionPixelSize(R.dimen.chat_margin)
+        private val avatarMargin = context.resources.getDimensionPixelSize(R.dimen.chat_avatar)
         fun bind(item: Message) {
             val outGoing = item.sender == currentUserId
             val layoutParams = image.layoutParams as FrameLayout.LayoutParams
@@ -314,7 +315,7 @@ class ChatAdapter(
                 }
             } else {
                 image.layoutParams = layoutParams.apply {
-                    setMargins(chatMargin)
+                    setMargins(avatarMargin + chatMargin, chatMargin, chatMargin, chatMargin)
                     gravity = Gravity.START
                 }
             }
@@ -347,12 +348,14 @@ class ChatAdapter(
             2, 4 -> 2
             else -> 3
         }
-        val flexWidth = spanCount * (imageSize + imageSpacing + 5) // extra pixel due to pixel conversion
+        val flexWidth = spanCount * (imageSize + imageSpacing + 20) // extra pixel due to pixel conversion
         rcv.layoutParams = rcv.layoutParams.apply { width = flexWidth.toInt() }
 
         val manager = FlexboxLayoutManager(context)
         if (outGoing)
             manager.justifyContent = JustifyContent.FLEX_END
+        else
+            manager.justifyContent = JustifyContent.FLEX_START
 
         rcv.layoutManager = manager
 
