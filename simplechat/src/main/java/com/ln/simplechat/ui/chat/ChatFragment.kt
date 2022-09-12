@@ -28,13 +28,12 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
@@ -42,6 +41,7 @@ import com.ln.simplechat.R
 import com.ln.simplechat.application.SimpleChatApp
 import com.ln.simplechat.databinding.ChatFragmentBinding
 import com.ln.simplechat.databinding.DialogReactionBinding
+import com.ln.simplechat.getNavigationController
 import com.ln.simplechat.model.ChatMedia
 import com.ln.simplechat.model.Member
 import com.ln.simplechat.model.Message
@@ -67,10 +67,10 @@ import java.util.concurrent.TimeUnit
 class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     private val binding by viewBindings(ChatFragmentBinding::bind)
 
-    private val currentUserId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
+    private lateinit var currentUserId: String
 
     private lateinit var channelId: String
-    private val viewModel: ChatViewModel by viewModels()
+    private val viewModel: ChatViewModel by activityViewModels()
     private lateinit var adapter: ChatAdapter
     private lateinit var manager: LinearLayoutManager
     var bubble = false
@@ -97,10 +97,12 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
         bubble = arguments?.getBoolean(IS_BUBBLE) ?: false
         channelId = arguments?.getString(CHANNEL_ID) ?: ""
-        if (channelId.isEmpty()) {
+        val userId = getNavigationController().currentUserId
+        if (channelId.isEmpty() || userId == null) {
             parentFragmentManager.popBackStack()
             return
         }
+        currentUserId = userId
         setupNotification()
     }
 

@@ -56,5 +56,7 @@
     <string name="cant_send_topic_notification">Can not invoke channel\'s notification!</string>
     <string name="new_message">New message!</string>
     <string name="notification_sent">sent</string>
+    <string name="create_channel_insufficient_member">At least 2 member to create channel</string>
+    <string name="channel_not_found">Channel not found!</string>
 
 </resources>

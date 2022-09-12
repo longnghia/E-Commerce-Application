@@ -17,13 +17,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         /* config for chat notification */
         remoteMessage.from?.let {
-            val userId: String = try {
-                userManager.id
-            } catch (e: Exception) {
-                Log.e(TAG, "onMessageReceived: ERROR", e)
-                "DPql1uxYezTe4m6HrP0UMlm3Ikh2" //recheck
-            }
             if (it.contains("/topics/")) {
+                val userId: String = try {
+                    userManager.id
+                } catch (e: Exception) {
+                    Log.e(TAG, "onMessageReceived: ERROR", e)
+                    return
+                }
                 ChatFMService.onMessageReceived(this, remoteMessage, userId)
                 return
             }

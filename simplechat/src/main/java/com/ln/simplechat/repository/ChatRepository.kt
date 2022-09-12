@@ -143,4 +143,40 @@ class ChatRepository @Inject constructor(
         messages.document(channelId).collection("list-message").document(messageId)
             .update("reactions.$reactName", list)
     }
+
+    suspend fun findChannelByListUser(listUser: ArrayList<String>): MyResult<Channel> {
+        listUser.sort()
+        val hash = listUser.joinToString(Channel.USER_SEPERATOR)
+        return withContext(dispatcherIO) {
+            return@withContext try {
+                val task = db.collection("channels")
+                    .whereEqualTo("hash", hash)
+                    .get().await()
+                val list: List<Channel> = task.toObjects(Channel::class.java)
+                if (list.isEmpty())
+                    MyResult.Error(ChannelNotFoundException(hash))
+                MyResult.Success(list[0])
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
+
+    suspend fun createChannel(listUser: ArrayList<String>): MyResult<String> {
+        return withContext(dispatcherIO) {
+            return@withContext try {
+                val channelId = Util.autoId()
+                val channel = Channel(channelId, listUser = listUser).apply {
+                    hash = getChannelHash()
+                }
+                val ref = db.collection("channels")
+                    .document(channelId)
+                ref.set(channel)
+                    .await()
+                MyResult.Success(channelId)
+            } catch (e: Exception) {
+                MyResult.Error(e)
+            }
+        }
+    }
 }
