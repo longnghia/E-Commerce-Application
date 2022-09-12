@@ -61,7 +61,7 @@ abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
         return requireContext().resources.getQuantityString(resId, quantity, quantity)
     }
 
-    fun goChatScreen() {
+    fun goChatScreen(channelId: String) {
         requireActivity().apply {
             startActivity(Intent(this, SimpleChatActivity::class.java))
         }

@@ -220,7 +220,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_support"
+                android:id="@+id/layout_seller"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -228,6 +228,74 @@
                 android:layout_marginEnd="16dp"
                 app:layout_constraintStart_toStartOf="@id/layout_shipping_info"
                 app:layout_constraintTop_toBottomOf="@id/layout_shipping_info">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/seller_avatar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/seller_name"
+                    style="@style/TextAppearance.MyApp.Text16.Black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/app_name"
+                    app:layout_constraintBottom_toTopOf="@id/ic_address"
+                    app:layout_constraintStart_toEndOf="@id/seller_avatar"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ic_address"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_address"
+                    app:layout_constraintStart_toStartOf="@id/seller_name"
+                    app:layout_constraintTop_toBottomOf="@id/seller_name" />
+
+                <TextView
+                    android:id="@+id/seller_address"
+                    style="@style/TextAppearance.MyApp.Text14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/address"
+                    app:layout_constraintBottom_toBottomOf="@id/ic_address"
+                    app:layout_constraintStart_toEndOf="@id/ic_address"
+                    app:layout_constraintTop_toTopOf="@id/ic_address" />
+
+                <ImageView
+                    android:id="@+id/seller_chat"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_chat"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="17dp"
+                android:alpha="0.1"
+                android:background="@color/grey_text"
+                app:layout_constraintStart_toStartOf="@id/layout_seller"
+                app:layout_constraintTop_toBottomOf="@id/layout_seller" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_support"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintStart_toStartOf="@id/layout_seller"
+                app:layout_constraintTop_toBottomOf="@id/layout_seller">
 
                 <TextView
                     android:id="@+id/tv_support"
