@@ -6,16 +6,14 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.commit
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ln.simplechat.R
 import com.ln.simplechat.SimpleChatActivity
 import com.ln.simplechat.databinding.MainFragmentBinding
-import com.ln.simplechat.ui.chat.ChatFragment
+import com.ln.simplechat.getNavigationController
 import com.ln.simplechat.ui.viewBindings
 import com.ln.simplechat.utils.MyResult
 import com.ln.simplechat.utils.buildMenu
@@ -25,8 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainFragment : Fragment(R.layout.main_fragment) {
     private val binding by viewBindings(MainFragmentBinding::bind)
     private lateinit var adapter: ChannelAdapter
-    private val viewModel: MainViewModel by viewModels()
-
+    private val viewModel: MainViewModel by activityViewModels()
     val db: FirebaseFirestore = Firebase.firestore
 
     override fun onStart() {
@@ -37,12 +34,10 @@ class MainFragment : Fragment(R.layout.main_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navigator = getNavigationController()
+
         adapter = ChannelAdapter { channel ->
-            parentFragmentManager.popBackStack(ChatFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-            parentFragmentManager.commit {
-                addToBackStack(ChatFragment.TAG)
-                replace(R.id.container, ChatFragment.newInstance(channel.id))
-            }
+            navigator.openChat(channel.id)
         }
         binding.contacts.apply {
             setHasFixedSize(true)

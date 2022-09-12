@@ -5,12 +5,12 @@ import android.os.Build
 import android.util.Log
 import androidx.lifecycle.*
 import com.bumptech.glide.Glide
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
 import com.ln.simplechat.R
+import com.ln.simplechat.SimpleChatActivity
 import com.ln.simplechat.api.TopicAPI
 import com.ln.simplechat.application.toast
 import com.ln.simplechat.model.*
@@ -24,12 +24,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val chatRepository: ChatRepository) : ViewModel() {
+class ChatViewModel @Inject constructor(
+    private val chatRepository: ChatRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel(), LifecycleObserver {
+
+    val userId = savedStateHandle.get<String>(SimpleChatActivity.EXTRA_CURRENT_USER)!!
 
     private lateinit var channelId: String
     private lateinit var query: Query
 
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
 
     private var listenerRegistration: ListenerRegistration? = null
     private var _channel: Channel? = null

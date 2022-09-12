@@ -15,6 +15,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.ln.simplechat.CHAT_BASE_URI
 import com.ln.simplechat.R
 import com.ln.simplechat.SimpleChatActivity
 import com.ln.simplechat.application.SimpleChatApp
@@ -104,7 +105,7 @@ object ChatFMService {
         collapsedView.setImageViewBitmap(R.id.big_icon, getBitmap(context, sender.avatar, circle = true))
         collapsedView.setImageViewBitmap(R.id.small_icon, getBitmap(context, notifIcon))
 
-        val contentUri = "https://android.example.com/chat/${channel.id}".toUri()
+        val contentUri = "$CHAT_BASE_URI{channel.id}".toUri()
 
         val notificationBuilder = NotificationCompat.Builder(context, context.getString(R.string.channel_chat))
             .setSmallIcon(notifIcon)

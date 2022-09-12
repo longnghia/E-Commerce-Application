@@ -1,9 +1,7 @@
 package com.ln.simplechat.ui.main
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.*
+import com.ln.simplechat.SimpleChatActivity.Companion.EXTRA_CURRENT_USER
 import com.ln.simplechat.model.ChannelAndMember
 import com.ln.simplechat.repository.ChatRepository
 import com.ln.simplechat.utils.MyResult
@@ -14,9 +12,12 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: ChatRepository) : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val repository: ChatRepository,
+    savedStateHandle: SavedStateHandle
+) : ViewModel(), LifecycleObserver {
 
-    private val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "DPql1uxYezTe4m6HrP0UMlm3Ikh2" // recheck
+    val userId = savedStateHandle.get<String>(EXTRA_CURRENT_USER)
 
     val listChannelAndMembers = flow {
         emit(userId?.let { repository.getListChannelAndMember(it) })

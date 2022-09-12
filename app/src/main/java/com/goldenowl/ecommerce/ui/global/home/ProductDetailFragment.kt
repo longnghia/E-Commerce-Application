@@ -28,6 +28,7 @@ import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.ktx.Firebase
+import com.ln.simplechat.SimpleChatActivity
 
 
 class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
@@ -92,13 +93,17 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
         }
     }
 
-    private fun setupChatUI(user: User) {
+    private fun setupChatUI(seller: User) {
+
         with(binding) {
-            sellerAvatar.setUrl(user.avatar)
-            sellerName.text = user.name
+            sellerAvatar.setUrl(seller.avatar)
+            sellerName.text = seller.name
             sellerAddress.text = getString(R.string.hcm)
-            sellerChat.setOnClickListener {
-                goChatScreen("4be9efc7-69e1-47aa-990c-1ddaafaf0500") // implement later
+            detailViewModel.currentUserId?.let { currentUserId ->
+                val listUser = arrayListOf(seller.id, currentUserId)
+                sellerChat.setOnClickListener {
+                    SimpleChatActivity.createAndOpenChannel(requireActivity(), currentUserId, listUser)
+                }
             }
         }
     }
