@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.goldenowl.ecommerce.R
@@ -11,8 +12,9 @@ import com.goldenowl.ecommerce.models.auth.UserManager
 import com.goldenowl.ecommerce.models.data.SettingsManager
 import com.goldenowl.ecommerce.ui.tutorial.TutorialActivity
 import com.goldenowl.ecommerce.utils.Utils.launchHome
-import com.ln.simplechat.SimpleChatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LaunchActivity : AppCompatActivity() {
 
     private val TAG = "SplashActivity"
@@ -21,9 +23,6 @@ class LaunchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.startActivity(Intent(this, SimpleChatActivity::class.java))
-        finish()
-        return
         setContentView(R.layout.activity_splash)
         userManager = UserManager.getInstance(this)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

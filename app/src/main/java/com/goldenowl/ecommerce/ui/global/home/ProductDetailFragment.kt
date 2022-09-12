@@ -8,22 +8,22 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.goldenowl.ecommerce.R
 import com.goldenowl.ecommerce.adapter.HomeProductListAdapter
 import com.goldenowl.ecommerce.adapter.ImageProductDetailAdapter
 import com.goldenowl.ecommerce.databinding.FragmentProductDetailBinding
-import com.goldenowl.ecommerce.models.data.Cart
-import com.goldenowl.ecommerce.models.data.Favorite
-import com.goldenowl.ecommerce.models.data.Product
-import com.goldenowl.ecommerce.models.data.ProductData
+import com.goldenowl.ecommerce.models.data.*
 import com.goldenowl.ecommerce.ui.global.BaseHomeFragment
 import com.goldenowl.ecommerce.utils.BaseLoadingStatus
 import com.goldenowl.ecommerce.utils.Constants
 import com.goldenowl.ecommerce.utils.Constants.listSize
 import com.goldenowl.ecommerce.utils.Utils.autoScroll
 import com.goldenowl.ecommerce.utils.Utils.prepareForTwoWayPaging
+import com.goldenowl.ecommerce.utils.Utils.setUrl
+import com.goldenowl.ecommerce.viewmodels.DetailViewModel
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLink
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
@@ -43,6 +43,8 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
 
     private lateinit var productId: String
     private var listProductData: List<ProductData> = emptyList()
+
+    private val detailViewModel: DetailViewModel by activityViewModels()
 
     override fun setObservers() {
         super.setObservers()
@@ -70,6 +72,9 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
                     relateList = viewModel.getRelateProducts(product.tags)
                     if (relateProductAdapter != null)
                         relateProductAdapter.setData(relateList, null)
+
+                    detailViewModel.initData(product)
+                    setSellerObserver()
                 }
 
                 viewModel.allFavorite.observe(viewLifecycleOwner) {
@@ -77,6 +82,23 @@ class ProductDetailFragment : BaseHomeFragment<FragmentProductDetailBinding>() {
                 }
             } else {
                 binding.layoutLoading.loadingFrameLayout.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun setSellerObserver() {
+        detailViewModel.seller.observe(viewLifecycleOwner) { user ->
+            setupChatUI(user)
+        }
+    }
+
+    private fun setupChatUI(user: User) {
+        with(binding) {
+            sellerAvatar.setUrl(user.avatar)
+            sellerName.text = user.name
+            sellerAddress.text = getString(R.string.hcm)
+            sellerChat.setOnClickListener {
+                goChatScreen("4be9efc7-69e1-47aa-990c-1ddaafaf0500") // implement later
             }
         }
     }

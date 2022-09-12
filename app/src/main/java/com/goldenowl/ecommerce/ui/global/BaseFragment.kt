@@ -1,11 +1,13 @@
 package com.goldenowl.ecommerce.ui.global
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.ln.simplechat.SimpleChatActivity
 
 
 abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
@@ -57,5 +59,11 @@ abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
 
     fun getQuantityString(resId: Int, quantity: Int): CharSequence {
         return requireContext().resources.getQuantityString(resId, quantity, quantity)
+    }
+
+    fun goChatScreen(channelId: String) {
+        requireActivity().apply {
+            startActivity(Intent(this, SimpleChatActivity::class.java))
+        }
     }
 }

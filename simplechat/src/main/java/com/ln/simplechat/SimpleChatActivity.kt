@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.fragment.app.commitNow
 import com.ln.simplechat.databinding.ActivitySimpleChatBinding
 import com.ln.simplechat.services.OnTaskRemoveService
@@ -17,6 +19,7 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
         if (savedInstanceState == null) {
             supportFragmentManager.commitNow {
                 replace(R.id.container, MainFragment())
