@@ -107,6 +107,7 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat), Nav
     override fun openChat(channelId: String, bubble: Boolean, addBackTrack: Boolean) {
         supportFragmentManager.popBackStack(ChatFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
         supportFragmentManager.commit {
+//            setCustomAnimations(R.anim.slide_in_left, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_right)
             if (addBackTrack) addToBackStack(ChatFragment.TAG)
             replace(R.id.container, ChatFragment.newInstance(channelId, bubble))
         }
