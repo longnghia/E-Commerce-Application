@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <RelativeLayout
+        android:id="@+id/icon_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/big_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:paddingStart="4dp"
+            android:paddingEnd="6dp"
+            android:paddingBottom="1dp"
+            android:src="@drawable/ic_launcher_foreground" />
+
+        <ImageView
+            android:id="@+id/small_icon"
+            android:layout_width="18.2dp"
+            android:layout_height="18.2dp"
+            android:layout_alignEnd="@id/big_icon"
+            android:layout_alignBottom="@id/big_icon"
+            android:src="@drawable/ic_launcher_foreground" />
+        />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="false"
+        android:layout_marginTop="3dp"
+        android:layout_toEndOf="@+id/icon_container"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="6dp">
+
+        <TextView
+            android:id="@+id/content_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notification Sample App"
+            android:textAppearance="@style/TextAppearance.AppCompat.Notification.Title"
+            android:textColor="@color/black" />
+
+        <ImageView
+            android:id="@+id/content_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/content_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Expand me to see a detailed message!"
+            android:textAppearance="@style/TextAppearance.AppCompat.Notification" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:paddingTop="8dp"
+        android:paddingRight="3.5dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Notification.Time" />
+
+</RelativeLayout>

@@ -38,9 +38,14 @@ jobs:
 
       - name: Make Gradle executable
         run: chmod +x ./gradlew
-      
+
+      - name: Add Messaging Serverkey
+        run: |
+          mkdir -p "simplechat/src/main/java/com/ln/simplechat/api/"
+          echo "${{secrets.MESSAGING_SERVER_KEY}}"  | base64 -d > simplechat/src/main/java/com/ln/simplechat/api/ServerKey.kt
+
       - name: Execute Gradle build
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug
     
       - run: git log  --pretty=oneline | head -n 10 >> log.txt
           

@@ -25,6 +25,22 @@
         <item quantity="one">%d new message</item>
         <item quantity="other">%d new messages</item>
     </plurals>
+    <plurals name="num_image">
+        <item quantity="one">1 image</item>
+        <item quantity="other">%d images</item>
+    </plurals>
+    <plurals name="num_audio">
+        <item quantity="one">1 audio</item>
+        <item quantity="other">%d audios</item>
+    </plurals>
+    <plurals name="num_video">
+        <item quantity="one">1 video</item>
+        <item quantity="other">%d videos</item>
+    </plurals>
+    <plurals name="num_media">
+        <item quantity="one">1 media</item>
+        <item quantity="other">%d medias</item>
+    </plurals>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
 
     <string name="swipe_to_left" translatable="false">SWIPE_TO_LEFT</string>
@@ -33,5 +49,12 @@
     <string name="you">you</string>
     <string name="who_replied_to_who">%s replied to %s</string>
     <string name="reply_to">Reply to %s</string>
+    <string name="channel_chat">channel_chat</string>
+    <string name="channel_chat_name">Chat Notification</string>
+    <string name="channel_chat_description">Notification for chats</string>
+    <string name="symbol_like">👍</string>
+    <string name="cant_send_topic_notification">Can not invoke channel\'s notification!</string>
+    <string name="new_message">New message!</string>
+    <string name="notification_sent">sent</string>
 
 </resources>
