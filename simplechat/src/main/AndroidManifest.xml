@@ -12,7 +12,8 @@
             android:name="com.ln.simplechat.SimpleChatActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:theme="@style/SimpleChat.NoActionBar">
+            android:theme="@style/SimpleChat.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />

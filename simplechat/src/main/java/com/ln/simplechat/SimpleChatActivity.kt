@@ -133,6 +133,15 @@ class SimpleChatActivity : AppCompatActivity(R.layout.activity_simple_chat), Nav
             )
         }
 
+        fun goToChatBoard(activity: Activity, currentUserId: String) {
+            activity.startActivity(
+                Intent(activity, SimpleChatActivity::class.java).apply {
+                    putExtra(EXTRA_CURRENT_USER, currentUserId)
+                    action = ACTION_OPEN_BOARD
+                }
+            )
+        }
+
         const val ACTION_CREATE_AND_OPEN_CHANNEL = "create-and-open-channel"
         const val ACTION_OPEN_BOARD = "open-open-board"
         const val EXTRA_LIST_USER = "list-user"
