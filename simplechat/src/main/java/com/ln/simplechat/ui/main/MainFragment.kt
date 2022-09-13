@@ -39,6 +39,10 @@ class MainFragment : Fragment(R.layout.main_fragment) {
         adapter = ChannelAdapter { channel ->
             navigator.openChat(channel.id)
         }
+
+        binding.shimmerMain.startShimmer()
+        restoreData()
+
         binding.contacts.apply {
             setHasFixedSize(true)
             adapter = this@MainFragment.adapter
@@ -50,13 +54,31 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         viewModel.listChannelAndMembers.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is MyResult.Success -> adapter.submitList(result.data)
+                is MyResult.Success -> {
+                    viewModel.saveData(result.data)
+                    adapter.submitList(result.data)
+                }
                 is MyResult.Error -> Toast.makeText(
                     requireContext(),
                     result.exception.message,
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+    }
+
+    private fun restoreData() {
+        val data = viewModel.restoreData()
+        data?.let {
+            adapter.submitList(it)
+        }
+        hideShimmer()
+    }
+
+    private fun hideShimmer() {
+        requireActivity().runOnUiThread {
+            binding.shimmerMain.stopShimmer()
+            binding.shimmerMain.hideShimmer()
         }
     }
 

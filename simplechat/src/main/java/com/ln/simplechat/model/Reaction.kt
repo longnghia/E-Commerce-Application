@@ -1,7 +1,10 @@
 package com.ln.simplechat.model
 
+import android.os.Parcelable
 import com.google.firebase.firestore.Exclude
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Reaction(
     var love: List<String> = emptyList(),
     var haha: List<String> = emptyList(),
@@ -9,7 +12,7 @@ data class Reaction(
     var like: List<String> = emptyList(),
     var wow: List<String> = emptyList(),
     var sad: List<String> = emptyList(),
-) {
+) : Parcelable {
     companion object {
         val reactOrder = listOf("love", "haha", "wow", "sad", "angry", "like")
     }

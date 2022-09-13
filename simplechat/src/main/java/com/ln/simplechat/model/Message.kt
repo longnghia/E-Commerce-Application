@@ -1,7 +1,10 @@
 package com.ln.simplechat.model
 
+import android.os.Parcelable
 import com.google.firebase.firestore.Exclude
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Message @JvmOverloads constructor(
     val id: String = "",
     val sender: String = "",
@@ -15,7 +18,7 @@ data class Message @JvmOverloads constructor(
     var isReact: Boolean = false,
     var reactions: Reaction = Reaction(),
     var quotedMessage: String? = null
-) {
+) : Parcelable {
     @Exclude
     fun getMessageType(): MessageType {
         if (medias != null)

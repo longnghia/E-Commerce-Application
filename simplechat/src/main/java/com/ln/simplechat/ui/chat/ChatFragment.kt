@@ -92,8 +92,6 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterTransition =
-            TransitionInflater.from(context).inflateTransition(R.transition.slide_bottom)
 
         bubble = arguments?.getBoolean(IS_BUBBLE) ?: false
         channelId = arguments?.getString(CHANNEL_ID) ?: ""
@@ -198,6 +196,9 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                 manager = LinearLayoutManager(requireContext()).apply {
                     stackFromEnd = true
                 }
+                viewModel.loadData()
+                hideShimmer()
+
                 val observer = ChatAdapterObserver(
                     messageRcv,
                     adapter,
@@ -251,6 +252,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
     }
 
     private fun setViews() {
+        binding.shimmerChat.startShimmer()
         quoteLayout = binding.inputBar.findViewById(R.id.item_message_quote)
         messageRcv = binding.rcvMessages
         bottomScroll = binding.bottomScroll
@@ -401,6 +403,11 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         super.onResume()
         SimpleChatApp.currentChannel = channelId
         viewModel.resumeListening()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.saveData()
     }
 
     override fun onDestroy() {
@@ -606,6 +613,13 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         mQuoted = null
         quoteLayout.animate().setDuration(200).translationY(quoteLayout.height.toFloat()).withEndAction {
             quoteLayout.visibility = View.GONE
+        }
+    }
+
+    private fun hideShimmer() {
+        requireActivity().runOnUiThread {
+            binding.shimmerChat.stopShimmer()
+            binding.shimmerChat.hideShimmer()
         }
     }
 }

@@ -9,9 +9,13 @@ import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.util.Util
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.ln.simplechat.R
 import com.ln.simplechat.SimpleChatActivity
 import com.ln.simplechat.api.TopicAPI
+import com.ln.simplechat.application.loadData
+import com.ln.simplechat.application.saveData
 import com.ln.simplechat.application.toast
 import com.ln.simplechat.model.*
 import com.ln.simplechat.repository.ChatRepository
@@ -33,7 +37,9 @@ class ChatViewModel @Inject constructor(
 
     private lateinit var channelId: String
     private lateinit var query: Query
-
+    private lateinit var fileName: String
+    private val gson = Gson()
+    private val typeListMessage = object : TypeToken<List<Message>>() {}.type
 
     private var listenerRegistration: ListenerRegistration? = null
     private var _channel: Channel? = null
@@ -231,6 +237,19 @@ class ChatViewModel @Inject constructor(
             .orderBy("timestamp", Query.Direction.ASCENDING)
 
         this.channelId = channelId
+        this.fileName = "$CHAT_FILE$channelId"
+    }
+
+    fun loadData() {
+        val data = loadData<String>(fileName)
+        val loaded: List<Message>? = gson.fromJson(data, typeListMessage)
+        loaded?.let {
+            _listMessage.postValue(loaded)
+        }
+    }
+
+    fun saveData() {
+        saveData(fileName, gson.toJson(_listMessage.value?.takeLast(20), typeListMessage))
     }
 
     fun pushReact(messageId: String, reactId: Int) {
@@ -258,5 +277,6 @@ class ChatViewModel @Inject constructor(
 
     companion object {
         val TAG = "ChatViewModel"
+        val CHAT_FILE = "channel_"
     }
 }

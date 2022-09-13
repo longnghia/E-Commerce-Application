@@ -2,10 +2,14 @@ package com.ln.simplechat.application
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.luck.picture.lib.thread.PictureThreadUtils
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 class SimpleChatApp {
 
@@ -47,7 +51,7 @@ class SimpleChatApp {
 fun toast(stringRes: Int, activity: Activity? = null) {
     (activity ?: SimpleChatApp.currentActivity())?.apply {
         val string = getString(stringRes)
-        PictureThreadUtils.runOnUiThread {
+        runOnUiThread {
             Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
         }
         Log.d(SimpleChatApp.TAG, string)
@@ -57,7 +61,7 @@ fun toast(stringRes: Int, activity: Activity? = null) {
 fun toast(string: String?, activity: Activity? = null) {
     if (string != null) {
         (activity ?: SimpleChatApp.currentActivity())?.apply {
-            PictureThreadUtils.runOnUiThread {
+            runOnUiThread {
                 Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
             }
         }
@@ -68,9 +72,43 @@ fun toast(string: String?, activity: Activity? = null) {
 fun toast(exception: Exception, activity: Activity? = null) {
     (activity ?: SimpleChatApp.currentActivity())?.apply {
         val string = exception.message
-        PictureThreadUtils.runOnUiThread {
+        runOnUiThread {
             Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
         }
         exception.printStackTrace()
     }
+}
+
+fun saveData(fileName: String, data: Any?, activity: Context? = null) {
+    try {
+        val a = activity ?: SimpleChatApp.currentActivity()
+        if (a != null) {
+            val fos: FileOutputStream = a.openFileOutput(fileName, Context.MODE_PRIVATE)
+            val os = ObjectOutputStream(fos)
+            os.writeObject(data)
+            os.close()
+            fos.close()
+        }
+    } catch (e: Exception) {
+        toast(e)
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <T> loadData(fileName: String, activity: Context? = null, toast: Boolean = true): T? {
+    val a = activity ?: SimpleChatApp.currentActivity()
+    try {
+        if (a?.fileList() != null)
+            if (fileName in a.fileList()) {
+                val fileIS: FileInputStream = a.openFileInput(fileName)
+                val objIS = ObjectInputStream(fileIS)
+                val data = objIS.readObject() as T
+                objIS.close()
+                fileIS.close()
+                return data
+            }
+    } catch (e: Exception) {
+        toast(e)
+    }
+    return null
 }
