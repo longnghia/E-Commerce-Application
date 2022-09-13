@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -165,10 +164,11 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         }
         viewModel.listMember.observe(viewLifecycleOwner) {
             if (it.isNotEmpty()) {
+                val others = it.filter { member -> member.id != currentUserId }
                 binding.avatarView.loadImage(
-                    data = it.filter { member -> member.id != currentUserId }.map { member -> member.avatar }
+                    data = others.map { member -> member.avatar }
                 )
-
+                binding.channelName.text = others[0].name
                 mapMember = it.associateBy { member -> member.id }
                 adapter = ChatAdapter(
                     requireContext(),
