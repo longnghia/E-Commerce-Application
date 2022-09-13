@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.transition.TransitionInflater
 import android.util.Log
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -170,6 +169,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
                     data = others.map { member -> member.avatar }
                 )
                 binding.channelName.text = others[0].name
+                mapMember = it.associateBy { member -> member.id }
                 adapter = ChatAdapter(
                     requireContext(),
                     currentUserId,
