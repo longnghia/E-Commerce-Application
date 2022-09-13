@@ -36,7 +36,7 @@ class MainFragment : Fragment(R.layout.main_fragment) {
 
         val navigator = getNavigationController()
 
-        adapter = ChannelAdapter { channel ->
+        adapter = ChannelAdapter(viewModel.userId) { channel ->
             navigator.openChat(channel.id)
         }
 

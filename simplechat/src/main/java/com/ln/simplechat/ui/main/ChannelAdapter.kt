@@ -12,7 +12,7 @@ import com.ln.simplechat.model.ChannelAndMember
 import com.ln.simplechat.utils.setImageUrl
 import io.getstream.avatarview.coil.loadImage
 
-class ChannelAdapter(private val onClickChannel: (Channel) -> Unit) :
+class ChannelAdapter(private val currentUserId: String?, private val onClickChannel: (Channel) -> Unit) :
     ListAdapter<ChannelAndMember, ContactViewHolder>(DIFF_CALLBACK) {
 
     init {
@@ -26,15 +26,17 @@ class ChannelAdapter(private val onClickChannel: (Channel) -> Unit) :
     override fun onBindViewHolder(holder: ContactViewHolder, position: Int) {
         val channelAndMember = getItem(position)
         val (channel, listMember) = channelAndMember
+        val others = listMember.filter { member -> member.id != currentUserId }
         channel.icon?.let {
             holder.binding.icon.setImageUrl(it)
         }
-        holder.binding.name.text = channel.name
+        holder.binding.name.text = others[0].name
         holder.itemView.setOnClickListener {
             onClickChannel(channel)
         }
+
         holder.binding.icon.loadImage(
-            data = listMember.map { it.avatar }
+            data = others.map { it.avatar }
         )
     }
 }
