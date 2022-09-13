@@ -77,9 +77,56 @@
                 android:orientation="vertical">
 
                 <FrameLayout
+                    android:id="@+id/layout_go_chat_board"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="16dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/action_chat_board"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/chat_board"
+                            android:textColor="@color/black_light"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_go_chat_board"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/go_chat_board"
+                            android:textColor="@color/grey_text"
+                            android:textSize="11sp" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|end"
+                        android:src="@drawable/ic_right" />
+                </FrameLayout>
+
+                <View
+                    android:id="@+id/divider_chat"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:alpha="0.1"
+                    android:background="@color/grey_text" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="18dp"
                     android:layout_marginEnd="15dp"
                     android:layout_marginBottom="16dp"
                     android:orientation="horizontal">
