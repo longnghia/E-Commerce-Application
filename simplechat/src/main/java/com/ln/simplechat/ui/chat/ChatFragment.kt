@@ -481,6 +481,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun createReactionDialog(message: View, messageId: String) {
+        binding.rcvMessages.suppressLayout(true)
         val dialog = Dialog(requireActivity())
         val reactionBinding = DialogReactionBinding.inflate(layoutInflater, null, false)
         val reaction = reactionBinding.reaction
@@ -537,6 +538,7 @@ class ChatFragment : Fragment(R.layout.chat_fragment), ChatListener {
         dialog.apply {
             setContentView(reactionBinding.root)
             setOnDismissListener {
+                binding.rcvMessages.suppressLayout(false)
                 message.alpha = 1f
             }
             setCancelable(true)
