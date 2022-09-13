@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorGray">#dedede</color>
+    <color name="colorGrayLight">#EDEDED</color>
+    <color name="colorBlue">#2962FF</color>
+    <color name="colorBlueLight">#ADC3FF</color>
+
+    <color name="colorPrimaryDark">#E65100</color>
+    <color name="colorPrimary">#FFFFFFFF</color>
+    <color name="colorDarkGray">#b4b4b4</color>
+
+    <color name="md_green_100">#81C784</color>
+
+    <color name="red">#FF0000</color>
+    <color name="orange">#FF7F00</color>
+    <color name="chartreuse">#7FFF00</color>
+    <color name="green">#00FF00</color>
+    <color name="spring_green">#00FF7F</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="azure">#007FFF</color>
+    <color name="blue">#0000FF</color>
+    <color name="violet">#7F00FF</color>
+    <color name="magenta">#FF00FF</color>
+    <color name="yellow">#FBC02D</color>
+
+    <array name="rainbow">
+        <item>@color/red</item>
+        <item>@color/orange</item>
+        <item>@color/yellow</item>
+        <item>@color/chartreuse</item>
+        <item>@color/green</item>
+        <item>@color/spring_green</item>
+        <item>@color/cyan</item>
+        <item>@color/azure</item>
+        <item>@color/blue</item>
+        <item>@color/violet</item>
+        <item>@color/magenta</item>
+    </array>
+
+    <color name="black_600">#40000000</color>
+    <color name="neutral_500">#72808e</color>
+
+    <!-- general text colors -->
+    <color name="no_emphasis_text">#000000</color>
+    <color name="high_emphasis_text">#de000000</color>
+    <color name="medium_emphasis_text">#99000000</color>
+    <color name="low_emphasis_text">#61000000</color>
+
+    <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
+    <color name="bg_message_list_incoming_bubble_deleted">#66EFEFEF</color>
+</resources>

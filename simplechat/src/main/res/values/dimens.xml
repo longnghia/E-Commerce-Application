@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <dimen name="spacing_medium">16dp</dimen>
+    <dimen name="spacing_small">8dp</dimen>
+    <dimen name="icon_size">64dp</dimen>
+    <dimen name="photo_size">128dp</dimen>
+    <dimen name="app_bar_elevation">4dp</dimen>
+    <dimen name="app_bar_padding">6dp</dimen>
+    <dimen name="message_padding_vertical">16dp</dimen>
+    <dimen name="message_padding_horizontal_short">16dp</dimen>
+    <dimen name="message_padding_horizontal_long">24dp</dimen>
+    <dimen name="bubble_height">400dp</dimen>
+    <dimen name="image_spacing">1dp</dimen>
+    <dimen name="image_size">80dp</dimen>
+    <dimen name="popup_icon_margin">8dp</dimen>
+    <dimen name="bubble_radius_round">20dp</dimen>
+    <dimen name="bubble_radius">5dp</dimen>
+    <dimen name="chat_avatar">36dp</dimen>
+    <dimen name="reaction_icons">24dp</dimen>
+    <dimen name="reaction_margin">12dp</dimen>
+    <dimen name="react_size">32dp</dimen>
+    <dimen name="chat_margin">10dp</dimen>
+    <dimen name="quote_padding">20dp</dimen>
+</resources>

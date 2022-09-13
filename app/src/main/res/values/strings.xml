@@ -262,6 +262,10 @@
     <string name="channel_cloud_message">Cloud message</string>
     <string name="channel_cloud_message_description">Receive notifications from cloud</string>
     <string name="channel_cloud_message_id" translatable="false">channel_cloud_message_id</string>
+    <string name="hcm">HoChiMinh city</string>
+    <string name="chat_with_seller">Chat with seller</string>
+    <string name="go_chat_board">Go to Chat Board</string>
+    <string name="chat_board">Chat Board</string>
 
     <plurals name="num_promo">
         <item quantity="one">You have 1 promocode</item>

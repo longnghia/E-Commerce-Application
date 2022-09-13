@@ -25,6 +25,7 @@ data class Product @JvmOverloads constructor(
     var reviewStars: Int = 0,
     var salePercent: Int? = null,
     var tags: List<Tag> = ArrayList(),
+    val sellerId: String = ""
 ) : Parcelable {
     override fun toString(): String {
         return "Product(id='$id', title='$title', categoryName='$categoryName', price=${getOriginPrice()} , image=${getImage()}, isPopular=${isPopular}, date=$createdDate)"
@@ -46,6 +47,7 @@ data class Product @JvmOverloads constructor(
         } else
             getOriginPrice().toFloat()
     }
+
     @Exclude
     fun getImage(): String? {
         if (this.images != null && this.images.isNotEmpty() && this.images[0] != null) {
@@ -53,12 +55,14 @@ data class Product @JvmOverloads constructor(
         }
         return null
     }
+
     @Exclude
     fun getListSize(): List<Size> {
         if (this.colors.isNullOrEmpty())
             return emptyList()
         return colors[0].sizes
     }
+
     @Exclude
     fun isAvailable(favorite: Favorite): Boolean {
         val color = colors[0]
@@ -68,10 +72,12 @@ data class Product @JvmOverloads constructor(
         val quantity = size?.quantity ?: 0
         return quantity != 0
     }
+
     @Exclude
     fun getFirstColor(): String {
         return colors[0].color
     }
+
     @Exclude
     fun getListColor(): List<String> {
         return colors.map {

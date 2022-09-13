@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="?attr/listPreferredItemHeightLarge"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/spacing_small"
+    android:paddingEnd="@dimen/spacing_small"
+    tools:ignore="UseCompoundDrawables">
+
+    <io.getstream.avatarview.AvatarView
+        android:id="@+id/icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_small"
+        android:contentDescription="@string/description_icon"
+        app:avatarViewBorderColor="@color/yellow"
+        app:avatarViewBorderColorArray="@array/rainbow"
+        app:avatarViewBorderWidth="3dp"
+        app:avatarViewErrorPlaceholder="@drawable/ps_image_placeholder"
+        app:avatarViewIndicatorBorderColor="@color/white"
+        app:avatarViewIndicatorBorderSizeCriteria="10"
+        app:avatarViewIndicatorColor="@color/md_green_100"
+        app:avatarViewIndicatorEnabled="true"
+        app:avatarViewIndicatorPosition="bottomRight"
+        app:avatarViewIndicatorSizeCriteria="9"
+        app:avatarViewInitialsTextColor="@color/white"
+        app:avatarViewInitialsTextSize="50sp"
+        app:avatarViewInitialsTextStyle="bold"
+        app:avatarViewShape="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/spacing_small"
+        android:layout_weight="1"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        tools:text="Cat" />
+
+</LinearLayout>

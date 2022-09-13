@@ -15,7 +15,10 @@ import com.goldenowl.ecommerce.models.repo.RemoteAuthDataSource
 import com.goldenowl.ecommerce.models.repo.datasource.*
 import com.goldenowl.ecommerce.utils.Constants
 import com.google.firebase.FirebaseApp
+import com.ln.simplechat.application.SimpleChatApp
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MyApplication : Application() {
 
     private val TAG = "MyApplication"
@@ -30,6 +33,7 @@ class MyApplication : Application() {
         FacebookSdk.sdkInitialize(applicationContext)
         AppEventsLogger.activateApp(this)
         FirebaseApp.initializeApp(this)
+        SimpleChatApp.install(this)
 
         createNotificationChannel()
 

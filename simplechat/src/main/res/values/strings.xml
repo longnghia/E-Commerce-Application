@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">SimpleChat</string>
+    <string name="show_as_bubble">Show as Bubble</string>
+    <string name="description_icon">Profile icon</string>
+    <string name="description_voice_call">Make a voice call (dummy)</string>
+    <string name="description_send">Send</string>
+    <string name="sender_you">You</string>
+    <string name="label_reply">Reply</string>
+    <string name="description_photo">Photo</string>
+    <string name="hint_input">Type a message…</string>
+    <string name="channel_new_messages">New messages</string>
+    <string name="channel_new_messages_description">All new incoming messages.</string>
+    <string name="chat_with_contact">Chat with %s</string>
+    <string name="voice_call_explanation">This is a dummy voice call screen.</string>
+    <string name="sc_current_week">This week</string>
+    <string name="sc_current_month">This month</string>
+    <string name="search">Search</string>
+    <string name="create_new_group">New group</string>
+    <string name="select_audio">Audio</string>
+    <string name="select_gif">Gif</string>
+    <string name="need_record_permission">Need permission to record audio!</string>
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <plurals name="num_new_message">
+        <item quantity="one">%d new message</item>
+        <item quantity="other">%d new messages</item>
+    </plurals>
+    <plurals name="num_image">
+        <item quantity="one">1 image</item>
+        <item quantity="other">%d images</item>
+    </plurals>
+    <plurals name="num_audio">
+        <item quantity="one">1 audio</item>
+        <item quantity="other">%d audios</item>
+    </plurals>
+    <plurals name="num_video">
+        <item quantity="one">1 video</item>
+        <item quantity="other">%d videos</item>
+    </plurals>
+    <plurals name="num_media">
+        <item quantity="one">1 media</item>
+        <item quantity="other">%d medias</item>
+    </plurals>
+    <string name="nc_message_quote_cancel_reply">Cancel reply</string>
+
+    <string name="swipe_to_left" translatable="false">SWIPE_TO_LEFT</string>
+    <string name="yourself">yourself</string>
+    <string name="himself">himself</string>
+    <string name="you">you</string>
+    <string name="who_replied_to_who">%s replied to %s</string>
+    <string name="reply_to">Reply to %s</string>
+    <string name="channel_chat">channel_chat</string>
+    <string name="channel_chat_name">Chat Notification</string>
+    <string name="channel_chat_description">Notification for chats</string>
+    <string name="symbol_like">👍</string>
+    <string name="cant_send_topic_notification">Can not invoke channel\'s notification!</string>
+    <string name="new_message">New message!</string>
+    <string name="notification_sent">sent</string>
+    <string name="create_channel_insufficient_member">At least 2 member to create channel</string>
+    <string name="channel_not_found">Channel not found!</string>
+
+</resources>

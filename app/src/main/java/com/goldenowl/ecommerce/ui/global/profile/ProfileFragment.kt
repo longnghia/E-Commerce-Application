@@ -12,7 +12,7 @@ import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -26,10 +26,12 @@ import com.goldenowl.ecommerce.ui.auth.LoginSignupActivity
 import com.goldenowl.ecommerce.ui.global.BaseFragment
 import com.goldenowl.ecommerce.ui.global.MainActivity
 import com.goldenowl.ecommerce.viewmodels.AuthViewModel
+import com.goldenowl.ecommerce.viewmodels.ProfileViewModel
 import com.goldenowl.ecommerce.viewmodels.ShopViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.ln.simplechat.SimpleChatActivity
 
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
@@ -39,6 +41,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
     private lateinit var userManager: UserManager
     private val viewModel: AuthViewModel by activityViewModels()
     private val shopViewModel: ShopViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
 
     override fun init() {
         userManager = UserManager.getInstance(requireContext())
@@ -99,9 +102,16 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
                 }
             }
         }
+
+        profileViewModel.user.observe(viewLifecycleOwner) {
+            if (it == null)
+                return@observe
+            binding.layoutGoChatBoard.isVisible = it.isSeller
+            binding.dividerChat.isVisible = it.isSeller
+        }
     }
 
-    private fun setUpUserUI() {
+    fun setUpUserUI() {
         with(binding) {
             val userName = userManager.name
             tvName.text = userName
@@ -148,6 +158,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>() {
 
             actionReview.setOnClickListener {
                 findNavController().navigate(R.id.my_review_dest)
+            }
+
+            actionChatBoard.setOnClickListener {
+                SimpleChatActivity.goToChatBoard(requireActivity(), shopViewModel.getUserId())
             }
         }
     }

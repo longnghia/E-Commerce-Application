@@ -23,10 +23,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import androidx.viewpager2.widget.ViewPager2
 import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
@@ -45,6 +47,7 @@ object Utils {
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(homeIntent)
     }
+
     fun getDateTime(time: Long?): String {
         if (time == null) {
             return ""
@@ -241,5 +244,20 @@ object Utils {
             .map { charset.random() }
             .joinToString("")
         return num + char
+    }
+
+    fun ImageView.setUrl(url: String) {
+        val circularProgressDrawable = CircularProgressDrawable(context)
+        circularProgressDrawable.strokeWidth = 5f
+        circularProgressDrawable.centerRadius = 30f
+        circularProgressDrawable.start()
+
+        Glide
+            .with(context)
+            .load(url)
+            .error(R.drawable.img_broken)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .placeholder(circularProgressDrawable)
+            .into(this)
     }
 }
